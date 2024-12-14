@@ -5,7 +5,8 @@ import { GameLog } from "./GameLog";
 import { CombatControls } from "./CombatControls";
 import { Inventory } from "./Inventory";
 import { ActionMenu } from "./ActionMenu";
-import { Sword, Map, Users, ScrollText } from "lucide-react";
+import { Sword, Map, Users, ScrollText, Home } from "lucide-react";
+import { Button } from "./ui/button";
 
 export const GameBoard = () => {
   const { state, dispatch } = useGame();
@@ -21,39 +22,48 @@ export const GameBoard = () => {
       <div className="max-w-[1800px] mx-auto grid grid-cols-12 gap-4">
         {/* Left Column - Character & Actions */}
         <div className="col-span-3 space-y-4">
+          {/* Character Frame */}
           <div className="bg-character-frame bg-cover bg-center p-6 rounded-lg border-2 border-fantasy-frame-border animate-frame-glow sticky top-4">
             {playerCharacter && (
               <CharacterCard character={playerCharacter} />
             )}
           </div>
-          <div className="bg-parchment-texture bg-cover rounded-lg border-2 border-fantasy-frame-border p-4 space-y-4">
-            <h3 className="text-lg font-bold text-fantasy-primary flex items-center gap-2">
+
+          {/* Actions Menu */}
+          <div className="bg-parchment-texture bg-cover rounded-lg border-2 border-fantasy-frame-border p-4">
+            <h3 className="text-lg font-bold text-fantasy-primary flex items-center gap-2 mb-4">
               <Sword className="h-5 w-5" />
               Actions
             </h3>
             <ActionMenu />
-            {!state.showTavern && (
-              <div className="pt-4 border-t border-fantasy-frame-border">
-                <h4 className="text-sm font-semibold text-fantasy-primary mb-2">Story Controls</h4>
-                <div className="space-y-2">
-                  <button
-                    onClick={() => dispatch({ type: "PROGRESS_STORY" })}
-                    className="w-full px-4 py-2 bg-gradient-to-br from-amber-700 to-amber-900 hover:from-amber-600 hover:to-amber-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors border border-fantasy-frame-border"
-                  >
-                    <Map className="h-4 w-4" />
-                    Progress Story
-                  </button>
-                  <button
-                    onClick={() => dispatch({ type: "RETURN_TO_TAVERN" })}
-                    className="w-full px-4 py-2 bg-gradient-to-br from-purple-700 to-purple-900 hover:from-purple-600 hover:to-purple-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors border border-fantasy-frame-border"
-                  >
-                    Return to Tavern
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
+
+          {/* Inventory Section */}
           <Inventory />
+
+          {/* Story Controls - Now below inventory */}
+          <div className="bg-parchment-texture bg-cover rounded-lg border-2 border-fantasy-frame-border p-4">
+            <h3 className="text-lg font-bold text-fantasy-primary flex items-center gap-2 mb-4">
+              <Map className="h-5 w-5" />
+              Story Navigation
+            </h3>
+            <div className="space-y-3">
+              <Button
+                onClick={() => dispatch({ type: "PROGRESS_STORY" })}
+                className="w-full bg-gradient-to-br from-amber-700 to-amber-900 hover:from-amber-600 hover:to-amber-800 text-white flex items-center justify-center gap-2"
+              >
+                <ScrollText className="h-4 w-4" />
+                Progress Story
+              </Button>
+              <Button
+                onClick={() => dispatch({ type: "RETURN_TO_TAVERN" })}
+                className="w-full bg-gradient-to-br from-purple-700 to-purple-900 hover:from-purple-600 hover:to-purple-800 text-white flex items-center justify-center gap-2"
+              >
+                <Home className="h-4 w-4" />
+                Return to Tavern
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Center Column - Main Game Area */}
@@ -109,13 +119,14 @@ export const GameBoard = () => {
                   <Users className="h-5 w-5" />
                   Enemies Present
                 </h3>
-                <button
+                <Button
                   onClick={handleStartCombat}
-                  className="px-4 py-2 bg-red-700 hover:bg-red-600 text-white rounded-lg flex items-center gap-2 transition-colors"
+                  variant="destructive"
+                  className="flex items-center gap-2"
                 >
                   <Sword className="h-4 w-4" />
                   Initiate Combat
-                </button>
+                </Button>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 {enemies.map((enemy) => (
