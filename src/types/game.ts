@@ -14,6 +14,8 @@ export type CharacterSubrace =
   | "Standard Human" | "Variant Human"
   | "Forest Gnome" | "Rock Gnome" | "Deep Gnome";
 
+export type GamePhase = 'exploration' | 'interaction' | 'combat' | 'rest';
+
 export interface CharacterStats {
   strength: number;
   dexterity: number;
@@ -24,7 +26,6 @@ export interface CharacterStats {
 }
 
 export type DiceType = 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
-export type RollType = DiceType | 'attack' | 'damage' | 'skill' | 'save' | 'ability' | 'saving' | 'initiative';
 
 export interface DiceRoll {
   type: DiceType;
@@ -32,16 +33,6 @@ export interface DiceRoll {
   modifier?: number;
   advantage?: boolean;
   disadvantage?: boolean;
-}
-
-export interface RollResult {
-  rolls: number[];
-  total: number;
-  type: DiceType;
-  modifier?: number;
-  isNatural20?: boolean;
-  isNatural1?: boolean;
-  isCritical?: boolean;
 }
 
 export interface Character {
@@ -81,6 +72,18 @@ export interface Item {
   type: ItemType;
   damage?: string;
   armorClass?: number;
+}
+
+export interface Quest {
+  id: string;
+  title: string;
+  description: string;
+  status: 'active' | 'completed' | 'failed';
+  rewards?: {
+    xp?: number;
+    items?: Item[];
+    gold?: number;
+  };
 }
 
 export type ItemType = 'weapon' | 'armor' | 'potion' | 'scroll' | 'misc' | 'focus' | 'tool';
