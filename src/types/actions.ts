@@ -29,7 +29,9 @@ export type DiceAction = {
 export type SceneAction = 
   | { type: "GENERATE_SCENE"; sceneType: Scene['type'] }
   | { type: "ADD_EVENT"; event: StoryEvent }
-  | { type: "COMPLETE_EVENT"; eventId: string };
+  | { type: "COMPLETE_EVENT"; eventId: string }
+  | { type: "PROGRESS_STORY" }
+  | { type: "RETURN_TO_TAVERN" };
 
 export type WorldAction = {
   type: "UPDATE_WORLD_STATE";

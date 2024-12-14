@@ -48,6 +48,17 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
       return handleCompleteEvent(state, action.eventId);
     case "UPDATE_WORLD_STATE":
       return handleUpdateWorldState(state, action.key, action.value);
+    case "PROGRESS_STORY":
+      return {
+        ...state,
+        gameLog: [...state.gameLog, "The story progresses..."]
+      };
+    case "RETURN_TO_TAVERN":
+      return {
+        ...state,
+        showTavern: true,
+        gameLog: [...state.gameLog, "Returning to the tavern..."]
+      };
     default:
       return state;
   }

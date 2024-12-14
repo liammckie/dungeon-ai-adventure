@@ -15,6 +15,7 @@ export interface GameState {
   worldState: Record<string, any>;
   currentStory?: Story;
   storyManager?: StoryManager;
+  showTavern: boolean;
   lastRoll?: {
     total: number;
     rolls: number[];
@@ -32,5 +33,6 @@ export const initialGameState: GameState = {
   currentPhase: 'exploration',
   activeEvents: [],
   worldState: {},
+  showTavern: true,
   initiativeOrder: [],
 };
