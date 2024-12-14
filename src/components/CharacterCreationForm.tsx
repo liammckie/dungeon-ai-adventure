@@ -35,6 +35,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       race: data.race,
       subrace: data.subrace,
       class: data.class,
+      background: data.background,
       stats: data.stats,
       hp: hitDice,
       maxHp: hitDice,
