@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CharacterFormData } from "./character-creation/characterSchema";
+import type { CharacterStats as CharacterStatsType } from "@/types/game";
 
 const stats = [
   { name: "strength", label: "Strength" },
@@ -26,7 +27,7 @@ export const CharacterStats = ({ form }: { form: UseFormReturn<CharacterFormData
         <FormField
           key={stat.name}
           control={form.control}
-          name={`stats.${stat.name}`}
+          name={`stats.${stat.name}` as keyof CharacterFormData}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-white">{stat.label}</FormLabel>
@@ -34,7 +35,7 @@ export const CharacterStats = ({ form }: { form: UseFormReturn<CharacterFormData
                 <Input
                   type="number"
                   {...field}
-                  onChange={(e) => field.onChange(parseInt(e.target.value))}
+                  onChange={(e) => field.onChange(parseInt(e.target.value) || 10)}
                   className="bg-white/10 border-fantasy-frame-border text-white font-bold text-center"
                 />
               </FormControl>

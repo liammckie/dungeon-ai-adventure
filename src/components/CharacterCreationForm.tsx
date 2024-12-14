@@ -12,7 +12,7 @@ import { getStartingItems, rollStats } from "./character-creation/characterUtils
 import { getDefaultStats, getHitDice } from "@/types/game";
 import type { Character, CharacterStats as CharacterStatsType } from "@/types/game";
 
-const defaultStats: CharacterStatsType = {
+const initialStats: CharacterStatsType = {
   strength: 10,
   dexterity: 10,
   constitution: 10,
@@ -29,14 +29,14 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       name: "",
       race: "Human",
       class: "Fighter",
-      stats: defaultStats,
+      stats: initialStats,
     },
   });
 
   const handleRandomize = () => {
     const stats = rollStats();
     Object.entries(stats).forEach(([key, value]) => {
-      form.setValue(`stats.${key as keyof CharacterStatsType}`, value, { shouldValidate: true });
+      form.setValue(`stats.${key as keyof CharacterStatsType}`, value);
     });
   };
 
@@ -66,7 +66,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       if (name === "class" && value.class) {
         const defaultStats = getDefaultStats(value.class);
         Object.entries(defaultStats).forEach(([key, value]) => {
-          form.setValue(`stats.${key as keyof CharacterStatsType}`, value, { shouldValidate: true });
+          form.setValue(`stats.${key as keyof CharacterStatsType}`, value);
         });
       }
     });
