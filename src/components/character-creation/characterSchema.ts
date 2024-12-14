@@ -9,7 +9,7 @@ const statsSchema = z.object({
   intelligence: z.number().min(3).max(18),
   wisdom: z.number().min(3).max(18),
   charisma: z.number().min(3).max(18),
-}).required();
+}).strict();
 
 // Define the character schema with all fields required
 export const characterSchema = z.object({
@@ -21,6 +21,6 @@ export const characterSchema = z.object({
     "Bard", "Paladin", "Ranger", "Artificer"
   ]),
   stats: statsSchema,
-}).required();
+}).strict();
 
 export type CharacterFormData = z.infer<typeof characterSchema>;

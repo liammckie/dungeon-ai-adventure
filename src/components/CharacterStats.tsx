@@ -27,7 +27,7 @@ export const CharacterStats = ({ form }: { form: UseFormReturn<CharacterFormData
         <FormField
           key={stat.name}
           control={form.control}
-          name={`stats.${stat.name}` as keyof CharacterFormData}
+          name={`stats.${stat.name}` as `stats.${keyof CharacterStatsType}`}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-white">{stat.label}</FormLabel>
@@ -35,7 +35,11 @@ export const CharacterStats = ({ form }: { form: UseFormReturn<CharacterFormData
                 <Input
                   type="number"
                   {...field}
-                  onChange={(e) => field.onChange(parseInt(e.target.value) || 10)}
+                  value={field.value || ""}
+                  onChange={(e) => {
+                    const value = e.target.value === "" ? 10 : parseInt(e.target.value);
+                    field.onChange(isNaN(value) ? 10 : value);
+                  }}
                   className="bg-white/10 border-fantasy-frame-border text-white font-bold text-center"
                 />
               </FormControl>
