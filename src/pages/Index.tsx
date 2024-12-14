@@ -1,21 +1,63 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Dice6, Swords, Scroll } from "lucide-react";
+import { useGame } from "@/context/GameContext";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { state } = useGame();
+  
+  React.useEffect(() => {
+    // If player has a character, show game board instead of start screen
+    if (state.characters.length > 0) {
+      navigate("/game");
+    }
+  }, [state.characters, navigate]);
 
   return (
-    <div className="min-h-screen bg-parchment-texture bg-cover bg-center flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-parchment/90 p-8 rounded-lg border-2 border-fantasy-accent text-center space-y-6">
-        <h1 className="text-4xl font-bold text-fantasy-primary">Dungeon Adventure</h1>
-        <p className="text-fantasy-secondary">Embark on an epic journey with AI companions!</p>
-        <Button 
-          onClick={() => navigate("/create-character")}
-          className="w-full bg-fantasy-primary hover:bg-fantasy-primary/90 text-white"
-        >
-          Start New Adventure
-        </Button>
+    <div className="min-h-screen bg-[#1A1F2C] bg-opacity-95 flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Animated background effect */}
+      <div className="absolute inset-0 bg-[url('/lovable-uploads/28950689-1e3c-4d6c-846e-f8506162e596.png')] bg-cover bg-center opacity-20" />
+      
+      <div className="relative z-10 max-w-2xl w-full">
+        <div className="bg-black/60 p-8 rounded-lg border-2 border-red-900/50 backdrop-blur-sm">
+          <div className="text-center space-y-6">
+            <h1 className="text-6xl font-bold text-red-600 mb-4 animate-fade-in">
+              Dungeon & Dragons
+            </h1>
+            <p className="text-gray-300 text-xl mb-8">
+              Embark on an epic journey into darkness
+            </p>
+            
+            <div className="grid gap-4">
+              <Button 
+                onClick={() => navigate("/create-character")}
+                className="w-full bg-red-900 hover:bg-red-800 text-white py-6 text-lg group transition-all duration-300"
+              >
+                <Dice6 className="mr-2 h-6 w-6 group-hover:rotate-180 transition-transform duration-300" />
+                Begin Your Adventure
+              </Button>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <Button 
+                  variant="outline"
+                  className="bg-transparent border-red-900/50 text-red-500 hover:bg-red-900/20"
+                >
+                  <Scroll className="mr-2 h-5 w-5" />
+                  Load Game
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="bg-transparent border-red-900/50 text-red-500 hover:bg-red-900/20"
+                >
+                  <Swords className="mr-2 h-5 w-5" />
+                  Tutorial
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

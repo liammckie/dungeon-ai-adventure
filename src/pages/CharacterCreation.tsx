@@ -1,13 +1,21 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { CharacterCreationForm } from "@/components/CharacterCreationForm";
-import { Button } from "@/components/ui/button";
+import { useGame } from "@/context/GameContext";
 
 const CharacterCreation = () => {
   const navigate = useNavigate();
+  const { state } = useGame();
+
+  React.useEffect(() => {
+    // If character already exists, redirect to game
+    if (state.characters.length > 0) {
+      navigate("/game");
+    }
+  }, [state.characters, navigate]);
 
   const handleCharacterCreated = () => {
-    navigate("/");
+    navigate("/game");
   };
 
   return (
