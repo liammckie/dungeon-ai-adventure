@@ -37,7 +37,7 @@ export interface DiceRoll {
 export interface RollResult {
   rolls: number[];
   total: number;
-  type: RollType;
+  type: DiceType;
   modifier?: number;
   isNatural20?: boolean;
   isNatural1?: boolean;
@@ -74,8 +74,6 @@ export interface Character {
   reputation?: number;
 }
 
-export type ItemType = 'weapon' | 'armor' | 'potion' | 'scroll' | 'misc' | 'focus' | 'tool';
-
 export interface Item {
   id: string;
   name: string;
@@ -85,16 +83,4 @@ export interface Item {
   armorClass?: number;
 }
 
-export interface Quest {
-  id: string;
-  title: string;
-  description: string;
-  status: 'active' | 'completed' | 'failed';
-  rewards: {
-    xp: number;
-    gold: number;
-    items?: Item[];
-  };
-}
-
-export type GamePhase = 'exploration' | 'combat' | 'dialogue' | 'interaction' | 'rest';
+export type ItemType = 'weapon' | 'armor' | 'potion' | 'scroll' | 'misc' | 'focus' | 'tool';

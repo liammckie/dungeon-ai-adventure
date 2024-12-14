@@ -1,82 +1,54 @@
 import { GameState } from "../gameState";
-import { RollType, RollResult, DiceType } from "@/types/game";
-import {
-  rollAbilityCheck,
-  rollSavingThrow,
-  rollAttack,
-  rollDamage,
-  rollInitiative
-} from "@/utils/diceRolls";
+import { RollType, DiceType } from "@/types/game";
+import { rollDice } from "@/utils/diceRolls";
 
 interface RollOptions {
-  abilityModifier?: number;
-  proficiencyBonus?: number;
   advantage?: boolean;
   disadvantage?: boolean;
   diceCount?: number;
-  diceType?: DiceType;
-  isCritical?: boolean;
+  modifier?: number;
 }
 
 export const handleRollDice = (
   state: GameState,
   rollType: RollType,
-  options: RollOptions
+  options: RollOptions = {}
 ): GameState => {
-  let result: RollResult;
+  const {
+    advantage = false,
+    disadvantage = false,
+    diceCount = 1,
+    modifier = 0
+  } = options;
 
-  switch (rollType) {
-    case "ability":
-      result = rollAbilityCheck(
-        options.abilityModifier || 0,
-        options.proficiencyBonus,
-        { advantage: options.advantage, disadvantage: options.disadvantage }
-      );
-      break;
-    case "saving":
-      result = rollSavingThrow(
-        options.abilityModifier || 0,
-        { advantage: options.advantage, disadvantage: options.disadvantage }
-      );
-      break;
-    case "attack":
-      result = rollAttack(
-        options.abilityModifier || 0,
-        { advantage: options.advantage, disadvantage: options.disadvantage }
-      );
-      break;
-    case "damage":
-      result = rollDamage(
-        options.diceCount || 1,
-        options.diceType || "d6",
-        options.abilityModifier || 0,
-        options.isCritical
-      );
-      break;
-    case "initiative":
-      result = rollInitiative(
-        options.abilityModifier || 0,
-        { advantage: options.advantage, disadvantage: options.disadvantage }
-      );
-      break;
-    default:
-      result = rollAbilityCheck(
-        options.abilityModifier || 0,
-        options.proficiencyBonus,
-        { advantage: options.advantage, disadvantage: options.disadvantage }
-      );
+  let result;
+  const diceType = rollType as DiceType;
+
+  if (diceType) {
+    result = rollDice(diceType, diceCount, modifier);
+  } else {
+    // Handle special roll types
+    switch (rollType) {
+      case 'attack':
+      case 'ability':
+      case 'saving':
+      case 'initiative':
+        result = rollDice('d20', 1, modifier);
+        break;
+      case 'damage':
+        result = rollDice('d6', diceCount, modifier); // Default damage die
+        break;
+      default:
+        result = rollDice('d20', 1, modifier);
+    }
   }
 
   return {
     ...state,
-    lastRoll: result,
-    gameLog: [
-      ...state.gameLog,
-      `Roll Result (${rollType}): ${result.total} [${result.rolls.join(', ')}]${
-        result.modifier ? ` + ${result.modifier}` : ''
-      }${result.isNatural20 ? ' (Natural 20!)' : ''}${
-        result.isNatural1 ? ' (Natural 1!)' : ''
-      }${result.isCritical ? ' (Critical!)' : ''}`
-    ]
+    lastRoll: {
+      total: result.total,
+      rolls: result.rolls,
+      type: result.type
+    }
   };
 };
