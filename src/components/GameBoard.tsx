@@ -35,18 +35,34 @@ export const GameBoard = () => {
         {/* Center Column - Main Game Area */}
         <div className="col-span-6 space-y-4">
           {/* Story Scene */}
-          <div className="bg-character-frame bg-cover bg-center p-6 rounded-lg border-2 border-fantasy-frame-border min-h-[300px]">
-            <div className="bg-black/70 backdrop-blur-sm p-6 rounded-lg">
-              <h2 className="text-2xl font-bold text-amber-400 flex items-center gap-2 mb-4">
-                <Map className="h-6 w-6" />
-                Current Scene
-              </h2>
-              {state.currentScene && (
-                <div className="prose prose-invert max-w-none">
-                  <h3 className="text-xl text-amber-400 mb-2">{state.currentScene.name}</h3>
-                  <p className="text-amber-200 text-lg leading-relaxed">{state.currentScene.description}</p>
-                </div>
-              )}
+          <div className="bg-character-frame bg-cover bg-center p-6 rounded-lg border-2 border-fantasy-frame-border min-h-[400px] relative overflow-hidden">
+            <div className="bg-black/70 backdrop-blur-sm p-8 rounded-lg h-full">
+              <div className="prose prose-invert prose-lg max-w-none space-y-6 animate-fade-in">
+                {state.currentScene && (
+                  <>
+                    <h2 className="text-3xl font-bold text-amber-400 mb-6 font-serif tracking-wide">
+                      {state.currentScene.name}
+                    </h2>
+                    <p className="text-xl leading-relaxed text-amber-200 font-serif">
+                      {state.currentScene.description}
+                    </p>
+                    <div className="mt-8 space-y-4">
+                      {state.gameLog.slice(-3).map((log, index) => (
+                        <p 
+                          key={index} 
+                          className="text-lg text-amber-100/90 italic leading-relaxed transition-opacity duration-500"
+                          style={{ 
+                            opacity: 1 - (index * 0.3),
+                            transform: `translateY(${index * -10}px)`
+                          }}
+                        >
+                          {log}
+                        </p>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
 
@@ -58,7 +74,6 @@ export const GameBoard = () => {
                 Combat Area
               </h3>
               <div className="grid grid-cols-8 gap-1 bg-gray-800/50 p-2 rounded-lg min-h-[300px]">
-                {/* Combat grid cells would be rendered here */}
                 {enemies.map((enemy, index) => (
                   <div key={enemy.id} className="col-span-2">
                     <CharacterCard character={enemy} />
