@@ -1,12 +1,12 @@
 import React from "react";
 import { useGame } from "@/context/GameContext";
-import { GameBoard } from "./GameBoard";
 import { TavernScene } from "./TavernScene";
-import { Button } from "@/components/ui/button";
-import { Sword, Map, MessageSquare, Heart } from "lucide-react";
-import { GamePhase, CharacterRace } from "@/types/game";
+import { GamePhase } from "@/types/game";
 import { useToast } from "@/hooks/use-toast";
 import { FOREST_SCENES } from "@/data/stories/scenes/forestScenes";
+import { PhaseButtons } from "./game-phases/PhaseButtons";
+import { ForestScene } from "./game-phases/ForestScene";
+import { generateEnemy } from "@/utils/enemyGenerator";
 
 export const GamePhaseManager = () => {
   const { state, dispatch } = useGame();
@@ -55,7 +55,6 @@ export const GamePhaseManager = () => {
           type: "ADD_LOG", 
           message: "The party takes a short rest to recover..." 
         });
-        // Heal characters by 25% of their max HP
         state.characters.forEach(char => {
           const healAmount = Math.floor(char.maxHp * 0.25);
           dispatch({
@@ -105,49 +104,16 @@ export const GamePhaseManager = () => {
 
   const handleProgressStory = () => {
     if (state.currentPhase === "exploration") {
-      // Progress to next forest scene
       const nextIndex = (currentForestSceneIndex + 1) % FOREST_SCENES.length;
       setCurrentForestSceneIndex(nextIndex);
       
-      // Update the current scene
       dispatch({ 
         type: "ADD_LOG", 
         message: `Entering ${FOREST_SCENES[nextIndex].name}...` 
       });
       
-      // Random chance to encounter enemies
       if (Math.random() < 0.3) {
-        const newEnemy = {
-          id: `enemy_${Date.now()}`,
-          name: "Forest Bandit",
-          race: "Human" as CharacterRace,
-          class: "Rogue",
-          background: "Criminal",
-          level: 1,
-          xp: 0,
-          hp: 20,
-          maxHp: 20,
-          stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 12,
-            intelligence: 10,
-            wisdom: 10,
-            charisma: 10
-          },
-          inventory: [],
-          traits: [],
-          proficiencies: {
-            armor: [],
-            weapons: ["shortsword", "dagger"],
-            tools: ["thieves' tools"],
-            skills: ["stealth", "deception"],
-            languages: ["Common"],
-            saves: ["dexterity"]
-          },
-          isAI: true
-        };
-        
+        const newEnemy = generateEnemy();
         dispatch({ type: "CREATE_CHARACTER", character: newEnemy });
         
         toast({
@@ -165,40 +131,10 @@ export const GamePhaseManager = () => {
 
   return (
     <div className="min-h-screen bg-parchment-texture">
-      <div className="fixed top-4 right-4 flex gap-2">
-        <Button
-          variant="outline"
-          className={`${state.currentPhase === 'exploration' ? 'bg-fantasy-primary text-white' : ''}`}
-          onClick={() => handlePhaseChange('exploration')}
-        >
-          <Map className="w-4 h-4 mr-2" />
-          Explore
-        </Button>
-        <Button
-          variant="outline"
-          className={`${state.currentPhase === 'interaction' ? 'bg-fantasy-primary text-white' : ''}`}
-          onClick={() => handlePhaseChange('interaction')}
-        >
-          <MessageSquare className="w-4 h-4 mr-2" />
-          Interact
-        </Button>
-        <Button
-          variant="outline"
-          className={`${state.currentPhase === 'combat' ? 'bg-fantasy-primary text-white' : ''}`}
-          onClick={() => handlePhaseChange('combat')}
-        >
-          <Sword className="w-4 h-4 mr-2" />
-          Combat
-        </Button>
-        <Button
-          variant="outline"
-          className={`${state.currentPhase === 'rest' ? 'bg-fantasy-primary text-white' : ''}`}
-          onClick={() => handlePhaseChange('rest')}
-        >
-          <Heart className="w-4 h-4 mr-2" />
-          Rest
-        </Button>
-      </div>
+      <PhaseButtons 
+        currentPhase={state.currentPhase} 
+        onPhaseChange={handlePhaseChange} 
+      />
       
       {showTavern ? (
         <div className="relative">
@@ -213,23 +149,10 @@ export const GamePhaseManager = () => {
           </div>
         </div>
       ) : (
-        <div className="relative">
-          <GameBoard />
-          <div className="absolute bottom-4 right-4 flex gap-2">
-            <Button 
-              onClick={handleProgressStory}
-              className="bg-fantasy-primary hover:bg-fantasy-primary/90 text-white"
-            >
-              Progress Story
-            </Button>
-            <Button 
-              onClick={handleReturnToTavern}
-              className="bg-fantasy-primary hover:bg-fantasy-primary/90 text-white"
-            >
-              Return to Tavern
-            </Button>
-          </div>
-        </div>
+        <ForestScene 
+          onProgressStory={handleProgressStory}
+          onReturnToTavern={handleReturnToTavern}
+        />
       )}
     </div>
   );
