@@ -1,5 +1,6 @@
 import { Character, GamePhase, RollType, DiceType } from "./game";
 import { Scene, StoryEvent } from "./content";
+import { WorldState, WorldStateValue } from "./worldState";
 
 export type CombatAction = 
   | { type: "START_COMBAT" }
