@@ -1,25 +1,16 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dice6 } from "lucide-react";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useGame } from "@/context/GameContext";
-import { CharacterStats } from "./CharacterStats";
 import { CharacterBasicInfo } from "./character-creation/CharacterBasicInfo";
+import { RaceSelection } from "./character-creation/RaceSelection";
+import { AbilityScoreGeneration } from "./character-creation/AbilityScoreGeneration";
 import { characterSchema, type CharacterFormData } from "./character-creation/characterSchema";
-import { getStartingItems, rollStats } from "./character-creation/characterUtils";
-import { getDefaultStats, getHitDice } from "@/types/game";
-import type { Character, CharacterStats as CharacterStatsType } from "@/types/game";
-
-const initialStats: CharacterStatsType = {
-  strength: 10,
-  dexterity: 10,
-  constitution: 10,
-  intelligence: 10,
-  wisdom: 10,
-  charisma: 10,
-};
+import { getStartingItems } from "./character-creation/characterUtils";
+import { getHitDice } from "@/types/game";
+import type { Character } from "@/types/game";
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
@@ -27,20 +18,19 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
     resolver: zodResolver(characterSchema),
     defaultValues: {
       name: "",
-      race: "Human",
+      race: "",
       class: "Fighter",
-      stats: initialStats,
+      stats: {
+        strength: 10,
+        dexterity: 10,
+        constitution: 10,
+        intelligence: 10,
+        wisdom: 10,
+        charisma: 10,
+      },
+      skills: [],
     },
   });
-
-  const handleRandomize = () => {
-    const stats = rollStats();
-    if (stats) {
-      Object.entries(stats).forEach(([key, value]) => {
-        form.setValue(`stats.${key as keyof CharacterStatsType}`, value);
-      });
-    }
-  };
 
   const onSubmit = (data: CharacterFormData) => {
     const startingItems = getStartingItems(data.class);
@@ -50,7 +40,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       name: data.name,
       race: data.race,
       class: data.class,
-      stats: data.stats as CharacterStatsType,
+      stats: data.stats,
       hp: hitDice,
       maxHp: hitDice,
       level: 1,
@@ -63,20 +53,6 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
     onCharacterCreated();
   };
 
-  React.useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
-      if (name === "class" && value.class) {
-        const defaultStats = getDefaultStats(value.class);
-        if (defaultStats) {
-          Object.entries(defaultStats).forEach(([key, value]) => {
-            form.setValue(`stats.${key as keyof CharacterStatsType}`, value);
-          });
-        }
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
-
   return (
     <Form {...form}>
       <form 
@@ -88,23 +64,20 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
           <p className="text-gray-300">Choose wisely, brave adventurer</p>
         </div>
 
-        <div className="bg-black/30 p-6 rounded-lg border border-fantasy-frame-border animate-frame-glow">
-          <CharacterBasicInfo form={form} />
-        </div>
-
-        <div className="bg-black/30 p-6 rounded-lg border border-fantasy-frame-border animate-frame-glow">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-2xl font-bold text-white">Ability Scores</h3>
-            <Button
-              type="button"
-              onClick={handleRandomize}
-              className="bg-fantasy-accent hover:bg-fantasy-accent/90 text-white"
-            >
-              <Dice6 className="mr-2 h-4 w-4" />
-              Roll Stats
-            </Button>
+        <div className="space-y-8">
+          <div className="bg-black/30 p-6 rounded-lg border border-fantasy-frame-border animate-frame-glow">
+            <CharacterBasicInfo form={form} />
           </div>
-          <CharacterStats form={form} />
+
+          <div className="bg-black/30 p-6 rounded-lg border border-fantasy-frame-border animate-frame-glow">
+            <h3 className="text-2xl font-bold text-white mb-4">Race & Heritage</h3>
+            <RaceSelection form={form} />
+          </div>
+
+          <div className="bg-black/30 p-6 rounded-lg border border-fantasy-frame-border animate-frame-glow">
+            <h3 className="text-2xl font-bold text-white mb-4">Ability Scores</h3>
+            <AbilityScoreGeneration form={form} />
+          </div>
         </div>
 
         <div className="flex justify-end space-x-4">
