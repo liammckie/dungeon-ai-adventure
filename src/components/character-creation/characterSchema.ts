@@ -1,6 +1,7 @@
 import * as z from "zod";
 import type { CharacterClass, CharacterRace, CharacterStats, CharacterSubrace } from "@/types/game";
 
+// Define a strict stats schema that requires all ability scores
 export const statsSchema = z.object({
   strength: z.number().min(3).max(18),
   dexterity: z.number().min(3).max(18),
@@ -8,7 +9,7 @@ export const statsSchema = z.object({
   intelligence: z.number().min(3).max(18),
   wisdom: z.number().min(3).max(18),
   charisma: z.number().min(3).max(18),
-}).required();
+}).strict(); // This ensures no additional properties are allowed
 
 const characterClassEnum = z.enum([
   "Fighter", "Wizard", "Cleric", "Rogue", "Barbarian", 

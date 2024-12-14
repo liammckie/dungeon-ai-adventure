@@ -14,6 +14,15 @@ import { getDefaultStats, getHitDice, type Character, type CharacterStats } from
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
   
+  const defaultStats: CharacterStats = {
+    strength: 10,
+    dexterity: 10,
+    constitution: 10,
+    intelligence: 10,
+    wisdom: 10,
+    charisma: 10,
+  };
+  
   const form = useForm<CharacterFormData>({
     resolver: zodResolver(characterSchema),
     defaultValues: {
@@ -21,14 +30,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       race: "Human",
       class: "Fighter",
       background: "Soldier",
-      stats: {
-        strength: 10,
-        dexterity: 10,
-        constitution: 10,
-        intelligence: 10,
-        wisdom: 10,
-        charisma: 10
-      } satisfies CharacterStats,
+      stats: defaultStats,
       skills: [],
     },
   });
