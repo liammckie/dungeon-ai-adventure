@@ -1,22 +1,17 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Toaster } from "@/components/ui/toaster";
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
 import { GameProvider } from "@/context/GameContext";
 import Game from "@/pages/Game";
-import Index from "@/pages/Index";
-import CharacterCreation from "@/pages/CharacterCreation";
+import { Toaster } from "@/components/ui/toaster";
 
 const App = () => {
   return (
-    <GameProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/game" element={<Game />} />
-          <Route path="/character-creation" element={<CharacterCreation />} />
-        </Routes>
+    <BrowserRouter>
+      <GameProvider>
+        <Game />
         <Toaster />
-      </Router>
-    </GameProvider>
+      </GameProvider>
+    </BrowserRouter>
   );
 };
 
