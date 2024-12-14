@@ -7,6 +7,7 @@ import { Inventory } from "./Inventory";
 import { ActionMenu } from "./ActionMenu";
 import { SceneDisplay } from "./SceneDisplay";
 import { Sword, Map, Users, ScrollText } from "lucide-react";
+import type { Character } from "@/types/game";
 
 export const GameBoard = () => {
   const { state } = useGame();

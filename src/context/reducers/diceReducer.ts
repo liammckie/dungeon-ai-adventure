@@ -1,46 +1,31 @@
 import { GameState } from "../gameState";
-import { RollType, DiceType } from "@/types/game";
-import { rollDice } from "@/utils/diceRolls";
-
-interface RollOptions {
-  advantage?: boolean;
-  disadvantage?: boolean;
-  diceCount?: number;
-  modifier?: number;
-}
+import { DiceRoll, RollType } from "@/types/game";
+import { rollDice, rollWithAdvantage, rollWithDisadvantage } from "@/utils/diceRolls";
 
 export const handleRollDice = (
   state: GameState,
   rollType: RollType,
-  options: RollOptions = {}
+  options?: {
+    advantage?: boolean;
+    disadvantage?: boolean;
+    modifier?: number;
+  }
 ): GameState => {
-  const {
-    advantage = false,
-    disadvantage = false,
-    diceCount = 1,
-    modifier = 0
-  } = options;
+  const roll: DiceRoll = {
+    type: rollType as any,
+    count: 1,
+    modifier: options?.modifier || 0,
+    advantage: options?.advantage,
+    disadvantage: options?.disadvantage,
+  };
 
   let result;
-  const diceType = rollType as DiceType;
-
-  if (diceType) {
-    result = rollDice(diceType, diceCount, modifier);
+  if (options?.advantage) {
+    result = rollWithAdvantage(roll);
+  } else if (options?.disadvantage) {
+    result = rollWithDisadvantage(roll);
   } else {
-    // Handle special roll types
-    switch (rollType) {
-      case 'attack':
-      case 'ability':
-      case 'saving':
-      case 'initiative':
-        result = rollDice('d20', 1, modifier);
-        break;
-      case 'damage':
-        result = rollDice('d6', diceCount, modifier); // Default damage die
-        break;
-      default:
-        result = rollDice('d20', 1, modifier);
-    }
+    result = rollDice(roll);
   }
 
   return {
@@ -48,7 +33,11 @@ export const handleRollDice = (
     lastRoll: {
       total: result.total,
       rolls: result.rolls,
-      type: result.type
-    }
+      type: rollType,
+    },
+    gameLog: [
+      ...state.gameLog,
+      `Rolled ${rollType}: ${result.rolls.join(", ")} = ${result.total}`,
+    ],
   };
 };
