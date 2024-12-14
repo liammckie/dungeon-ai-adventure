@@ -12,6 +12,14 @@ export const GamePhaseManager = () => {
   const { toast } = useToast();
   const [currentSceneIndex, setCurrentSceneIndex] = React.useState(0);
 
+  React.useEffect(() => {
+    // Initialize with tavern scene
+    dispatch({ 
+      type: "SET_SCENE", 
+      scene: FOREST_SCENES[0] // Tavern scene is first in array
+    });
+  }, []);
+
   const clearEnemies = () => {
     const playerCharacters = state.characters.filter(char => !char.isAI);
     playerCharacters.forEach(char => {

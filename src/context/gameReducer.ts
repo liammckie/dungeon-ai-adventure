@@ -38,6 +38,15 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
       return handleGainXP(state, action.characterId, action.amount);
     case "SET_PHASE":
       return handleSetPhase(state, action.phase);
+    case "SET_SCENE":
+      return {
+        ...state,
+        currentScene: action.scene,
+        gameLog: [
+          ...state.gameLog,
+          `Entering ${action.scene.name}...`
+        ]
+      };
     case "ROLL_DICE":
       return handleRollDice(state, action.rollType, action.options);
     case "GENERATE_SCENE":

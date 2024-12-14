@@ -1,4 +1,5 @@
 import { Scene } from "@/types/content";
+import { tavernNPCs } from "../npcs/tavernNPCs";
 
 export const FOREST_SCENES: Scene[] = [
   {
@@ -8,7 +9,7 @@ export const FOREST_SCENES: Scene[] = [
     description: "A cozy, dimly lit tavern where adventurers gather to share tales and drink. The air is thick with the smell of ale and wood smoke from the hearth. Barkeep Alaric tends to his patrons while keeping a watchful eye on the room.",
     imageUrl: "/lovable-uploads/43403fdc-1e2f-44a9-aff8-6ef506fbad37.png",
     possibleEvents: [],
-    availableNPCs: [],
+    availableNPCs: tavernNPCs,
     dialogueOptions: [
       {
         text: "Approach the barkeep",
