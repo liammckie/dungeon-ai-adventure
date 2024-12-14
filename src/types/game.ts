@@ -1,147 +1,113 @@
-export type Item = {
-  id: string;
-  name: string;
-  description: string;
-  type: ItemType;
-  damage?: string;
-  armorClass?: number;
-};
+import { Quest } from './game';
 
-export type ItemType = "weapon" | "armor" | "misc" | "focus" | "tool";
+export type CharacterClass = "Warrior" | "Mage" | "Rogue" | "Cleric" | "NPC";
 
-export type CharacterStats = {
+export interface CharacterStats {
   strength: number;
   dexterity: number;
   constitution: number;
   intelligence: number;
   wisdom: number;
   charisma: number;
-};
-
-export type CharacterClass = 
-  | "Fighter"
-  | "Wizard"
-  | "Cleric"
-  | "Rogue"
-  | "Barbarian"
-  | "Paladin"
-  | "Ranger"
-  | "Druid"
-  | "Warlock"
-  | "Sorcerer"
-  | "Monk"
-  | "Bard";
-
-export type CharacterRace = 
-  | "Human"
-  | "Elf"
-  | "Dwarf"
-  | "Halfling"
-  | "Dragonborn"
-  | "Gnome"
-  | "Half-Elf"
-  | "Tiefling";
-
-export type CharacterSubrace = 
-  | "High Elf"
-  | "Wood Elf"
-  | "Dark Elf"
-  | "Hill Dwarf"
-  | "Mountain Dwarf"
-  | "Lightfoot"
-  | "Stout"
-  | "Standard Human"
-  | "Variant Human"
-  | "Forest Gnome"
-  | "Rock Gnome"
-  | "Deep Gnome";
-
-export type GamePhase = 
-  | "exploration"
-  | "combat"
-  | "interaction"
-  | "rest";
-
-export type Quest = {
-  id: string;
-  title: string;
-  description: string;
-  status: "active" | "completed" | "failed";
-  difficulty: string;
-};
-
-export type DiceType = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
-
-export type RollType = "attack" | "damage" | "save" | "check" | "heal" | "ability" | "saving" | "initiative";
-
-export type DiceRoll = {
-  type: RollType | DiceType;
-  modifier?: number;
-  advantage?: boolean;
-  disadvantage?: boolean;
-};
-
-export type RollResult = {
-  total: number;
-  rolls: number[];
-  modifier?: number;
-  type: RollType | DiceType;
-  success?: boolean;
-  isNatural20?: boolean;
-  isNatural1?: boolean;
-  isCritical?: boolean;
-};
+}
 
 export interface Character {
   id: string;
   name: string;
-  race: CharacterRace;
-  subrace?: CharacterSubrace;
   class: CharacterClass;
-  background: string;
   level: number;
-  xp: number;
-  stats: CharacterStats;
   hp: number;
   maxHp: number;
   temporaryHp?: number;
-  inventory: Item[];
-  traits: string[];
-  proficiencies: {
-    armor: string[];
-    weapons: string[];
-    tools: string[];
-    skills: string[];
-    languages: string[];
-    saves: (keyof CharacterStats)[];
-  };
   isAI: boolean;
-  isHostile?: boolean;
+  isHostile: boolean;
+  stats: CharacterStats;
+  imageUrl?: string;
+  description?: string;
 }
 
-export const getDefaultStats = (): CharacterStats => ({
-  strength: 10,
-  dexterity: 10,
-  constitution: 10,
-  intelligence: 10,
-  wisdom: 10,
-  charisma: 10,
-});
+export type SceneType = 'tavern' | 'forest' | 'dungeon' | 'village' | 'graveyard' | 'chapel';
+export type EventType = 'combat' | 'dialogue' | 'puzzle' | 'discovery';
+export type TimeOfDay = 'dawn' | 'day' | 'dusk' | 'night';
+export type Weather = 'clear' | 'rain' | 'storm' | 'fog';
 
-export const getHitDice = (characterClass: CharacterClass): number => {
-  const hitDiceMap: Record<CharacterClass, number> = {
-    Barbarian: 12,
-    Fighter: 10,
-    Paladin: 10,
-    Ranger: 10,
-    Monk: 8,
-    Rogue: 8,
-    Cleric: 8,
-    Druid: 8,
-    Bard: 8,
-    Warlock: 8,
-    Wizard: 6,
-    Sorcerer: 6,
+export interface DialogueOption {
+  text: string;
+  nextId?: string;
+  condition?: EventCondition;
+  consequence?: EventConsequence;
+}
+
+export interface Scene {
+  id: string;
+  type: SceneType;
+  name: string;
+  description: string;
+  imageUrl: string;
+  possibleEvents: StoryEvent[];
+  requiredLevel?: number;
+  availableNPCs: NPC[];
+  dialogueOptions?: DialogueOption[];
+  environmentEffects?: {
+    time: TimeOfDay;
+    weather: Weather;
   };
-  return hitDiceMap[characterClass];
-};
+}
+
+export interface StoryEvent {
+  id: string;
+  type: EventType;
+  title: string;
+  description: string;
+  difficulty: string;
+  rewards: Reward[];
+  conditions: EventCondition[];
+  consequences: EventConsequence[];
+}
+
+export interface EventCondition {
+  type: 'quest' | 'level' | 'item' | 'npc';
+  requirement: string;
+  value: any;
+}
+
+export interface EventConsequence {
+  type: 'quest' | 'reputation' | 'item' | 'state';
+  effect: string;
+  value: any;
+}
+
+export interface Reward {
+  type: 'gold' | 'item' | 'xp' | 'reputation';
+  amount: number;
+  itemId?: string;
+}
+
+export interface NPC {
+  id: string;
+  name: string;
+  description: string;
+  age: number;
+  race: string;
+  traits: string[];
+  inventory: Item[];
+  dialogue: DialogueNode[];
+  quests?: Quest[];
+  reputation?: number;
+  imageUrl?: string;
+}
+
+export interface DialogueNode {
+  id: string;
+  text: string;
+  options: DialogueOption[];
+}
+
+export interface Item {
+  id: string;
+  name: string;
+  description: string;
+  type: string;
+  damage?: string;
+  armorClass?: number;
+}
