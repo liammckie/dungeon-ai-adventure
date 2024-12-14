@@ -17,6 +17,9 @@ import {
   handleAddEvent,
   handleCompleteEvent
 } from "./reducers/sceneReducer";
+import { handleUpdateWorldState } from "./reducers/worldReducer";
+import { handleAddLog } from "./reducers/logReducer";
+import { handleSetPhase } from "./reducers/phaseReducer";
 
 export type GameAction =
   | { type: "START_COMBAT" }
@@ -54,10 +57,7 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
     case "NEXT_TURN":
       return handleNextTurn(state);
     case "ADD_LOG":
-      return {
-        ...state,
-        gameLog: [...state.gameLog, action.message]
-      };
+      return handleAddLog(state, action.message);
     case "UPDATE_CHARACTER":
       return handleUpdateCharacter(state, action.character);
     case "CREATE_CHARACTER":
@@ -65,14 +65,7 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
     case "GAIN_XP":
       return handleGainXP(state, action.characterId, action.amount);
     case "SET_PHASE":
-      return {
-        ...state,
-        currentPhase: action.phase,
-        gameLog: [
-          ...state.gameLog,
-          `Entering ${action.phase} phase...`
-        ]
-      };
+      return handleSetPhase(state, action.phase);
     case "ROLL_DICE":
       return handleRollDice(state, action.rollType, action.options);
     case "GENERATE_SCENE":
@@ -82,13 +75,7 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
     case "COMPLETE_EVENT":
       return handleCompleteEvent(state, action.eventId);
     case "UPDATE_WORLD_STATE":
-      return {
-        ...state,
-        worldState: {
-          ...state.worldState,
-          [action.key]: action.value
-        }
-      };
+      return handleUpdateWorldState(state, action.key, action.value);
     default:
       return state;
   }
