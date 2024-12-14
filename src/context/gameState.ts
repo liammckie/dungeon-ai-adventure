@@ -20,6 +20,7 @@ export interface GameState {
     rolls: number[];
     type: DiceRoll['type'];
   };
+  initiativeOrder: string[];
 }
 
 export const initialGameState: GameState = {
@@ -31,4 +32,5 @@ export const initialGameState: GameState = {
   currentPhase: 'exploration',
   activeEvents: [],
   worldState: {},
+  initiativeOrder: [],
 };
