@@ -14,6 +14,8 @@ export type CharacterSubrace =
   | "Standard Human" | "Variant Human"
   | "Forest Gnome" | "Rock Gnome" | "Deep Gnome";
 
+export type GamePhase = 'exploration' | 'interaction' | 'combat' | 'rest';
+
 export interface CharacterStats {
   strength: number;
   dexterity: number;
@@ -85,4 +87,16 @@ export interface RollResult {
   isNatural20?: boolean;
   isNatural1?: boolean;
   isCritical?: boolean;
+}
+
+export interface Quest {
+  id: string;
+  title: string;
+  description: string;
+  status: 'active' | 'completed' | 'failed';
+  rewards?: {
+    xp?: number;
+    items?: Item[];
+    gold?: number;
+  };
 }
