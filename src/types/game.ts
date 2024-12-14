@@ -1,16 +1,5 @@
-export type Character = {
-  id: string;
-  name: string;
-  class: CharacterClass;
-  race: CharacterRace;
-  stats: CharacterStats;
-  hp: number;
-  maxHp: number;
-  level: number;
-  xp: number;
-  inventory: Item[];
-  isAI: boolean;
-};
+export type CharacterClass = "Warrior" | "Mage" | "Rogue" | "Cleric";
+export type CharacterRace = "Human" | "Elf" | "Dwarf" | "Halfling";
 
 export type CharacterStats = {
   strength: number;
@@ -28,8 +17,19 @@ export type Item = {
   type: "weapon" | "armor" | "potion" | "misc";
 };
 
-export type CharacterClass = "Warrior" | "Mage" | "Rogue" | "Cleric";
-export type CharacterRace = "Human" | "Elf" | "Dwarf" | "Halfling";
+export type Character = {
+  id: string;
+  name: string;
+  class: CharacterClass;
+  race: CharacterRace;
+  stats: CharacterStats;
+  hp: number;
+  maxHp: number;
+  level: number;
+  xp: number;
+  inventory: Item[];
+  isAI: boolean;
+};
 
 export type GameState = {
   characters: Character[];

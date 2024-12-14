@@ -4,6 +4,7 @@ import { useGame } from "@/context/GameContext";
 
 export const CombatControls = () => {
   const { state, dispatch } = useGame();
+  const currentCharacter = state.characters[state.currentTurn];
 
   const handleStartCombat = () => {
     dispatch({ type: "START_COMBAT" });
@@ -17,62 +18,72 @@ export const CombatControls = () => {
 
   const handleNextTurn = () => {
     dispatch({ type: "NEXT_TURN" });
-    const currentCharacter = state.characters[state.currentTurn];
-    dispatch({
-      type: "ADD_LOG",
-      message: `It's ${currentCharacter.name}'s turn!`,
-    });
+    if (currentCharacter) {
+      dispatch({
+        type: "ADD_LOG",
+        message: `It's ${currentCharacter.name}'s turn!`,
+      });
+    }
   };
 
   const handleAttack = (targetId: string) => {
-    const attacker = state.characters[state.currentTurn];
+    if (!currentCharacter) return;
+    
     const target = state.characters.find(char => char.id === targetId);
     if (target) {
       dispatch({
         type: "ADD_LOG",
-        message: `${attacker.name} attacks ${target.name}!`,
+        message: `${currentCharacter.name} attacks ${target.name}!`,
       });
       handleNextTurn();
     }
   };
 
   const handleDodge = () => {
-    const character = state.characters[state.currentTurn];
+    if (!currentCharacter) return;
+    
     dispatch({
       type: "ADD_LOG",
-      message: `${character.name} takes the Dodge action, making it harder to be hit until their next turn!`,
+      message: `${currentCharacter.name} takes the Dodge action, making it harder to be hit until their next turn!`,
     });
     handleNextTurn();
   };
 
   const handleDash = () => {
-    const character = state.characters[state.currentTurn];
+    if (!currentCharacter) return;
+    
     dispatch({
       type: "ADD_LOG",
-      message: `${character.name} takes the Dash action, doubling their movement speed!`,
+      message: `${currentCharacter.name} takes the Dash action, doubling their movement speed!`,
     });
     handleNextTurn();
   };
 
   const handleHide = () => {
-    const character = state.characters[state.currentTurn];
+    if (!currentCharacter) return;
+    
     dispatch({
       type: "ADD_LOG",
-      message: `${character.name} attempts to Hide from enemies!`,
+      message: `${currentCharacter.name} attempts to Hide from enemies!`,
     });
     handleNextTurn();
   };
 
   const handleUseItem = () => {
-    const character = state.characters[state.currentTurn];
+    if (!currentCharacter) return;
+    
     dispatch({
       type: "ADD_LOG",
-      message: `${character.name} uses an item from their inventory!`,
+      message: `${currentCharacter.name} uses an item from their inventory!`,
     });
     handleNextTurn();
   };
 
-  const isPlayerTurn = state.combatActive && !state.characters[state.currentTurn].isAI;
+  const isPlayerTurn = state.combatActive && currentCharacter && !currentCharacter.isAI;
+
+  if (state.characters.length === 0) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col gap-4 p-4 bg-parchment rounded-lg border-2 border-fantasy-accent">

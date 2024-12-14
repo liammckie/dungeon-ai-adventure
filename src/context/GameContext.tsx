@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer } from "react";
-import type { Character, GameState } from "@/types/game";
+import type { Character, GameState, CharacterClass, CharacterRace } from "@/types/game";
 
 type GameAction =
   | { type: "START_COMBAT" }
@@ -56,7 +56,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         ),
       };
     case "CREATE_CHARACTER":
-      const aiCharacters = [
+      const aiCharacters: Character[] = [
         {
           id: "ai1",
           name: "Eldrin the Wise",
