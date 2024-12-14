@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Sword, Map, MessageSquare, Heart } from "lucide-react";
 import { GamePhase } from "@/types/game";
 import { useToast } from "@/hooks/use-toast";
+import { FOREST_SCENES } from "@/data/stories/scenes/forestScenes";
 
 export const GamePhaseManager = () => {
   const { state, dispatch } = useGame();
   const [showTavern, setShowTavern] = React.useState(true);
   const { toast } = useToast();
+  const [currentForestSceneIndex, setCurrentForestSceneIndex] = React.useState(0);
 
   const handlePhaseChange = (phase: GamePhase) => {
     if (phase === state.currentPhase) return;
@@ -35,7 +37,7 @@ export const GamePhaseManager = () => {
         }
         break;
       case "combat":
-        if (state.characters.some(char => char.isAI && char.currentHP > 0)) {
+        if (state.characters.some(char => char.isAI && char.hp > 0)) {
           dispatch({ type: "START_COMBAT" });
           toast({
             title: "Combat Phase",
@@ -55,12 +57,12 @@ export const GamePhaseManager = () => {
         });
         // Heal characters by 25% of their max HP
         state.characters.forEach(char => {
-          const healAmount = Math.floor(char.maxHP * 0.25);
+          const healAmount = Math.floor(char.maxHp * 0.25);
           dispatch({
             type: "UPDATE_CHARACTER",
             character: {
               ...char,
-              currentHP: Math.min(char.maxHP, char.currentHP + healAmount)
+              hp: Math.min(char.maxHp, char.hp + healAmount)
             }
           });
         });
@@ -76,6 +78,7 @@ export const GamePhaseManager = () => {
     dispatch({ type: "SET_PHASE", phase: "exploration" });
     dispatch({ type: "GENERATE_SCENE", sceneType: "forest" });
     setShowTavern(false);
+    setCurrentForestSceneIndex(0);
     
     // Clear any existing combat enemies
     const updatedCharacters = state.characters.filter(char => !char.isAI);
@@ -102,23 +105,61 @@ export const GamePhaseManager = () => {
 
   const handleProgressStory = () => {
     if (state.currentPhase === "exploration") {
-      // Generate new enemies for the next encounter
-      const newEnemy = {
-        id: `enemy_${Date.now()}`,
-        name: "Forest Bandit",
-        level: 1,
-        maxHP: 20,
-        currentHP: 20,
-        isAI: true,
-        // ... add other necessary character properties
-      };
+      // Progress to next forest scene
+      const nextIndex = (currentForestSceneIndex + 1) % FOREST_SCENES.length;
+      setCurrentForestSceneIndex(nextIndex);
       
-      dispatch({ type: "CREATE_CHARACTER", character: newEnemy });
-      
-      toast({
-        title: "Story Progress",
-        description: "You encounter a group of bandits on the forest path!",
+      // Update the current scene
+      dispatch({ 
+        type: "ADD_LOG", 
+        message: `Entering ${FOREST_SCENES[nextIndex].name}...` 
       });
+      
+      // Random chance to encounter enemies
+      if (Math.random() < 0.3) {
+        const newEnemy = {
+          id: `enemy_${Date.now()}`,
+          name: "Forest Bandit",
+          race: "Human",
+          class: "Rogue",
+          background: "Criminal",
+          level: 1,
+          xp: 0,
+          hp: 20,
+          maxHp: 20,
+          stats: {
+            strength: 12,
+            dexterity: 14,
+            constitution: 12,
+            intelligence: 10,
+            wisdom: 10,
+            charisma: 10
+          },
+          inventory: [],
+          traits: [],
+          proficiencies: {
+            armor: [],
+            weapons: ["shortsword", "dagger"],
+            tools: ["thieves' tools"],
+            skills: ["stealth", "deception"],
+            languages: ["Common"],
+            saves: ["dexterity"]
+          },
+          isAI: true
+        };
+        
+        dispatch({ type: "CREATE_CHARACTER", character: newEnemy });
+        
+        toast({
+          title: "Ambush!",
+          description: "A bandit leaps out from behind the trees!",
+        });
+      } else {
+        toast({
+          title: "Story Progress",
+          description: FOREST_SCENES[nextIndex].description,
+        });
+      }
     }
   };
 
