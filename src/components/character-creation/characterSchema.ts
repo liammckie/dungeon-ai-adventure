@@ -8,7 +8,7 @@ const statsSchema = z.object({
   intelligence: z.number().min(3).max(18),
   wisdom: z.number().min(3).max(18),
   charisma: z.number().min(3).max(18),
-}).required();
+});
 
 export const characterSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),

@@ -9,11 +9,12 @@ import { RaceSelection } from "./character-creation/RaceSelection";
 import { AbilityScoreGeneration } from "./character-creation/AbilityScoreGeneration";
 import { characterSchema, type CharacterFormData } from "./character-creation/characterSchema";
 import { getStartingItems } from "./character-creation/characterUtils";
-import { getDefaultStats, getHitDice } from "@/types/game";
-import type { Character } from "@/types/game";
+import { getDefaultStats, getHitDice, type CharacterStats } from "@/types/game";
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
+  const defaultStats: CharacterStats = getDefaultStats();
+  
   const form = useForm<CharacterFormData>({
     resolver: zodResolver(characterSchema),
     defaultValues: {
@@ -21,7 +22,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       race: "Human",
       class: "Fighter",
       background: "Soldier",
-      stats: getDefaultStats(),
+      stats: defaultStats,
       skills: [],
     },
   });

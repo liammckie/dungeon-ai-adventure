@@ -23,9 +23,13 @@ const classes: CharacterClass[] = [
   "Paladin", "Ranger", "Druid", "Warlock", "Sorcerer", "Monk", "Bard"
 ];
 
-export const CharacterBasicInfo = ({ form }: { form: UseFormReturn<CharacterFormData> }) => {
+export const CharacterBasicInfo = ({ 
+  form 
+}: { 
+  form: UseFormReturn<CharacterFormData> 
+}) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-6">
       <FormField
         control={form.control}
         name="name"
@@ -33,7 +37,11 @@ export const CharacterBasicInfo = ({ form }: { form: UseFormReturn<CharacterForm
           <FormItem>
             <FormLabel className="text-white">Character Name</FormLabel>
             <FormControl>
-              <Input {...field} className="bg-white/10 border-fantasy-frame-border text-white" />
+              <Input 
+                {...field} 
+                className="bg-white/10 border-fantasy-frame-border text-white"
+                placeholder="Enter character name" 
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -46,7 +54,7 @@ export const CharacterBasicInfo = ({ form }: { form: UseFormReturn<CharacterForm
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-white">Class</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select onValueChange={field.onChange} value={field.value}>
               <FormControl>
                 <SelectTrigger className="bg-white/10 border-fantasy-frame-border text-white">
                   <SelectValue placeholder="Select a class" />
