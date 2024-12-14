@@ -30,7 +30,7 @@ export const RaceSelection = ({
     
     const selectedRace = races.find(r => r.name === value);
     if (selectedRace?.abilityScoreIncrease) {
-      const currentStats = form.getValues("stats");
+      const currentStats = form.getValues("stats") as CharacterStats;
       const newStats: CharacterStats = {
         strength: currentStats.strength,
         dexterity: currentStats.dexterity,
