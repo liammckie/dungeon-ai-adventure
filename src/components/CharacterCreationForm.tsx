@@ -9,7 +9,7 @@ import { CharacterStats } from "./CharacterStats";
 import { CharacterBasicInfo } from "./character-creation/CharacterBasicInfo";
 import { characterSchema, type CharacterFormData } from "./character-creation/characterSchema";
 import { getStartingItems, rollStats } from "./character-creation/characterUtils";
-import type { Character } from "@/types/game";
+import type { Character, CharacterStats as CharacterStatsType } from "@/types/game";
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
@@ -26,7 +26,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
         intelligence: 10,
         wisdom: 10,
         charisma: 10,
-      },
+      } satisfies CharacterStatsType,
     },
   });
 
