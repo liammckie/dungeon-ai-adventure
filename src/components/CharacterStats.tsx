@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { CharacterFormData } from "./character-creation/characterSchema";
 
 const stats = [
   { name: "strength", label: "Strength" },
@@ -16,9 +17,9 @@ const stats = [
   { name: "intelligence", label: "Intelligence" },
   { name: "wisdom", label: "Wisdom" },
   { name: "charisma", label: "Charisma" },
-];
+] as const;
 
-export const CharacterStats = ({ form }: { form: UseFormReturn<any> }) => {
+export const CharacterStats = ({ form }: { form: UseFormReturn<CharacterFormData> }) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       {stats.map((stat) => (
