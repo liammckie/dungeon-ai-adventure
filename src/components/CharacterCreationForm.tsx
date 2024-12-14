@@ -19,7 +19,7 @@ const initialStats: CharacterStatsType = {
   intelligence: 10,
   wisdom: 10,
   charisma: 10,
-};
+} as const;
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();

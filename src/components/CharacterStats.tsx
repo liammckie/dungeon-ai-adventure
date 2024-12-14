@@ -35,7 +35,7 @@ export const CharacterStats = ({ form }: { form: UseFormReturn<CharacterFormData
                 <Input
                   type="number"
                   {...field}
-                  value={field.value ?? ""}
+                  value={field.value?.toString() ?? "10"}
                   onChange={(e) => {
                     const value = e.target.value === "" ? 10 : parseInt(e.target.value);
                     field.onChange(isNaN(value) ? 10 : value);
