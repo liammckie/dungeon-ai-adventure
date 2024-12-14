@@ -1,4 +1,5 @@
-import { Scene, StoryEvent, NPC } from "@/types/content";
+import { Story, StoryChapter } from "@/types/story";
+import { Scene, NPC } from "@/types/content";
 
 export const BLACK_HOLLOW_NPCS: NPC[] = [
   {
@@ -68,62 +69,81 @@ export const BLACK_HOLLOW_NPCS: NPC[] = [
   }
 ];
 
-export const BLACK_HOLLOW_SCENES: Scene[] = [
-  {
-    id: "broken_blade_tavern",
-    type: "tavern",
-    name: "The Broken Blade Tavern",
-    description: "A dimly lit tavern with creaking floorboards and suspicious patrons. The air is thick with tension and the smell of stale ale.",
-    possibleEvents: [],
-    availableNPCs: BLACK_HOLLOW_NPCS,
-    environmentEffects: {
-      time: "night",
-      weather: "fog"
-    }
-  },
-  {
-    id: "chapel_exterior",
-    type: "dungeon",
-    name: "The Abandoned Chapel",
-    description: "A decrepit stone chapel looms atop the hill, its broken windows like hollow eyes staring down at the village below.",
-    possibleEvents: [
-      {
-        id: "chapel_entrance",
-        type: "puzzle",
-        title: "The Chapel Door",
-        description: "A heavy oak door blocks the entrance, secured by an ancient lock.",
-        difficulty: 15,
-        rewards: [],
-        conditions: [
-          {
-            type: "quest",
-            requirement: "vanishing_villagers",
-            value: "active"
-          }
-        ],
-        consequences: []
-      }
-    ],
-    availableNPCs: [],
-    environmentEffects: {
-      time: "night",
-      weather: "fog"
-    }
+const TAVERN_SCENE: Scene = {
+  id: "broken_blade_tavern",
+  type: "tavern",
+  name: "The Broken Blade Tavern",
+  description: "A dimly lit tavern with creaking floorboards and suspicious patrons. The air is thick with tension and the smell of stale ale.",
+  possibleEvents: [],
+  availableNPCs: BLACK_HOLLOW_NPCS,
+  environmentEffects: {
+    time: "night",
+    weather: "fog"
   }
-];
+};
 
-export const BLACK_HOLLOW_STORY = {
-  id: "black_hollow",
-  title: "Shadows of the Dread Keep - Chapter 1: The Cursed Village",
+const CHAPEL_SCENE: Scene = {
+  id: "chapel_exterior",
+  type: "dungeon",
+  name: "The Abandoned Chapel",
+  description: "A decrepit stone chapel looms atop the hill, its broken windows like hollow eyes staring down at the village below.",
+  possibleEvents: [],
+  availableNPCs: [],
+  environmentEffects: {
+    time: "night",
+    weather: "fog"
+  }
+};
+
+export const BLACK_HOLLOW_CHAPTER: StoryChapter = {
+  id: "black_hollow_ch1",
+  title: "The Cursed Village",
   description: "Investigate the mysterious disappearances plaguing the village of Black Hollow.",
-  initialScene: "broken_blade_tavern",
-  scenes: BLACK_HOLLOW_SCENES,
+  initialBranch: "tavern_investigation",
+  npcs: BLACK_HOLLOW_NPCS,
+  branches: [
+    {
+      id: "tavern_investigation",
+      title: "The Broken Blade Tavern",
+      description: "Gather information about the disappearances from the local tavern.",
+      scenes: [TAVERN_SCENE],
+      nextBranches: ["chapel_investigation", "midnight_raid"]
+    },
+    {
+      id: "chapel_investigation",
+      title: "The Abandoned Chapel",
+      description: "Investigate the mysterious chapel on the hill.",
+      requirements: [
+        { type: "quest", value: "vanishing_villagers" }
+      ],
+      scenes: [CHAPEL_SCENE],
+      nextBranches: ["midnight_raid"]
+    },
+    {
+      id: "midnight_raid",
+      title: "The Midnight Raid",
+      description: "Defend the village from a mysterious attack.",
+      requirements: [
+        { type: "quest", value: "chapel_investigated" }
+      ],
+      scenes: [], // TODO: Add midnight raid scenes
+      nextBranches: []
+    }
+  ]
+};
+
+export const SHADOWS_OF_DREAD_KEEP: Story = {
+  id: "shadows_of_dread_keep",
+  title: "Shadows of the Dread Keep",
+  description: "Uncover the dark secrets lurking beneath the cursed village of Black Hollow.",
+  chapters: [BLACK_HOLLOW_CHAPTER],
   worldStateUpdates: {
     currentLocation: "Black Hollow",
     timeOfDay: "night",
     weather: "fog",
     questProgress: {
-      vanishing_villagers: false
+      vanishing_villagers: false,
+      chapel_investigated: false
     }
   }
 };

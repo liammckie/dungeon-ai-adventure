@@ -1,5 +1,7 @@
 import type { Character, GamePhase, Quest, DiceRoll } from "@/types/game";
 import type { Scene, StoryEvent } from "@/types/content";
+import type { Story } from "@/types/story";
+import { StoryManager } from "@/utils/storyManager";
 
 export interface GameState {
   characters: Character[];
@@ -11,6 +13,8 @@ export interface GameState {
   currentScene?: Scene;
   activeEvents: StoryEvent[];
   worldState: Record<string, any>;
+  currentStory?: Story;
+  storyManager?: StoryManager;
   lastRoll?: {
     total: number;
     rolls: number[];
