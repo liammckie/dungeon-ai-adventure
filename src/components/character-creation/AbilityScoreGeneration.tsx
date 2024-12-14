@@ -14,13 +14,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Dice6 } from "lucide-react";
+import { Dice6, Info } from "lucide-react";
 import { CharacterFormData } from "./characterSchema";
 import type { AbilityScores } from "@/types/character";
 
 const STANDARD_ARRAY = [15, 14, 13, 12, 10, 8];
+
+const ABILITY_DESCRIPTIONS = {
+  strength: "Physical power and athletic training. Important for melee combat and feats of might.",
+  dexterity: "Agility and reflexes. Crucial for stealth, acrobatics, and ranged combat.",
+  constitution: "Health and stamina. Determines hit points and resistance to hardship.",
+  intelligence: "Knowledge and reasoning. Key for investigating mysteries and magical study.",
+  wisdom: "Perception and insight. Essential for survival and understanding others' motives.",
+  charisma: "Force of personality. Vital for social interaction and leadership.",
+} as const;
 
 export const AbilityScoreGeneration = ({ 
   form 
@@ -32,7 +47,6 @@ export const AbilityScoreGeneration = ({
   const handleMethodChange = (value: "standard" | "manual" | "roll") => {
     setMethod(value);
     if (value === "standard") {
-      // Reset to standard array
       const abilities: (keyof AbilityScores)[] = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"];
       abilities.forEach((ability, index) => {
         form.setValue(`stats.${ability}`, STANDARD_ARRAY[index]);
@@ -43,7 +57,6 @@ export const AbilityScoreGeneration = ({
   const rollAbilityScores = () => {
     const abilities: (keyof AbilityScores)[] = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"];
     abilities.forEach((ability) => {
-      // Roll 4d6, drop lowest
       const rolls = Array.from({ length: 4 }, () => Math.floor(Math.random() * 6) + 1);
       const total = rolls.sort((a, b) => b - a).slice(0, 3).reduce((sum, roll) => sum + roll, 0);
       form.setValue(`stats.${ability}`, total);
@@ -77,15 +90,29 @@ export const AbilityScoreGeneration = ({
         </Button>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {(["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"] as const).map((ability) => (
           <FormField
             key={ability}
             control={form.control}
             name={`stats.${ability}`}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-white capitalize">{ability}</FormLabel>
+              <FormItem className="relative">
+                <div className="flex items-center justify-between">
+                  <FormLabel className="text-white capitalize flex items-center gap-2">
+                    {ability}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-4 w-4 text-gray-400" />
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-black/90 border-fantasy-frame-border text-white p-2">
+                          <p>{ABILITY_DESCRIPTIONS[ability]}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </FormLabel>
+                </div>
                 <FormControl>
                   <Input
                     type="number"
