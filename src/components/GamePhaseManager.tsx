@@ -14,6 +14,16 @@ export const GamePhaseManager = () => {
     dispatch({ type: "SET_PHASE", phase });
   };
 
+  const handleLeaveTavern = () => {
+    dispatch({ type: "GENERATE_SCENE", sceneType: "forest" });
+    setShowTavern(false);
+  };
+
+  const handleReturnToTavern = () => {
+    dispatch({ type: "GENERATE_SCENE", sceneType: "tavern" });
+    setShowTavern(true);
+  };
+
   return (
     <div className="min-h-screen bg-parchment-texture">
       <div className="fixed top-4 right-4 flex gap-2">
@@ -56,7 +66,7 @@ export const GamePhaseManager = () => {
           <TavernScene />
           <div className="absolute bottom-4 right-4">
             <Button 
-              onClick={() => setShowTavern(false)}
+              onClick={handleLeaveTavern}
               className="bg-fantasy-primary hover:bg-fantasy-primary/90 text-white"
             >
               Leave Tavern
@@ -68,7 +78,7 @@ export const GamePhaseManager = () => {
           <GameBoard />
           <div className="absolute bottom-4 right-4">
             <Button 
-              onClick={() => setShowTavern(true)}
+              onClick={handleReturnToTavern}
               className="bg-fantasy-primary hover:bg-fantasy-primary/90 text-white"
             >
               Return to Tavern
