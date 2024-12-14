@@ -71,6 +71,14 @@ export interface GameState {
   currentTurn: number;
   gameLog: string[];
   combatActive: boolean;
+  activeQuests: Quest[];
+}
+
+export interface Quest {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
 }
 
 export const getDefaultStats = (): CharacterStats => ({

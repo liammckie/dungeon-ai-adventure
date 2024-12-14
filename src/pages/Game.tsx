@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "@/context/GameContext";
 import { GameBoard } from "@/components/GameBoard";
+import { TavernScene } from "@/components/TavernScene";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -17,7 +18,12 @@ const Game = () => {
     return null;
   }
 
-  return <GameBoard />;
+  return (
+    <div>
+      <TavernScene />
+      <GameBoard />
+    </div>
+  );
 };
 
 export default Game;

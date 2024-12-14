@@ -10,11 +10,19 @@ type GameAction =
   | { type: "CREATE_CHARACTER"; character: Character }
   | { type: "GAIN_XP"; characterId: string; amount: number };
 
+export interface Quest {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+}
+
 const initialState: GameState = {
   characters: [],
   currentTurn: 0,
   gameLog: ["Welcome to the dungeon! Create your character to begin..."],
   combatActive: false,
+  activeQuests: [],
 };
 
 const calculateLevelUp = (character: Character): Character => {
