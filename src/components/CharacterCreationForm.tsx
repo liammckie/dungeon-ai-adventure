@@ -9,7 +9,7 @@ import { RaceSelection } from "./character-creation/RaceSelection";
 import { AbilityScoreGeneration } from "./character-creation/AbilityScoreGeneration";
 import { characterSchema, type CharacterFormData } from "./character-creation/characterSchema";
 import { getStartingItems } from "./character-creation/characterUtils";
-import { getHitDice } from "@/types/game";
+import { getDefaultStats, getHitDice } from "@/types/game";
 import type { Character, CharacterClass, CharacterRace } from "@/types/game";
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
@@ -21,14 +21,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       race: "Human" as CharacterRace,
       class: "Fighter" as CharacterClass,
       background: "Soldier",
-      stats: {
-        strength: 10,
-        dexterity: 10,
-        constitution: 10,
-        intelligence: 10,
-        wisdom: 10,
-        charisma: 10,
-      },
+      stats: getDefaultStats(),
       skills: [],
     },
   });
@@ -40,6 +33,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       id: "player1",
       name: data.name,
       race: data.race as CharacterRace,
+      subrace: data.subrace,
       class: data.class as CharacterClass,
       stats: data.stats,
       hp: hitDice,
@@ -47,6 +41,15 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       level: 1,
       xp: 0,
       inventory: startingItems,
+      traits: [],
+      proficiencies: {
+        armor: [],
+        weapons: [],
+        tools: [],
+        skills: data.skills,
+        languages: ["Common"],
+        saves: [],
+      },
       isAI: false,
     };
 
