@@ -124,7 +124,7 @@ export const GameBoard = () => {
           {state.combatActive && <CombatControls />}
         </div>
 
-        {/* Right Column - Enemies */}
+        {/* Right Column - Enemies/NPCs */}
         <div className="col-span-3 space-y-4">
           {enemies.length > 0 && (
             <div className="bg-parchment-texture bg-cover rounded-lg border-2 border-fantasy-frame-border p-4">

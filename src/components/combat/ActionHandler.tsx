@@ -8,7 +8,7 @@ export const handleCombatAction = (
   currentCharacter: Character,
   dispatch: Dispatch<GameAction>,
   onNextTurn: () => void,
-  showToast: (props: { description: React.ReactNode }) => void
+  showToast: (message: string) => void
 ) => {
   switch (action) {
     case "defend":
@@ -18,6 +18,10 @@ export const handleCombatAction = (
           ...currentCharacter,
           temporaryHp: (currentCharacter.temporaryHp || 0) + 2,
         },
+      });
+      dispatch({
+        type: "ADD_LOG",
+        message: `${currentCharacter.name} takes a defensive stance.`
       });
       onNextTurn();
       break;
@@ -31,13 +35,11 @@ export const handleCombatAction = (
           hp: Math.min(currentCharacter.maxHp, currentCharacter.hp + healAmount),
         },
       });
-      showToast({
-        description: {
-          type: "heal" as CombatMessageType,
-          target: currentCharacter.name,
-          healing: healAmount,
-        },
+      dispatch({
+        type: "ADD_LOG",
+        message: `${currentCharacter.name} rests and recovers ${healAmount} HP.`
       });
+      showToast(`${currentCharacter.name} healed for ${healAmount} HP`);
       onNextTurn();
       break;
 
