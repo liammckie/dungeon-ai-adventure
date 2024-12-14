@@ -9,7 +9,7 @@ import { RaceSelection } from "./character-creation/RaceSelection";
 import { AbilityScoreGeneration } from "./character-creation/AbilityScoreGeneration";
 import { characterSchema, type CharacterFormData } from "./character-creation/characterSchema";
 import { getStartingItems } from "./character-creation/characterUtils";
-import { getHitDice, type Character, type CharacterStats } from "@/types/game";
+import { Character, CharacterStats } from "@/types/game";
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
@@ -37,7 +37,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
 
   const onSubmit = (data: CharacterFormData) => {
     const startingItems = getStartingItems(data.class);
-    const hitDice = getHitDice(data.class);
+    const hitDice = 10; // Default to d10 for Fighter
     const newCharacter: Character = {
       id: "player1",
       name: data.name,

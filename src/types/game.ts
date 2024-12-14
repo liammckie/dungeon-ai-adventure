@@ -24,7 +24,6 @@ export interface CharacterStats {
 }
 
 export type DiceType = 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
-
 export type RollType = DiceType | 'attack' | 'damage' | 'skill' | 'save' | 'ability' | 'saving' | 'initiative';
 
 export interface DiceRoll {
@@ -99,22 +98,3 @@ export interface Quest {
 }
 
 export type GamePhase = 'exploration' | 'combat' | 'dialogue' | 'interaction' | 'rest';
-
-export const getHitDice = (characterClass: CharacterClass): number => {
-  const hitDice: Record<CharacterClass, number> = {
-    Fighter: 10,
-    Barbarian: 12,
-    Paladin: 10,
-    Ranger: 10,
-    Monk: 8,
-    Rogue: 8,
-    Cleric: 8,
-    Druid: 8,
-    Bard: 8,
-    Warlock: 8,
-    Wizard: 6,
-    Sorcerer: 6,
-    NPC: 8
-  };
-  return hitDice[characterClass];
-};
