@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, MessageSquare, Beer } from "lucide-react";
+import { MessageSquare, Beer } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface NPC {
@@ -20,7 +20,7 @@ interface NPC {
   quest?: {
     title: string;
     description: string;
-    difficulty: number; // DC check
+    difficulty: number;
   };
 }
 
@@ -49,55 +49,27 @@ const npcs: NPC[] = [
   },
 ];
 
-const rollD20 = () => Math.floor(Math.random() * 20) + 1;
-
-const getDiceIcon = (roll: number) => {
-  const icons = {
-    1: <Dice1 className="h-8 w-8" />,
-    2: <Dice2 className="h-8 w-8" />,
-    3: <Dice3 className="h-8 w-8" />,
-    4: <Dice4 className="h-8 w-8" />,
-    5: <Dice5 className="h-8 w-8" />,
-    6: <Dice6 className="h-8 w-8" />,
-  };
-  return icons[roll as keyof typeof icons] || <Dice6 className="h-8 w-8" />;
-};
-
 export const TavernScene = () => {
   const { state, dispatch } = useGame();
   const { toast } = useToast();
   const [selectedNPC, setSelectedNPC] = useState<NPC | null>(null);
-  const [showDiceRoll, setShowDiceRoll] = useState(false);
-  const [lastRoll, setLastRoll] = useState(0);
 
   const handleNPCInteraction = (npc: NPC) => {
     setSelectedNPC(npc);
   };
 
-  const handleQuestAttempt = (quest: NonNullable<NPC["quest"]>) => {
-    const roll = rollD20();
-    setLastRoll(roll);
-    setShowDiceRoll(true);
-
-    setTimeout(() => {
-      if (roll >= quest.difficulty) {
-        toast({
-          title: "Success!",
-          description: `You rolled ${roll}. The quest "${quest.title}" has been accepted!`,
-        });
-        dispatch({
-          type: "ADD_LOG",
-          message: `Accepted quest: ${quest.title}`,
-        });
-      } else {
-        toast({
-          title: "Failed!",
-          description: `You rolled ${roll}. You failed to convince them of your abilities.`,
-          variant: "destructive",
-        });
-      }
-      setShowDiceRoll(false);
-    }, 1500);
+  const handleAcceptQuest = (quest: NonNullable<NPC["quest"]>) => {
+    toast({
+      title: "Quest Accepted!",
+      description: `You have accepted the quest "${quest.title}". Good luck on your adventure!`,
+    });
+    
+    dispatch({
+      type: "ADD_LOG",
+      message: `Accepted quest: ${quest.title}`,
+    });
+    
+    setSelectedNPC(null);
   };
 
   return (
@@ -149,19 +121,12 @@ export const TavernScene = () => {
                 <p className="text-amber-200">{selectedNPC.quest.description}</p>
               </div>
 
-              <div className="flex justify-between items-center">
-                <Button
-                  onClick={() => handleQuestAttempt(selectedNPC.quest!)}
-                  className="bg-amber-600 hover:bg-amber-700"
-                >
-                  Accept Quest (Roll Check)
-                </Button>
-                {showDiceRoll && (
-                  <div className="animate-bounce">
-                    {getDiceIcon(Math.min(6, Math.max(1, Math.ceil(lastRoll / 3.5))))}
-                  </div>
-                )}
-              </div>
+              <Button
+                onClick={() => handleAcceptQuest(selectedNPC.quest!)}
+                className="bg-amber-600 hover:bg-amber-700"
+              >
+                Accept Quest
+              </Button>
             </div>
           )}
         </DialogContent>
