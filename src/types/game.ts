@@ -106,7 +106,7 @@ export interface Character {
   maxHp: number;
   temporaryHp?: number;
   inventory: Item[];
-  traits: Trait[];
+  traits: string[];
   proficiencies: {
     armor: string[];
     weapons: string[];

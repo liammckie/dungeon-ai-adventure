@@ -1,101 +1,29 @@
-import { Scene, StoryEvent, NPC, TimeOfDay, Weather, SceneType } from "@/types/content";
-import { rollDice } from "@/context/diceUtils";
+import { rollDice } from "./diceRolls";
 
-const STORY_LOCATIONS: Record<SceneType, {
-  name: string;
-  descriptions: string[];
-}> = {
-  tavern: {
-    name: "The Gilded Flagon",
-    descriptions: [
-      "Warm light spills from the windows of this well-worn establishment.",
-      "The scent of hearth smoke and ale fills this refuge from the gathering storm.",
-      "A haven of warmth and light amid the growing darkness of Eldermoor."
-    ]
-  },
-  forest: {
-    name: "Forest of Whispers",
-    descriptions: [
-      "Ancient trees loom overhead, their branches swaying in an unseen wind.",
-      "Twisted roots and creeping mist choke the narrow paths between the trees.",
-      "The forest grows darker and more forbidding with each step forward."
-    ]
-  },
-  dungeon: {
-    name: "The Shattered Spire",
-    descriptions: [
-      "Ancient stone walls bear the scars of forgotten battles.",
-      "The air is thick with the dust of centuries and the whispers of the dead.",
-      "Shadows dance in the flickering torchlight, hiding ancient secrets."
-    ]
-  },
-  village: {
-    name: "Village of Eldermoor",
-    descriptions: [
-      "Rain-soaked streets lined with flickering lanterns cast dancing shadows on cobblestone paths.",
-      "The village square stands eerily empty, abandoned market stalls telling tales of recent panic.",
-      "Mist curls around the village well, where ancient symbols hint at forgotten rituals."
-    ]
-  }
-};
-
-const generateTimeOfDay = (): TimeOfDay => {
-  const roll = rollDice({ type: 'd4' });
-  const times: TimeOfDay[] = ['dawn', 'day', 'dusk', 'night'];
-  return times[roll - 1];
-};
-
-const generateWeather = (): Weather => {
-  const roll = rollDice({ type: 'd4' });
-  const weather: Weather[] = ['clear', 'rain', 'storm', 'fog'];
-  return weather[roll - 1];
-};
-
-const getWeatherDescription = (weather: Weather): string => {
-  const descriptions: Record<Weather, string> = {
-    clear: "The sky above is surprisingly clear, though an underlying tension remains.",
-    rain: "A steady rain falls, drumming against cobblestones and thatched roofs.",
-    storm: "Thunder rolls across dark skies as lightning illuminates the gathering shadows.",
-    fog: "A thick, unnatural fog clings to the ground, obscuring the path ahead."
-  };
-  return descriptions[weather];
-};
-
-const getTimeDescription = (time: TimeOfDay): string => {
-  const descriptions: Record<TimeOfDay, string> = {
-    dawn: "The first light of dawn struggles to pierce through the gloom.",
-    day: "Even in daylight, something feels wrong about the familiar surroundings.",
-    dusk: "Long shadows stretch across the ground as darkness approaches.",
-    night: "Night has fallen, bringing with it an almost palpable sense of danger."
-  };
-  return descriptions[time];
-};
-
-export const generateScene = (
-  sceneType: SceneType,
-  playerLevel: number,
-  worldState: Record<string, any>
-): Scene => {
-  const sceneId = `scene_${Date.now()}`;
-  const timeOfDay = generateTimeOfDay();
-  const weather = generateWeather();
+export const generateRandomEncounter = () => {
+  const roll = rollDice({ type: "d4" });
+  const numEnemies = roll.total;
   
-  const location = STORY_LOCATIONS[sceneType];
-  const baseDescription = location.descriptions[Math.floor(Math.random() * location.descriptions.length)];
-  
-  const scene: Scene = {
-    id: sceneId,
-    type: sceneType,
-    name: location.name,
-    description: `${baseDescription} ${getTimeDescription(timeOfDay)} ${getWeatherDescription(weather)}`,
-    possibleEvents: [],
-    requiredLevel: Math.max(1, playerLevel - 2),
-    availableNPCs: [],
-    environmentEffects: {
-      time: timeOfDay,
-      weather: weather,
-    },
-  };
+  // Logic to generate random enemies based on numEnemies
+  const enemies = Array.from({ length: numEnemies }, (_, index) => ({
+    id: `enemy${index + 1}`,
+    name: `Enemy ${index + 1}`,
+    hp: Math.floor(Math.random() * 10) + 5, // Random HP between 5 and 15
+  }));
 
-  return scene;
+  return enemies;
+};
+
+export const generateRandomLoot = () => {
+  const roll = rollDice({ type: "d4" });
+  const numItems = roll.total;
+  
+  // Logic to generate random loot based on numItems
+  const loot = Array.from({ length: numItems }, (_, index) => ({
+    id: `item${index + 1}`,
+    name: `Loot Item ${index + 1}`,
+    description: `Description for loot item ${index + 1}`,
+  }));
+
+  return loot;
 };

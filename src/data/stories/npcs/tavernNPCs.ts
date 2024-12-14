@@ -1,70 +1,74 @@
-import { NPC } from "@/types/content";
-
-export const TAVERN_NPCS: NPC[] = [
+export const tavernNPCs = [
   {
-    id: "alaric",
-    name: "Barkeep Alaric",
-    description: "A gruff man with suspicious eyes, wiping down the counter with practiced motions.",
-    dialogue: [
-      {
-        id: "alaric_intro",
-        text: "What do you want? We don't need any more trouble around here.",
-        options: [
-          {
-            text: "[Intimidate] Tell me what's going on here, or I'll make you!",
-            nextId: "alaric_intimidate",
-            condition: {
-              type: "quest",
-              requirement: "skill_check",
-              value: { skill: "intimidation", dc: 15 }
-            }
-          },
-          {
-            text: "[Persuade] We're here to help. What do you know?",
-            nextId: "alaric_persuade",
-            condition: {
-              type: "quest",
-              requirement: "skill_check",
-              value: { skill: "persuasion", dc: 12 }
-            }
-          },
-          {
-            text: "Never mind, I'll be going.",
-            nextId: null
-          }
-        ]
-      },
-      {
-        id: "alaric_intimidate",
-        text: "Alright, alright! People have been disappearing at night. We don't know who's behind it, but the old chapel on the hill might have something to do with it.",
-        options: [
-          {
-            text: "Tell me more about these disappearances.",
-            nextId: "alaric_disappearances"
-          },
-          {
-            text: "What's special about the chapel?",
-            nextId: "alaric_chapel"
-          },
-          {
-            text: "I'll look into it.",
-            nextId: null
-          }
-        ]
-      }
+    id: "npc1",
+    name: "Brom the Barkeeper",
+    description: "A stout man with a jovial demeanor, always ready to serve a drink.",
+    age: 45,
+    race: "Human",
+    traits: ["Friendly", "Talkative"],
+    inventory: [
+      { id: "ale", name: "Ale", description: "A refreshing drink.", type: "misc" },
+      { id: "mead", name: "Mead", description: "A sweet honey drink.", type: "misc" },
     ],
-    quests: [
-      {
-        id: "vanishing_villagers",
-        title: "The Vanishing Villagers",
-        description: "Discover why villagers are disappearing at night from Black Hollow.",
-        difficulty: 15,
-        completed: false,
-        rewards: [
-          { type: "xp", amount: 500 },
-          { type: "gold", amount: 100 }
-        ]
-      }
-    ]
+  },
+  {
+    id: "npc2",
+    name: "Elara the Bard",
+    description: "A talented bard who plays enchanting melodies on her lute.",
+    age: 30,
+    race: "Elf",
+    traits: ["Charming", "Musical"],
+    inventory: [
+      { id: "lute", name: "Lute", description: "A beautifully crafted lute.", type: "focus" },
+      { id: "songbook", name: "Songbook", description: "A collection of songs.", type: "misc" },
+    ],
+  },
+  {
+    id: "npc3",
+    name: "Grom the Mercenary",
+    description: "A burly warrior with a scarred face, always looking for a fight.",
+    age: 35,
+    race: "Half-Orc",
+    traits: ["Brave", "Loyal"],
+    inventory: [
+      { id: "sword", name: "Sword", description: "A sharp steel sword.", type: "weapon", damage: "1d8" },
+      { id: "shield", name: "Shield", description: "A sturdy wooden shield.", type: "armor", armorClass: 2 },
+    ],
+  },
+  {
+    id: "npc4",
+    name: "Mira the Herbalist",
+    description: "An elderly woman with a wealth of knowledge about herbs and potions.",
+    age: 60,
+    race: "Human",
+    traits: ["Wise", "Caring"],
+    inventory: [
+      { id: "healing_potion", name: "Healing Potion", description: "Restores health.", type: "misc" },
+      { id: "herbs", name: "Herbs", description: "Used for potions and remedies.", type: "misc" },
+    ],
+  },
+];
+
+export const tavernQuests = [
+  {
+    id: "quest1",
+    title: "The Haunted Cellar",
+    description: "Strange noises have been coming from the tavern cellar.",
+    status: "active",
+    difficulty: "Easy"
+  },
+  {
+    id: "quest2",
+    title: "A Missing Patron",
+    description: "One of the regulars hasn't been seen for days. Investigate their whereabouts.",
+    status: "active",
+    difficulty: "Medium"
+  },
+  {
+    id: "quest3",
+    title: "The Stolen Recipe",
+    description: "A famous recipe has been stolen from the tavern. Find the thief!",
+    status: "active",
+    difficulty: "Hard"
   }
 ];

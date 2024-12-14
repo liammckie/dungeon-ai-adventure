@@ -95,25 +95,15 @@ export const rollAttack = (
 
 export const rollDamage = (
   diceCount: number,
-  diceType: DiceRoll['type'],
+  diceType: DiceType,
   modifier: number = 0,
   isCritical: boolean = false
 ): RollResult => {
-  const diceValues: Record<DiceRoll['type'], number> = {
-    'd4': 4,
-    'd6': 6,
-    'd8': 8,
-    'd10': 10,
-    'd12': 12,
-    'd20': 20,
-    'd100': 100
-  };
-
   const rolls: number[] = [];
   const numDice = isCritical ? diceCount * 2 : diceCount;
   
   for (let i = 0; i < numDice; i++) {
-    rolls.push(Math.floor(Math.random() * diceValues[diceType]) + 1);
+    rolls.push(Math.floor(Math.random() * getDiceValue(diceType)) + 1);
   }
 
   return {
