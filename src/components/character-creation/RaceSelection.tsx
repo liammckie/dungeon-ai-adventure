@@ -14,9 +14,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 import { races } from "@/data/races";
 import { CharacterFormData } from "./characterSchema";
 import type { CharacterRace, CharacterStats } from "@/types/game";
+
+const RACE_DESCRIPTIONS = {
+  Human: "Adaptable and ambitious, humans are diverse in their talents and motivations. In Black Hollow, many humans serve in the Church of Light or work as merchants and craftspeople.",
+  Elf: "Ancient and graceful, elves possess natural magic and keen senses. Some elven scouts first noticed the dark omens around the Dread Keep.",
+  Dwarf: "Strong-willed and hardy, dwarves are master craftsmen. The dwarven smiths of Black Hollow have long supplied arms to the region's defenders.",
+  Halfling: "Small but resourceful, halflings make excellent scouts. Their keen eyes have helped track cultist movements through the Northern Woods.",
+  Dragonborn: "Proud warriors with draconic heritage. Their presence is rare but respected in these lands.",
+  Gnome: "Curious and clever, gnomes excel at magical tinkering. Some study the ancient mechanisms of the Dread Keep.",
+  "Half-Elf": "Combining human adaptability and elven grace, half-elves often serve as diplomats between communities.",
+  Tiefling: "Bearing infernal heritage, tieflings face prejudice but possess great resolve. Some secretly investigate the cult's activities.",
+} as const;
 
 export const RaceSelection = ({ 
   form 
@@ -57,7 +75,19 @@ export const RaceSelection = ({
         name="race"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-lg font-semibold text-white">Race</FormLabel>
+            <div className="flex items-center gap-2">
+              <FormLabel className="text-lg font-semibold text-white">Race</FormLabel>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-4 w-4 text-gray-400" />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-black/90 border-fantasy-frame-border text-white p-2 max-w-md">
+                    <p>Choose your character's race carefully. Each race brings unique abilities and cultural perspectives that may affect your journey through the Dread Keep.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <Select onValueChange={handleRaceChange} value={field.value}>
               <FormControl>
                 <SelectTrigger className="bg-white/10 border-fantasy-frame-border text-white">
@@ -82,12 +112,32 @@ export const RaceSelection = ({
       />
 
       {form.watch("race") && (
-        <div className="bg-black/20 p-4 rounded-lg border border-fantasy-frame-border">
-          <h3 className="text-white font-semibold mb-2">Racial Traits</h3>
-          <div className="space-y-2">
-            {races.find(r => r.name === form.watch("race"))?.traits.map((trait, index) => (
-              <p key={index} className="text-gray-300 text-sm">{trait}</p>
-            ))}
+        <div className="space-y-4">
+          <div className="bg-black/20 p-4 rounded-lg border border-fantasy-frame-border">
+            <h3 className="text-white font-semibold mb-2">Race Description</h3>
+            <p className="text-gray-300 text-sm">
+              {RACE_DESCRIPTIONS[form.watch("race") as keyof typeof RACE_DESCRIPTIONS]}
+            </p>
+          </div>
+
+          <div className="bg-black/20 p-4 rounded-lg border border-fantasy-frame-border">
+            <h3 className="text-white font-semibold mb-2">Racial Traits</h3>
+            <div className="space-y-2">
+              {races.find(r => r.name === form.watch("race"))?.traits.map((trait, index) => (
+                <p key={index} className="text-gray-300 text-sm">{trait}</p>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-black/20 p-4 rounded-lg border border-fantasy-frame-border">
+            <h3 className="text-white font-semibold mb-2">Ability Score Increases</h3>
+            <div className="space-y-1">
+              {Object.entries(races.find(r => r.name === form.watch("race"))?.abilityScoreIncrease || {}).map(([ability, bonus]) => (
+                <p key={ability} className="text-gray-300 text-sm capitalize">
+                  {ability}: +{bonus}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       )}
