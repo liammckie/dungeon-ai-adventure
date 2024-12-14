@@ -9,7 +9,7 @@ import { RaceSelection } from "./character-creation/RaceSelection";
 import { AbilityScoreGeneration } from "./character-creation/AbilityScoreGeneration";
 import { characterSchema, type CharacterFormData } from "./character-creation/characterSchema";
 import { getStartingItems } from "./character-creation/characterUtils";
-import { getDefaultStats, getHitDice, type Character } from "@/types/game";
+import { getDefaultStats, getHitDice, type Character, type CharacterStats } from "@/types/game";
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
@@ -21,7 +21,14 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       race: "Human",
       class: "Fighter",
       background: "Soldier",
-      stats: getDefaultStats(),
+      stats: {
+        strength: 10,
+        dexterity: 10,
+        constitution: 10,
+        intelligence: 10,
+        wisdom: 10,
+        charisma: 10
+      } satisfies CharacterStats,
       skills: [],
     },
   });

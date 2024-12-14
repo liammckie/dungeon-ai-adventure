@@ -1,5 +1,6 @@
 import { GameState } from "./gameState";
 import { GameAction } from "@/types/actions";
+import { RollType } from "@/types/game";
 import { 
   handleStartCombat,
   handleEndCombat,
