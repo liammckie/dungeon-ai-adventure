@@ -27,7 +27,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
         intelligence: 10,
         wisdom: 10,
         charisma: 10,
-      } as CharacterStatsType,
+      },
     },
   });
 
