@@ -6,6 +6,8 @@ export type Character = {
   stats: CharacterStats;
   hp: number;
   maxHp: number;
+  level: number;
+  xp: number;
   inventory: Item[];
   isAI: boolean;
 };
