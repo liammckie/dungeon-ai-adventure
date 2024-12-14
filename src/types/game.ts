@@ -73,7 +73,6 @@ export interface GameState {
   combatActive: boolean;
 }
 
-// Utility functions
 export const getDefaultStats = (): CharacterStats => ({
   strength: 10,
   dexterity: 10,

@@ -30,14 +30,14 @@ export const RaceSelection = ({
     
     const selectedRace = races.find(r => r.name === value);
     if (selectedRace?.abilityScoreIncrease) {
-      const currentStats = form.getValues("stats") as CharacterStats;
+      const currentStats = form.getValues("stats");
       const newStats: CharacterStats = {
-        strength: currentStats.strength || 10,
-        dexterity: currentStats.dexterity || 10,
-        constitution: currentStats.constitution || 10,
-        intelligence: currentStats.intelligence || 10,
-        wisdom: currentStats.wisdom || 10,
-        charisma: currentStats.charisma || 10,
+        strength: currentStats.strength,
+        dexterity: currentStats.dexterity,
+        constitution: currentStats.constitution,
+        intelligence: currentStats.intelligence,
+        wisdom: currentStats.wisdom,
+        charisma: currentStats.charisma,
       };
 
       Object.entries(selectedRace.abilityScoreIncrease).forEach(([ability, bonus]) => {
