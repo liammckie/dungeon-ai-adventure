@@ -21,7 +21,7 @@ const stats = [
 
 export const CharacterStats = ({ form }: { form: UseFormReturn<CharacterFormData> }) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
       {stats.map((stat) => (
         <FormField
           key={stat.name}
@@ -29,13 +29,13 @@ export const CharacterStats = ({ form }: { form: UseFormReturn<CharacterFormData
           name={`stats.${stat.name}`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{stat.label}</FormLabel>
+              <FormLabel className="text-white">{stat.label}</FormLabel>
               <FormControl>
                 <Input
                   type="number"
                   {...field}
                   onChange={(e) => field.onChange(parseInt(e.target.value))}
-                  className="bg-white/80"
+                  className="bg-white/10 border-fantasy-frame-border text-white font-bold text-center"
                 />
               </FormControl>
               <FormMessage />

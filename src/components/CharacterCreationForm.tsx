@@ -33,7 +33,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
   const handleRandomize = () => {
     const stats = rollStats();
     Object.entries(stats).forEach(([stat, value]) => {
-      form.setValue(`stats.${stat}` as keyof CharacterFormData, value);
+      form.setValue(`stats.${stat as keyof CharacterFormData["stats"]}`, value);
     });
   };
 
@@ -44,14 +44,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       name: data.name,
       race: data.race,
       class: data.class,
-      stats: {
-        strength: data.stats.strength,
-        dexterity: data.stats.dexterity,
-        constitution: data.stats.constitution,
-        intelligence: data.stats.intelligence,
-        wisdom: data.stats.wisdom,
-        charisma: data.stats.charisma,
-      },
+      stats: data.stats,
       hp: data.class === "Warrior" ? 12 : 8,
       maxHp: data.class === "Warrior" ? 12 : 8,
       level: 1,
@@ -66,16 +59,26 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-parchment p-6 rounded-lg border-2 border-fantasy-accent">
-        <CharacterBasicInfo form={form} />
+      <form 
+        onSubmit={form.handleSubmit(onSubmit)} 
+        className="space-y-8 max-w-4xl mx-auto bg-black/40 p-8 rounded-lg backdrop-blur-sm border-2 border-fantasy-frame-border shadow-lg"
+      >
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold text-white mb-2">Create Your Legend</h2>
+          <p className="text-gray-300">Choose wisely, brave adventurer</p>
+        </div>
 
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-xl font-bold text-fantasy-primary">Ability Scores</h3>
+        <div className="bg-black/30 p-6 rounded-lg border border-fantasy-frame-border animate-frame-glow">
+          <CharacterBasicInfo form={form} />
+        </div>
+
+        <div className="bg-black/30 p-6 rounded-lg border border-fantasy-frame-border animate-frame-glow">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-2xl font-bold text-white">Ability Scores</h3>
             <Button
               type="button"
               onClick={handleRandomize}
-              className="bg-fantasy-secondary hover:bg-fantasy-secondary/90"
+              className="bg-fantasy-accent hover:bg-fantasy-accent/90 text-white"
             >
               <Dice6 className="mr-2 h-4 w-4" />
               Roll Stats
@@ -85,8 +88,11 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
         </div>
 
         <div className="flex justify-end space-x-4">
-          <Button type="submit" className="bg-fantasy-primary hover:bg-fantasy-primary/90">
-            Create Character
+          <Button 
+            type="submit" 
+            className="bg-fantasy-primary hover:bg-fantasy-primary/90 text-white px-8 py-3 text-lg"
+          >
+            Begin Your Journey
           </Button>
         </div>
       </form>
