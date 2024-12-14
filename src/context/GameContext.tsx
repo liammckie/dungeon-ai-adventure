@@ -8,10 +8,67 @@ type GameAction =
   | { type: "ADD_LOG"; message: string }
   | { type: "UPDATE_CHARACTER"; character: Character };
 
+const initialCharacters: Character[] = [
+  {
+    id: "player1",
+    name: "Your Character",
+    class: "Warrior",
+    race: "Human",
+    stats: {
+      strength: 16,
+      dexterity: 14,
+      constitution: 15,
+      intelligence: 12,
+      wisdom: 10,
+      charisma: 13,
+    },
+    hp: 20,
+    maxHp: 20,
+    inventory: [],
+    isAI: false,
+  },
+  {
+    id: "ai1",
+    name: "Eldrin the Wise",
+    class: "Mage",
+    race: "Elf",
+    stats: {
+      strength: 8,
+      dexterity: 14,
+      constitution: 12,
+      intelligence: 17,
+      wisdom: 15,
+      charisma: 14,
+    },
+    hp: 15,
+    maxHp: 15,
+    inventory: [],
+    isAI: true,
+  },
+  {
+    id: "ai2",
+    name: "Thorgar Ironbeard",
+    class: "Warrior",
+    race: "Dwarf",
+    stats: {
+      strength: 17,
+      dexterity: 12,
+      constitution: 16,
+      intelligence: 10,
+      wisdom: 12,
+      charisma: 11,
+    },
+    hp: 25,
+    maxHp: 25,
+    inventory: [],
+    isAI: true,
+  },
+];
+
 const initialState: GameState = {
-  characters: [],
+  characters: initialCharacters,
   currentTurn: 0,
-  gameLog: [],
+  gameLog: ["Welcome to the dungeon! Prepare for combat..."],
   combatActive: false,
 };
 
