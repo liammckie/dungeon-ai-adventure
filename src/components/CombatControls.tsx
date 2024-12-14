@@ -32,9 +32,44 @@ export const CombatControls = () => {
         type: "ADD_LOG",
         message: `${attacker.name} attacks ${target.name}!`,
       });
-      // For now, just log the attack. We'll implement damage calculation later
       handleNextTurn();
     }
+  };
+
+  const handleDodge = () => {
+    const character = state.characters[state.currentTurn];
+    dispatch({
+      type: "ADD_LOG",
+      message: `${character.name} takes the Dodge action, making it harder to be hit until their next turn!`,
+    });
+    handleNextTurn();
+  };
+
+  const handleDash = () => {
+    const character = state.characters[state.currentTurn];
+    dispatch({
+      type: "ADD_LOG",
+      message: `${character.name} takes the Dash action, doubling their movement speed!`,
+    });
+    handleNextTurn();
+  };
+
+  const handleHide = () => {
+    const character = state.characters[state.currentTurn];
+    dispatch({
+      type: "ADD_LOG",
+      message: `${character.name} attempts to Hide from enemies!`,
+    });
+    handleNextTurn();
+  };
+
+  const handleUseItem = () => {
+    const character = state.characters[state.currentTurn];
+    dispatch({
+      type: "ADD_LOG",
+      message: `${character.name} uses an item from their inventory!`,
+    });
+    handleNextTurn();
   };
 
   const isPlayerTurn = state.combatActive && !state.characters[state.currentTurn].isAI;
@@ -53,6 +88,37 @@ export const CombatControls = () => {
           {isPlayerTurn ? (
             <div className="grid grid-cols-1 gap-2">
               <p className="text-center font-semibold text-fantasy-primary">Your Turn - Choose an Action:</p>
+              
+              {/* Standard Actions */}
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                <Button
+                  onClick={handleDodge}
+                  className="bg-fantasy-secondary hover:bg-fantasy-secondary/90 text-white font-semibold"
+                >
+                  Dodge
+                </Button>
+                <Button
+                  onClick={handleDash}
+                  className="bg-fantasy-secondary hover:bg-fantasy-secondary/90 text-white font-semibold"
+                >
+                  Dash
+                </Button>
+                <Button
+                  onClick={handleHide}
+                  className="bg-fantasy-secondary hover:bg-fantasy-secondary/90 text-white font-semibold"
+                >
+                  Hide
+                </Button>
+                <Button
+                  onClick={handleUseItem}
+                  className="bg-fantasy-secondary hover:bg-fantasy-secondary/90 text-white font-semibold"
+                >
+                  Use Item
+                </Button>
+              </div>
+
+              {/* Attack Options */}
+              <p className="text-center font-semibold text-fantasy-primary mt-4">Attack Targets:</p>
               <div className="flex flex-wrap gap-2 justify-center">
                 {state.characters
                   .filter(char => char.isAI)
@@ -60,7 +126,7 @@ export const CombatControls = () => {
                     <Button
                       key={target.id}
                       onClick={() => handleAttack(target.id)}
-                      className="bg-fantasy-secondary hover:bg-fantasy-secondary/90 text-white font-semibold"
+                      className="bg-fantasy-primary hover:bg-fantasy-primary/90 text-white font-semibold"
                     >
                       Attack {target.name}
                     </Button>
