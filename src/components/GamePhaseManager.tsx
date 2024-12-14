@@ -7,6 +7,7 @@ import { FOREST_SCENES } from "@/data/stories/scenes/forestScenes";
 import { PhaseButtons } from "./game-phases/PhaseButtons";
 import { ForestScene } from "./game-phases/ForestScene";
 import { generateEnemy } from "@/utils/enemyGenerator";
+import { Button } from "@/components/ui/button";
 
 export const GamePhaseManager = () => {
   const { state, dispatch } = useGame();
