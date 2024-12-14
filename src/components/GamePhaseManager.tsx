@@ -15,20 +15,30 @@ export const GamePhaseManager = () => {
   const { toast } = useToast();
   const [currentForestSceneIndex, setCurrentForestSceneIndex] = React.useState(0);
 
+  const clearEnemies = () => {
+    // Get only non-AI characters (players)
+    const playerCharacters = state.characters.filter(char => !char.isAI);
+    
+    // Update state to only include player characters
+    playerCharacters.forEach(char => {
+      dispatch({ type: "UPDATE_CHARACTER", character: char });
+    });
+    
+    // Ensure combat is ended if active
+    if (state.combatActive) {
+      dispatch({ type: "END_COMBAT" });
+    }
+  };
+
   const handlePhaseChange = (phase: GamePhase) => {
     if (phase === state.currentPhase) return;
 
+    clearEnemies();
     dispatch({ type: "SET_PHASE", phase });
     
     switch (phase) {
       case "exploration":
         dispatch({ type: "GENERATE_SCENE", sceneType: "forest" });
-        // Clear any existing enemies
-        const updatedCharacters = state.characters.filter(char => !char.isAI);
-        updatedCharacters.forEach(char => {
-          dispatch({ type: "UPDATE_CHARACTER", character: char });
-        });
-        
         toast({
           title: "Exploration Phase",
           description: "You carefully explore the surrounding area...",
@@ -37,12 +47,6 @@ export const GamePhaseManager = () => {
       case "interaction":
         if (!showTavern) {
           dispatch({ type: "GENERATE_SCENE", sceneType: "forest" });
-          // Clear any existing enemies here too
-          const characters = state.characters.filter(char => !char.isAI);
-          characters.forEach(char => {
-            dispatch({ type: "UPDATE_CHARACTER", character: char });
-          });
-          
           toast({
             title: "Interaction Phase",
             description: "You look around for anyone to interact with...",
@@ -87,12 +91,7 @@ export const GamePhaseManager = () => {
   };
 
   const handleLeaveTavern = () => {
-    // Clear any existing enemies when leaving tavern
-    const updatedCharacters = state.characters.filter(char => !char.isAI);
-    updatedCharacters.forEach(char => {
-      dispatch({ type: "UPDATE_CHARACTER", character: char });
-    });
-    
+    clearEnemies();
     dispatch({ type: "SET_PHASE", phase: "exploration" });
     dispatch({ type: "GENERATE_SCENE", sceneType: "forest" });
     setShowTavern(false);
@@ -105,12 +104,7 @@ export const GamePhaseManager = () => {
   };
 
   const handleReturnToTavern = () => {
-    // Clear any existing enemies when returning to tavern
-    const updatedCharacters = state.characters.filter(char => !char.isAI);
-    updatedCharacters.forEach(char => {
-      dispatch({ type: "UPDATE_CHARACTER", character: char });
-    });
-    
+    clearEnemies();
     dispatch({ type: "SET_PHASE", phase: "interaction" });
     dispatch({ type: "GENERATE_SCENE", sceneType: "tavern" });
     setShowTavern(true);
@@ -133,6 +127,7 @@ export const GamePhaseManager = () => {
       
       // Only generate enemy if in exploration phase and with 30% chance
       if (Math.random() < 0.3) {
+        clearEnemies(); // Clear any existing enemies before adding new ones
         const newEnemy = generateEnemy();
         dispatch({ type: "CREATE_CHARACTER", character: newEnemy });
         
