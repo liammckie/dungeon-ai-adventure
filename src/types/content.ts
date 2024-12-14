@@ -1,3 +1,5 @@
+import { Quest } from './game';
+
 export type SceneType = 'tavern' | 'forest' | 'dungeon' | 'village';
 export type EventType = 'combat' | 'dialogue' | 'puzzle' | 'discovery';
 export type TimeOfDay = 'dawn' | 'day' | 'dusk' | 'night';

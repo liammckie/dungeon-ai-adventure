@@ -76,7 +76,7 @@ const generateSceneDescription = (
     ],
   };
 
-  const baseDescription = descriptions[type][rollDice({ type: 'd2' }) - 1];
+  const baseDescription = descriptions[type][rollDice({ type: 'd4' }) % 2];
   const timeDesc = getTimeDescription(time);
   const weatherDesc = getWeatherDescription(weather);
 
@@ -104,7 +104,6 @@ const getWeatherDescription = (weather: Weather): string => {
 };
 
 const generatePossibleEvents = (type: Scene['type'], playerLevel: number): StoryEvent[] => {
-  // This is a simplified version - expand based on scene type and player level
   const baseEvent: StoryEvent = {
     id: `event_${Date.now()}`,
     type: 'combat',
@@ -123,7 +122,6 @@ const generatePossibleEvents = (type: Scene['type'], playerLevel: number): Story
 };
 
 const generateNPCs = (type: Scene['type']): NPC[] => {
-  // This is a simplified version - expand based on scene type
   const baseNPC: NPC = {
     id: `npc_${Date.now()}`,
     name: "Friendly Stranger",
