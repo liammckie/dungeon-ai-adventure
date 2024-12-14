@@ -38,7 +38,7 @@ export const CharacterStats = ({ form }: { form: UseFormReturn<CharacterFormData
                   value={field.value?.toString() ?? "10"}
                   onChange={(e) => {
                     const value = e.target.value === "" ? 10 : parseInt(e.target.value);
-                    field.onChange(isNaN(value) ? 10 : value);
+                    field.onChange(isNaN(value) ? 10 : Math.max(3, Math.min(18, value)));
                   }}
                   className="bg-white/10 border-fantasy-frame-border text-white font-bold text-center"
                 />
