@@ -24,7 +24,7 @@ export const GameBoard = () => {
 
         {/* Center - Game content */}
         <div className="lg:col-span-5 space-y-6">
-          <h1 className="text-3xl font-bold text-fantasy-primary mb-6">Dungeon Adventure</h1>
+          <h1 className="text-3xl font-bold text-fantasy-primary mb-6">Adventure</h1>
           <div className="grid grid-cols-1 gap-4">
             {state.characters
               .filter(char => char.isAI)
