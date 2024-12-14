@@ -2,20 +2,69 @@ import React from "react";
 import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
 import { Sword, Shield, MoveRight, Eye, Backpack, Heart } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export const ActionMenu = () => {
   const { state, dispatch } = useGame();
+  const { toast } = useToast();
   const currentCharacter = state.characters[state.currentTurn];
   const isPlayerTurn = state.combatActive && currentCharacter && !currentCharacter.isAI;
 
   const handleAction = (action: string) => {
+    if (state.combatActive && !isPlayerTurn) {
+      toast({
+        title: "Not Your Turn",
+        description: "Wait for your turn in combat!",
+        variant: "destructive",
+      });
+      return;
+    }
+
     dispatch({
       type: "ADD_LOG",
       message: `${currentCharacter?.name} performs ${action}`,
     });
-  };
 
-  if (!isPlayerTurn) return null;
+    switch (action) {
+      case "Attack":
+        if (!state.combatActive) {
+          dispatch({ type: "START_COMBAT" });
+        }
+        break;
+      case "Defend":
+        // Add temporary AC bonus
+        if (currentCharacter) {
+          dispatch({
+            type: "UPDATE_CHARACTER",
+            character: {
+              ...currentCharacter,
+              temporaryAC: (currentCharacter.temporaryAC || 0) + 2,
+            },
+          });
+        }
+        break;
+      case "Rest":
+        if (currentCharacter) {
+          const healAmount = Math.floor(currentCharacter.maxHp * 0.25);
+          dispatch({
+            type: "UPDATE_CHARACTER",
+            character: {
+              ...currentCharacter,
+              hp: Math.min(currentCharacter.maxHp, currentCharacter.hp + healAmount),
+            },
+          });
+          toast({
+            title: "Resting",
+            description: `Recovered ${healAmount} HP`,
+          });
+        }
+        break;
+    }
+
+    if (state.combatActive) {
+      dispatch({ type: "NEXT_TURN" });
+    }
+  };
 
   return (
     <div className="grid grid-cols-2 gap-3">
