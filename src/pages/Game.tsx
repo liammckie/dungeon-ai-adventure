@@ -8,9 +8,8 @@ const Game = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    // Redirect to character creation if no character exists
     if (state.characters.length === 0) {
-      navigate("/create-character");
+      navigate("/");
     }
   }, [state.characters, navigate]);
 

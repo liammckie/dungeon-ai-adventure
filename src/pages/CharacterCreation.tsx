@@ -8,7 +8,8 @@ const CharacterCreation = () => {
   const { state } = useGame();
 
   React.useEffect(() => {
-    if (state.characters.length > 0) {
+    // Only redirect to game if we have characters AND we came from the start screen
+    if (state.characters.length > 0 && document.referrer.includes('/')) {
       navigate("/game");
     }
   }, [state.characters, navigate]);
