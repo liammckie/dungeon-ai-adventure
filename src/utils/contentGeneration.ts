@@ -1,29 +1,30 @@
-import { rollDice } from "./diceRolls";
+import { rollDice, createDiceRoll } from "./diceRolls";
 
 export const generateRandomEncounter = () => {
-  const roll = rollDice({ type: "d4" });
-  const numEnemies = roll.total;
-  
-  // Logic to generate random enemies based on numEnemies
-  const enemies = Array.from({ length: numEnemies }, (_, index) => ({
-    id: `enemy${index + 1}`,
-    name: `Enemy ${index + 1}`,
-    hp: Math.floor(Math.random() * 10) + 5, // Random HP between 5 and 15
-  }));
-
-  return enemies;
+  const encounterRoll = rollDice(createDiceRoll("d4", 1));
+  // Logic to generate a random encounter based on the roll
+  // This could involve selecting a creature or event from a predefined list
+  // For example:
+  const encounters = [
+    "A wild beast appears!",
+    "You stumble upon a hidden treasure!",
+    "A group of bandits ambushes you!",
+    "You find a mysterious traveler."
+  ];
+  const encounterIndex = encounterRoll.total - 1; // Adjust for zero-based index
+  return encounters[encounterIndex] || "Nothing happens.";
 };
 
 export const generateRandomLoot = () => {
-  const roll = rollDice({ type: "d4" });
-  const numItems = roll.total;
-  
-  // Logic to generate random loot based on numItems
-  const loot = Array.from({ length: numItems }, (_, index) => ({
-    id: `item${index + 1}`,
-    name: `Loot Item ${index + 1}`,
-    description: `Description for loot item ${index + 1}`,
-  }));
-
-  return loot;
+  const lootRoll = rollDice(createDiceRoll("d4", 1));
+  // Logic to generate random loot based on the roll
+  // This could involve selecting items from a loot table
+  const lootItems = [
+    "Gold coins",
+    "A healing potion",
+    "A rusty sword",
+    "A mysterious artifact"
+  ];
+  const lootIndex = lootRoll.total - 1; // Adjust for zero-based index
+  return lootItems[lootIndex] || "No loot found.";
 };

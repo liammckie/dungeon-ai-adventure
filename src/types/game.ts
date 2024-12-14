@@ -7,6 +7,13 @@ export type CharacterRace =
   | "Human" | "Elf" | "Dwarf" | "Halfling" | "Dragonborn"
   | "Gnome" | "Half-Elf" | "Tiefling";
 
+export type CharacterSubrace = 
+  | "High Elf" | "Wood Elf" | "Dark Elf" 
+  | "Hill Dwarf" | "Mountain Dwarf"
+  | "Lightfoot" | "Stout" 
+  | "Standard Human" | "Variant Human"
+  | "Forest Gnome" | "Rock Gnome" | "Deep Gnome";
+
 export interface CharacterStats {
   strength: number;
   dexterity: number;
@@ -16,10 +23,33 @@ export interface CharacterStats {
   charisma: number;
 }
 
+export type DiceType = 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
+
+export type RollType = DiceType | 'attack' | 'damage' | 'skill' | 'save' | 'ability' | 'saving' | 'initiative';
+
+export interface DiceRoll {
+  type: DiceType;
+  count: number;
+  modifier?: number;
+  advantage?: boolean;
+  disadvantage?: boolean;
+}
+
+export interface RollResult {
+  rolls: number[];
+  total: number;
+  type: RollType;
+  modifier?: number;
+  isNatural20?: boolean;
+  isNatural1?: boolean;
+  isCritical?: boolean;
+}
+
 export interface Character {
   id: string;
   name: string;
   race: CharacterRace;
+  subrace?: CharacterSubrace;
   class: CharacterClass;
   background: string;
   level: number;
@@ -45,29 +75,16 @@ export interface Character {
   reputation?: number;
 }
 
-export type DiceType = 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
+export type ItemType = 'weapon' | 'armor' | 'potion' | 'scroll' | 'misc' | 'focus' | 'tool';
 
-export interface DiceRoll {
-  type: DiceType;
-  count: number;
-  modifier?: number;
-  advantage?: boolean;
-  disadvantage?: boolean;
+export interface Item {
+  id: string;
+  name: string;
+  description: string;
+  type: ItemType;
+  damage?: string;
+  armorClass?: number;
 }
-
-export type RollType = DiceType | 'attack' | 'damage' | 'skill' | 'save' | 'ability' | 'saving' | 'initiative';
-
-export interface RollResult {
-  rolls: number[];
-  total: number;
-  type: RollType;
-  modifier?: number;
-  isNatural20?: boolean;
-  isNatural1?: boolean;
-  isCritical?: boolean;
-}
-
-export type GamePhase = 'exploration' | 'combat' | 'dialogue' | 'interaction' | 'rest';
 
 export interface Quest {
   id: string;
@@ -81,16 +98,7 @@ export interface Quest {
   };
 }
 
-export type ItemType = 'weapon' | 'armor' | 'potion' | 'scroll' | 'misc' | 'focus' | 'tool';
-
-export interface Item {
-  id: string;
-  name: string;
-  description: string;
-  type: ItemType;
-  damage?: string;
-  armorClass?: number;
-}
+export type GamePhase = 'exploration' | 'combat' | 'dialogue' | 'interaction' | 'rest';
 
 export const getHitDice = (characterClass: CharacterClass): number => {
   const hitDice: Record<CharacterClass, number> = {
