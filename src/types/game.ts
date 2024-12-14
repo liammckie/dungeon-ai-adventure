@@ -29,6 +29,15 @@ export interface CharacterStats {
   charisma: number;
 }
 
+export interface AbilityScoreModifiers {
+  strength?: number;
+  dexterity?: number;
+  constitution?: number;
+  intelligence?: number;
+  wisdom?: number;
+  charisma?: number;
+}
+
 export interface DiceRoll {
   type: DiceType;
   count: number;

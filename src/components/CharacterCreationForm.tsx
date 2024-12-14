@@ -14,7 +14,6 @@ import { Character, CharacterStats } from "@/types/game";
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
   
-  // Initialize defaultStats with non-optional values
   const defaultStats: CharacterStats = {
     strength: 10,
     dexterity: 10,
@@ -22,7 +21,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
     intelligence: 10,
     wisdom: 10,
     charisma: 10,
-  } as const;
+  };
   
   const form = useForm<CharacterFormData>({
     resolver: zodResolver(characterSchema),
