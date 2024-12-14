@@ -14,12 +14,6 @@ export type CharacterSubrace =
   | "Standard Human" | "Variant Human"
   | "Forest Gnome" | "Rock Gnome" | "Deep Gnome";
 
-export type GamePhase = 'exploration' | 'interaction' | 'combat' | 'rest';
-
-export type RollType = 'attack' | 'ability' | 'saving' | 'initiative' | 'damage' | DiceType;
-
-export type DiceType = 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
-
 export interface CharacterStats {
   strength: number;
   dexterity: number;
@@ -29,32 +23,7 @@ export interface CharacterStats {
   charisma: number;
 }
 
-export interface AbilityScoreModifiers {
-  strength?: number;
-  dexterity?: number;
-  constitution?: number;
-  intelligence?: number;
-  wisdom?: number;
-  charisma?: number;
-}
-
-export interface DiceRoll {
-  type: DiceType;
-  count: number;
-  modifier?: number;
-  advantage?: boolean;
-  disadvantage?: boolean;
-}
-
-export interface RollResult {
-  rolls: number[];
-  total: number;
-  type: DiceType;
-  modifier?: number;
-  isNatural20?: boolean;
-  isNatural1?: boolean;
-  isCritical?: boolean;
-}
+export type AbilityScoreKey = keyof CharacterStats;
 
 export interface Character {
   id: string;
@@ -86,18 +55,6 @@ export interface Character {
   reputation?: number;
 }
 
-export interface Quest {
-  id: string;
-  title: string;
-  description: string;
-  status: 'active' | 'completed' | 'failed';
-  rewards?: {
-    xp?: number;
-    items?: Item[];
-    gold?: number;
-  };
-}
-
 export interface Item {
   id: string;
   name: string;
@@ -108,3 +65,24 @@ export interface Item {
 }
 
 export type ItemType = 'weapon' | 'armor' | 'potion' | 'scroll' | 'misc' | 'focus' | 'tool';
+
+export type DiceType = 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
+export type RollType = 'attack' | 'ability' | 'saving' | 'initiative' | 'damage' | DiceType;
+
+export interface DiceRoll {
+  type: DiceType;
+  count: number;
+  modifier?: number;
+  advantage?: boolean;
+  disadvantage?: boolean;
+}
+
+export interface RollResult {
+  rolls: number[];
+  total: number;
+  type: DiceType;
+  modifier?: number;
+  isNatural20?: boolean;
+  isNatural1?: boolean;
+  isCritical?: boolean;
+}

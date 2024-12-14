@@ -9,16 +9,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CharacterFormData } from "./character-creation/characterSchema";
-import type { CharacterStats as CharacterStatsType } from "@/types/game";
+import { AbilityScoreKey } from "@/types/game";
 
-const ABILITY_SCORES = [
+const ABILITY_SCORES: { name: AbilityScoreKey; label: string }[] = [
   { name: "strength", label: "Strength" },
   { name: "dexterity", label: "Dexterity" },
   { name: "constitution", label: "Constitution" },
   { name: "intelligence", label: "Intelligence" },
   { name: "wisdom", label: "Wisdom" },
   { name: "charisma", label: "Charisma" },
-] as const;
+];
 
 export const CharacterStats = ({ form }: { form: UseFormReturn<CharacterFormData> }) => {
   return (
@@ -27,7 +27,7 @@ export const CharacterStats = ({ form }: { form: UseFormReturn<CharacterFormData
         <FormField
           key={stat.name}
           control={form.control}
-          name={`stats.${stat.name}` as keyof CharacterStatsType}
+          name={`stats.${stat.name}`}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-white">{stat.label}</FormLabel>
