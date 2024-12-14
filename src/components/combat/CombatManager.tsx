@@ -6,7 +6,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Character } from "@/types/game";
 import { CombatActions } from "./CombatActions";
 import { TargetSelector } from "./TargetSelector";
-import { rollDice } from "@/context/diceUtils";
+import { CombatMessage } from "./CombatMessage";
+import { CombatTurnIndicator } from "./CombatTurnIndicator";
+import { calculateDamage, calculateHit, calculateHealAmount } from "./CombatUtils";
 
 interface CharacterTurnState {
   id: string;
@@ -17,12 +19,12 @@ interface CharacterTurnState {
 export const CombatManager = () => {
   const { state, dispatch } = useGame();
   const { toast } = useToast();
-  const [selectedAction, setSelectedAction] = React.useState<string | null>(null);
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [turnStates, setTurnStates] = useState<CharacterTurnState[]>([]);
+  const [isProcessingTurn, setIsProcessingTurn] = useState(false);
   const currentCharacter = state.characters[state.currentTurn];
-  const TURN_SPEED = 100; // Lower is faster
+  const TURN_SPEED = 100;
 
-  // Initialize turn states for all characters
   useEffect(() => {
     if (state.combatActive) {
       setTurnStates(state.characters.map(char => ({
@@ -33,9 +35,8 @@ export const CombatManager = () => {
     }
   }, [state.combatActive]);
 
-  // Action bar fill effect
   useEffect(() => {
-    if (state.combatActive) {
+    if (state.combatActive && !isProcessingTurn) {
       const interval = setInterval(() => {
         setTurnStates(prev => prev.map(turnState => {
           if (turnState.actionBar >= 100) return turnState;
@@ -54,23 +55,15 @@ export const CombatManager = () => {
 
       return () => clearInterval(interval);
     }
-  }, [state.combatActive]);
+  }, [state.combatActive, isProcessingTurn]);
 
-  const calculateDamage = (attacker: Character) => {
-    const weaponDamage = rollDice({ type: "d8" });
-    const strengthMod = Math.floor((attacker.stats.strength - 10) / 2);
-    return weaponDamage + strengthMod;
-  };
-
-  const handleAttack = (target: Character) => {
+  const handleAttack = async (target: Character) => {
     if (!currentCharacter) return;
+    setIsProcessingTurn(true);
 
-    const strengthMod = Math.floor((currentCharacter.stats.strength - 10) / 2);
-    const proficiencyBonus = 2;
-    const toHitRoll = rollDice({ type: "d20" }) + strengthMod + proficiencyBonus;
-    const targetAC = 12;
-
-    if (toHitRoll >= targetAC) {
+    const hits = calculateHit(currentCharacter);
+    
+    if (hits) {
       const damage = calculateDamage(currentCharacter);
       const newHP = Math.max(0, target.hp - damage);
       
@@ -87,9 +80,15 @@ export const CombatManager = () => {
         message: `${currentCharacter.name} hits ${target.name} for ${damage} damage!`
       });
 
+      // Show combat message
       toast({
         title: "Hit!",
-        description: `Dealt ${damage} damage to ${target.name}`,
+        description: <CombatMessage 
+          type="attack"
+          attacker={currentCharacter.name}
+          target={target.name}
+          damage={damage}
+        />,
       });
 
       if (newHP <= 0) {
@@ -106,16 +105,24 @@ export const CombatManager = () => {
 
       toast({
         title: "Miss!",
-        description: `The attack missed ${target.name}`,
+        description: <CombatMessage 
+          type="miss"
+          attacker={currentCharacter.name}
+          target={target.name}
+        />,
       });
     }
     
+    // Add a delay before ending the turn
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsProcessingTurn(false);
     handleNextTurn();
   };
 
-  const handleAction = (actionType: string) => {
+  const handleAction = async (actionType: string) => {
     if (!currentCharacter) return;
     setSelectedAction(actionType);
+    setIsProcessingTurn(true);
 
     if (actionType !== "attack") {
       switch (actionType) {
@@ -123,6 +130,27 @@ export const CombatManager = () => {
           dispatch({
             type: "ADD_LOG",
             message: `${currentCharacter.name} takes a defensive stance.`
+          });
+          toast({
+            description: <CombatMessage 
+              type="defend"
+              attacker={currentCharacter.name}
+              target=""
+            />,
+          });
+          break;
+        case "rest":
+          const healAmount = calculateHealAmount(currentCharacter);
+          dispatch({
+            type: "UPDATE_CHARACTER",
+            character: {
+              ...currentCharacter,
+              hp: Math.min(currentCharacter.maxHp, currentCharacter.hp + healAmount)
+            }
+          });
+          dispatch({
+            type: "ADD_LOG",
+            message: `${currentCharacter.name} recovers ${healAmount} HP.`
           });
           break;
         case "move":
@@ -137,28 +165,17 @@ export const CombatManager = () => {
             message: `${currentCharacter.name} uses an item.`
           });
           break;
-        case "rest":
-          const healAmount = Math.floor(currentCharacter.maxHp * 0.25);
-          dispatch({
-            type: "UPDATE_CHARACTER",
-            character: {
-              ...currentCharacter,
-              hp: Math.min(currentCharacter.maxHp, currentCharacter.hp + healAmount)
-            }
-          });
-          dispatch({
-            type: "ADD_LOG",
-            message: `${currentCharacter.name} takes a moment to catch their breath and recovers ${healAmount} HP.`
-          });
-          break;
       }
+      
+      // Add a delay before ending the turn
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setIsProcessingTurn(false);
       handleNextTurn();
     }
   };
 
   const handleNextTurn = () => {
     setSelectedAction(null);
-    // Reset the current character's action bar
     setTurnStates(prev => prev.map(ts => 
       ts.id === currentCharacter?.id ? { ...ts, actionBar: 0, isReady: false } : ts
     ));
@@ -169,17 +186,19 @@ export const CombatManager = () => {
     
     if (nextCharacter) {
       toast({
-        title: `${nextCharacter.name}'s Turn`,
-        description: "Choose your action wisely...",
+        description: <CombatTurnIndicator 
+          currentCharacter={nextCharacter}
+          isPlayerTurn={!nextCharacter.isAI}
+        />,
       });
 
       if (nextCharacter.isAI) {
-        setTimeout(() => {
+        setTimeout(async () => {
           const playerCharacter = state.characters.find(char => !char.isAI);
           if (playerCharacter) {
-            handleAttack(playerCharacter);
+            await handleAttack(playerCharacter);
           }
-        }, 1500);
+        }, 2000);
       }
     }
   };
@@ -195,7 +214,13 @@ export const CombatManager = () => {
 
   return (
     <div className="space-y-4 animate-fade-in">
-      {/* Action Bars */}
+      {currentCharacter && (
+        <CombatTurnIndicator 
+          currentCharacter={currentCharacter}
+          isPlayerTurn={isPlayerTurn}
+        />
+      )}
+
       <div className="space-y-2">
         {turnStates.map((ts) => {
           const char = state.characters.find(c => c.id === ts.id);
@@ -219,14 +244,14 @@ export const CombatManager = () => {
         })}
       </div>
 
-      {isPlayerTurn && readyCharacters.some(ts => ts.id === currentCharacter.id) && !selectedAction && (
+      {isPlayerTurn && readyCharacters.some(ts => ts.id === currentCharacter.id) && !selectedAction && !isProcessingTurn && (
         <CombatActions 
           onAction={handleAction}
           character={currentCharacter}
         />
       )}
 
-      {isPlayerTurn && selectedAction === "attack" && (
+      {isPlayerTurn && selectedAction === "attack" && !isProcessingTurn && (
         <TargetSelector
           targets={getPossibleTargets()}
           onTargetSelect={handleAttack}
@@ -234,7 +259,7 @@ export const CombatManager = () => {
         />
       )}
 
-      {!isPlayerTurn && (
+      {!isPlayerTurn && !isProcessingTurn && (
         <Button
           onClick={handleNextTurn}
           className="w-full bg-fantasy-secondary hover:bg-fantasy-secondary/90"
