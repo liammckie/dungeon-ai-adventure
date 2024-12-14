@@ -1,5 +1,5 @@
 import { GameState } from "../gameState";
-import { RollType, RollResult } from "@/types/game";
+import { RollType, RollResult, DiceType } from "@/types/game";
 import {
   rollAbilityCheck,
   rollSavingThrow,
@@ -14,7 +14,7 @@ interface RollOptions {
   advantage?: boolean;
   disadvantage?: boolean;
   diceCount?: number;
-  diceType?: string;
+  diceType?: DiceType;
   isCritical?: boolean;
 }
 
@@ -48,7 +48,7 @@ export const handleRollDice = (
     case "damage":
       result = rollDamage(
         options.diceCount || 1,
-        options.diceType || 'd6',
+        options.diceType || "d6",
         options.abilityModifier || 0,
         options.isCritical
       );

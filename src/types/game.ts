@@ -76,8 +76,10 @@ export interface Quest {
 
 export type GamePhase = 'exploration' | 'interaction' | 'combat' | 'rest';
 
+export type DiceType = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
+
 export interface DiceRoll {
-  type: 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
+  type: DiceType;
   modifier?: number;
   advantage?: boolean;
   disadvantage?: boolean;
