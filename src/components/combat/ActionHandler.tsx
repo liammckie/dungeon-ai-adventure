@@ -1,14 +1,14 @@
 import { Character } from "@/types/game";
-import { Dispatch } from "react";
 import { GameAction } from "@/types/actions";
-import { CombatMessageType } from "./CombatMessage";
+import { Dispatch } from "react";
+import { Toast } from "@/components/ui/use-toast";
 
-export const handleCombatAction = (
+export const handleAction = (
   action: string,
   currentCharacter: Character,
   dispatch: Dispatch<GameAction>,
   onNextTurn: () => void,
-  showToast: (message: string) => void
+  showToast: (props: Toast) => void
 ) => {
   switch (action) {
     case "defend":
@@ -27,7 +27,7 @@ export const handleCombatAction = (
       break;
 
     case "rest":
-      const healAmount = Math.floor(currentCharacter.maxHp * 0.25);
+      const healAmount = Math.floor(currentCharacter.maxHp * 0.2);
       dispatch({
         type: "UPDATE_CHARACTER",
         character: {
@@ -39,14 +39,15 @@ export const handleCombatAction = (
         type: "ADD_LOG",
         message: `${currentCharacter.name} rests and recovers ${healAmount} HP.`
       });
-      showToast(`${currentCharacter.name} healed for ${healAmount} HP`);
+      showToast({
+        title: "Healing",
+        description: `${currentCharacter.name} healed for ${healAmount} HP`
+      });
       onNextTurn();
       break;
 
-    case "move":
-    case "useItem":
-      // Implement these actions later
-      onNextTurn();
+    default:
+      console.warn(`Unhandled action: ${action}`);
       break;
   }
 };

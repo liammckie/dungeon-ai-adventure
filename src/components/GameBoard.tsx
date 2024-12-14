@@ -13,10 +13,6 @@ export const GameBoard = () => {
   const playerCharacter = state.characters.find(char => !char.isAI);
   const enemies = state.characters.filter(char => char.isAI);
 
-  const handleStartCombat = () => {
-    dispatch({ type: "START_COMBAT" });
-  };
-
   return (
     <div className="min-h-screen bg-[#1a1e2e] p-4">
       <div className="max-w-[1800px] mx-auto grid grid-cols-12 gap-4">
@@ -87,7 +83,7 @@ export const GameBoard = () => {
                     <div className="relative w-full h-[400px] mb-6 rounded-lg overflow-hidden border-2 border-fantasy-frame-border">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
                       <img 
-                        src="/placeholder.svg" 
+                        src={state.currentScene.imageUrl || "/placeholder.svg"}
                         alt={state.currentScene.name}
                         className="w-full h-full object-cover"
                       />
@@ -98,22 +94,6 @@ export const GameBoard = () => {
                       <p className="text-xl leading-relaxed text-amber-200 font-serif">
                         {state.currentScene.description}
                       </p>
-                    </div>
-
-                    {/* Recent Game Logs */}
-                    <div className="mt-8 space-y-4">
-                      {state.gameLog.slice(-3).map((log, index) => (
-                        <p 
-                          key={index} 
-                          className="text-lg text-amber-100/90 italic leading-relaxed transition-opacity duration-500"
-                          style={{ 
-                            opacity: 1 - (index * 0.3),
-                            transform: `translateY(${index * -10}px)`
-                          }}
-                        >
-                          {log}
-                        </p>
-                      ))}
                     </div>
                   </>
                 )}
@@ -131,11 +111,11 @@ export const GameBoard = () => {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-bold text-fantasy-primary flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  Enemies Present
+                  {state.combatActive ? "Enemies" : "Characters Present"}
                 </h3>
-                {!state.combatActive && (
+                {!state.combatActive && enemies.some(enemy => enemy.isHostile) && (
                   <Button
-                    onClick={handleStartCombat}
+                    onClick={() => dispatch({ type: "START_COMBAT" })}
                     variant="destructive"
                     className="flex items-center gap-2"
                   >
