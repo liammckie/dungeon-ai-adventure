@@ -48,7 +48,7 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
         ]
       };
     case "ROLL_DICE":
-      return handleRollDice(state, action.rollType, action.options);
+      return handleRollDice(state, action.rollType as RollType, action.options);
     case "GENERATE_SCENE":
       return handleGenerateScene(state, action.sceneType);
     case "ADD_EVENT":
