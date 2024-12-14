@@ -37,7 +37,7 @@ export const CharacterCard = ({ character }: { character: Character }) => {
         <div className="flex-1">
           <h3 className="text-xl font-bold text-fantasy-primary">{character.name}</h3>
           <p className="text-sm text-fantasy-secondary">
-            Level {character.level} {character.race} {character.class}
+            Level {character.level} {String(character.race)} {String(character.class)}
           </p>
           <div className="mt-2">
             <div className="flex justify-between text-sm mb-1">

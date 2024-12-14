@@ -8,24 +8,29 @@ export const statsSchema = z.object({
   intelligence: z.number().min(3).max(18),
   wisdom: z.number().min(3).max(18),
   charisma: z.number().min(3).max(18),
-}) as z.ZodType<CharacterStats>;
+}) satisfies z.ZodType<CharacterStats>;
+
+const characterClassEnum = z.enum([
+  "Fighter", "Wizard", "Cleric", "Rogue", "Barbarian", 
+  "Paladin", "Ranger", "Druid", "Warlock", "Sorcerer", "Monk", "Bard"
+]) satisfies z.ZodType<CharacterClass>;
+
+const characterRaceEnum = z.enum([
+  "Human", "Elf", "Dwarf", "Halfling", "Dragonborn", 
+  "Gnome", "Half-Elf", "Tiefling"
+]) satisfies z.ZodType<CharacterRace>;
+
+const characterSubraceEnum = z.enum([
+  "High Elf", "Wood Elf", "Dark Elf", "Hill Dwarf", "Mountain Dwarf",
+  "Lightfoot", "Stout", "Standard Human", "Variant Human",
+  "Forest Gnome", "Rock Gnome", "Deep Gnome"
+]) satisfies z.ZodType<CharacterSubrace>;
 
 export const characterSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  race: z.string().refine((val): val is CharacterRace => 
-    ["Human", "Elf", "Dwarf", "Halfling", "Dragonborn", "Gnome", "Half-Elf", "Tiefling"].includes(val),
-    "Invalid race selection"
-  ),
-  subrace: z.string().refine((val): val is CharacterSubrace => 
-    ["High Elf", "Wood Elf", "Dark Elf", "Hill Dwarf", "Mountain Dwarf", "Lightfoot", "Stout", 
-     "Standard Human", "Variant Human", "Forest Gnome", "Rock Gnome", "Deep Gnome"].includes(val),
-    "Invalid subrace selection"
-  ).optional(),
-  class: z.string().refine((val): val is CharacterClass => 
-    ["Fighter", "Wizard", "Cleric", "Rogue", "Barbarian", "Paladin", "Ranger", 
-     "Druid", "Warlock", "Sorcerer", "Monk", "Bard"].includes(val),
-    "Invalid class selection"
-  ),
+  race: characterRaceEnum,
+  subrace: characterSubraceEnum.optional(),
+  class: characterClassEnum,
   background: z.string(),
   stats: statsSchema,
   skills: z.array(z.string()),

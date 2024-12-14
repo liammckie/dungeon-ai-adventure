@@ -1,53 +1,44 @@
-import { Character } from "@/types/game";
-import { GameAction } from "@/types/actions";
-import { Dispatch } from "react";
-import { ToastProps } from "@/components/ui/toast";
+import { toast } from "@/components/ui/use-toast";
+import type { Character } from "@/types/game";
 
 export const handleAction = (
   action: string,
-  currentCharacter: Character,
-  dispatch: Dispatch<GameAction>,
-  onNextTurn: () => void,
-  showToast: (props: ToastProps) => void
+  character: Character,
+  target?: Character,
+  onUpdateCharacter?: (character: Character) => void,
+  onUpdateTarget?: (target: Character) => void
 ) => {
   switch (action) {
     case "defend":
-      dispatch({
-        type: "UPDATE_CHARACTER",
-        character: {
-          ...currentCharacter,
-          temporaryHp: (currentCharacter.temporaryHp || 0) + 2,
-        },
-      });
-      dispatch({
-        type: "ADD_LOG",
-        message: `${currentCharacter.name} takes a defensive stance.`
-      });
-      onNextTurn();
+      // Apply defensive stance
+      if (character && onUpdateCharacter) {
+        const updatedCharacter = {
+          ...character,
+          temporaryHp: character.temporaryHp || 0 + Math.floor(character.stats.constitution / 2),
+        };
+        onUpdateCharacter(updatedCharacter);
+        toast({
+          title: "Defense",
+          description: `${character.name} takes a defensive stance`,
+        });
+      }
       break;
 
     case "rest":
-      const healAmount = Math.floor(currentCharacter.maxHp * 0.2);
-      dispatch({
-        type: "UPDATE_CHARACTER",
-        character: {
-          ...currentCharacter,
-          hp: Math.min(currentCharacter.maxHp, currentCharacter.hp + healAmount),
-        },
-      });
-      dispatch({
-        type: "ADD_LOG",
-        message: `${currentCharacter.name} rests and recovers ${healAmount} HP.`
-      });
-      showToast({
-        title: "Healing",
-        description: `${currentCharacter.name} healed for ${healAmount} HP`
-      });
-      onNextTurn();
+      // Heal character
+      if (character && onUpdateCharacter) {
+        const healAmount = Math.floor(character.maxHp * 0.2);
+        const newHp = Math.min(character.hp + healAmount, character.maxHp);
+        const updatedCharacter = { ...character, hp: newHp };
+        onUpdateCharacter(updatedCharacter);
+        toast({
+          title: "Rest",
+          description: `${character.name} recovers ${healAmount} HP`,
+        });
+      }
       break;
 
     default:
-      console.warn(`Unhandled action: ${action}`);
-      break;
+      console.warn(`Unknown action: ${action}`);
   }
 };

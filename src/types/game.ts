@@ -1,6 +1,15 @@
-import { type Item } from "./game";
+export type Item = {
+  id: string;
+  name: string;
+  description: string;
+  type: ItemType;
+  damage?: string;
+  armorClass?: number;
+};
 
-export type AbilityScores = {
+export type ItemType = "weapon" | "armor" | "misc" | "focus";
+
+export type CharacterStats = {
   strength: number;
   dexterity: number;
   constitution: number;
@@ -9,113 +18,79 @@ export type AbilityScores = {
   charisma: number;
 };
 
-export type Skill = {
-  name: string;
-  ability: keyof AbilityScores;
-  isProficient: boolean;
-};
+export type CharacterClass = 
+  | "Fighter"
+  | "Wizard"
+  | "Cleric"
+  | "Rogue"
+  | "Barbarian"
+  | "Paladin"
+  | "Ranger"
+  | "Druid"
+  | "Warlock"
+  | "Sorcerer"
+  | "Monk"
+  | "Bard";
 
-export type CharacterRace = {
-  name: string;
-  subrace?: string;
-  abilityScoreIncrease: Partial<AbilityScores>;
-  traits: string[];
-  languages: string[];
-  speed: number;
-  darkvision?: number;
-};
+export type CharacterRace = 
+  | "Human"
+  | "Elf"
+  | "Dwarf"
+  | "Halfling"
+  | "Dragonborn"
+  | "Gnome"
+  | "Half-Elf"
+  | "Tiefling";
 
-export type CharacterClass = {
-  name: string;
-  subclass?: string;
-  hitDie: number;
-  primaryAbility: (keyof AbilityScores)[];
-  savingThrows: (keyof AbilityScores)[];
-  proficiencies: {
-    armor: string[];
-    weapons: string[];
-    tools: string[];
-    skills: number; // Number of skills to choose
-  };
-  features: string[];
-  spellcasting?: {
-    ability: keyof AbilityScores;
-    cantripsKnown: number;
-    spellsKnown: number;
-    spellSlots: number[];
-  };
-};
+export type CharacterSubrace = 
+  | "High Elf"
+  | "Wood Elf"
+  | "Dark Elf"
+  | "Hill Dwarf"
+  | "Mountain Dwarf"
+  | "Lightfoot"
+  | "Stout"
+  | "Standard Human"
+  | "Variant Human"
+  | "Forest Gnome"
+  | "Rock Gnome"
+  | "Deep Gnome";
 
-export type Background = {
-  name: string;
-  skillProficiencies: string[];
-  toolProficiencies: string[];
-  languages: number;
-  equipment: Item[];
-  feature: {
-    name: string;
-    description: string;
-  };
-  characteristics: {
-    personality: string[];
-    ideal: string[];
-    bond: string[];
-    flaw: string[];
-  };
-};
+export type GamePhase = 
+  | "exploration"
+  | "combat"
+  | "dialogue"
+  | "rest";
 
-export type Spell = {
+export type Quest = {
   id: string;
-  name: string;
-  level: number;
-  school: string;
-  castingTime: string;
-  range: string;
-  components: string[];
-  duration: string;
+  title: string;
   description: string;
-  classes: string[];
+  status: "active" | "completed" | "failed";
 };
 
-export type Feat = {
-  name: string;
-  prerequisites?: Partial<{
-    abilityScores: Partial<AbilityScores>;
-    level: number;
-    race: string[];
-    class: string[];
-  }>;
-  description: string;
-  benefits: string[];
+export type DiceType = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
+
+export type RollType = "attack" | "damage" | "save" | "check" | "heal";
+
+export type DiceRoll = {
+  type: RollType;
+  diceType: DiceType;
+  modifier?: number;
+  advantage?: boolean;
+  disadvantage?: boolean;
 };
 
-export type CharacterData = {
-  id: string;
+export type RollResult = {
+  total: number;
+  rolls: number[];
+  modifier?: number;
+  success?: boolean;
+};
+
+export type Trait = {
   name: string;
-  race: CharacterRace;
-  class: CharacterClass;
-  background: Background;
-  abilityScores: AbilityScores;
-  skills: Skill[];
-  feats: Feat[];
-  spells: Spell[];
-  equipment: Item[];
-  level: number;
-  experience: number;
-  hitPoints: {
-    current: number;
-    maximum: number;
-    temporary: number;
-  };
-  proficiencyBonus: number;
-  initiative: number;
-  armorClass: number;
-  speed: number;
-  inspiration: boolean;
-  personalityTraits: string[];
-  ideals: string[];
-  bonds: string[];
-  flaws: string[];
+  description: string;
 };
 
 export interface Character {
@@ -144,3 +119,30 @@ export interface Character {
   isAI: boolean;
   isHostile?: boolean;
 }
+
+export const getDefaultStats = (): CharacterStats => ({
+  strength: 10,
+  dexterity: 10,
+  constitution: 10,
+  intelligence: 10,
+  wisdom: 10,
+  charisma: 10,
+});
+
+export const getHitDice = (characterClass: CharacterClass): number => {
+  const hitDiceMap: Record<CharacterClass, number> = {
+    Barbarian: 12,
+    Fighter: 10,
+    Paladin: 10,
+    Ranger: 10,
+    Monk: 8,
+    Rogue: 8,
+    Cleric: 8,
+    Druid: 8,
+    Bard: 8,
+    Warlock: 8,
+    Wizard: 6,
+    Sorcerer: 6,
+  };
+  return hitDiceMap[characterClass];
+};
