@@ -26,14 +26,14 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
         intelligence: 10,
         wisdom: 10,
         charisma: 10,
-      } satisfies CharacterStatsType,
+      } as CharacterStatsType,
     },
   });
 
   const handleRandomize = () => {
     const stats = rollStats();
-    (Object.keys(stats) as Array<keyof typeof stats>).forEach((stat) => {
-      form.setValue(`stats.${stat}` as const, stats[stat], { shouldValidate: true });
+    Object.entries(stats).forEach(([stat, value]) => {
+      form.setValue(`stats.${stat}` as const, value, { shouldValidate: true });
     });
   };
 
