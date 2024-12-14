@@ -1,5 +1,5 @@
 import * as z from "zod";
-import type { AbilityScores } from "@/types/character";
+import type { CharacterClass, CharacterRace, CharacterStats } from "@/types/game";
 
 const statsSchema = z.object({
   strength: z.number().min(3).max(18),
@@ -12,9 +12,15 @@ const statsSchema = z.object({
 
 export const characterSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  race: z.string(),
+  race: z.string().refine((val): val is CharacterRace => 
+    ["Human", "Elf", "Dwarf", "Halfling"].includes(val as CharacterRace),
+    "Invalid race selection"
+  ),
   subrace: z.string().optional(),
-  class: z.string(),
+  class: z.string().refine((val): val is CharacterClass => 
+    ["Fighter", "Wizard", "Cleric", "Rogue"].includes(val as CharacterClass),
+    "Invalid class selection"
+  ),
   subclass: z.string().optional(),
   background: z.string(),
   stats: statsSchema,

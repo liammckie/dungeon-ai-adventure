@@ -10,7 +10,7 @@ import { AbilityScoreGeneration } from "./character-creation/AbilityScoreGenerat
 import { characterSchema, type CharacterFormData } from "./character-creation/characterSchema";
 import { getStartingItems } from "./character-creation/characterUtils";
 import { getHitDice } from "@/types/game";
-import type { Character } from "@/types/game";
+import type { Character, CharacterClass, CharacterRace } from "@/types/game";
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
@@ -18,8 +18,9 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
     resolver: zodResolver(characterSchema),
     defaultValues: {
       name: "",
-      race: "",
-      class: "Fighter",
+      race: "Human" as CharacterRace,
+      class: "Fighter" as CharacterClass,
+      background: "Soldier",
       stats: {
         strength: 10,
         dexterity: 10,
@@ -33,13 +34,13 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
   });
 
   const onSubmit = (data: CharacterFormData) => {
-    const startingItems = getStartingItems(data.class);
-    const hitDice = getHitDice(data.class);
+    const startingItems = getStartingItems(data.class as CharacterClass);
+    const hitDice = getHitDice(data.class as CharacterClass);
     const newCharacter: Character = {
       id: "player1",
       name: data.name,
-      race: data.race,
-      class: data.class,
+      race: data.race as CharacterRace,
+      class: data.class as CharacterClass,
       stats: data.stats,
       hp: hitDice,
       maxHp: hitDice,

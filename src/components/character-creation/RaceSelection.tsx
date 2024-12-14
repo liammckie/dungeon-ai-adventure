@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { races } from "@/data/races";
 import { CharacterFormData } from "./characterSchema";
+import type { CharacterStats } from "@/types/game";
 
 export const RaceSelection = ({ 
   form 
@@ -31,9 +32,12 @@ export const RaceSelection = ({
     const selectedRace = races.find(r => r.name === value);
     if (selectedRace?.abilityScoreIncrease) {
       Object.entries(selectedRace.abilityScoreIncrease).forEach(([ability, bonus]) => {
-        const currentValue = form.getValues(`stats.${ability}`);
+        const currentValue = form.getValues(`stats.${ability as keyof CharacterStats}`);
         if (currentValue !== undefined && bonus !== undefined) {
-          form.setValue(`stats.${ability}`, currentValue + bonus);
+          form.setValue(
+            `stats.${ability as keyof CharacterStats}`, 
+            currentValue + bonus
+          );
         }
       });
     }
