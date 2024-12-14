@@ -1,4 +1,4 @@
-import { DiceRoll, RollResult, DiceType } from "@/types/game";
+import { DiceRoll, RollResult, DiceType, RollType } from "@/types/game";
 
 export const rollDice = (roll: DiceRoll): RollResult => {
   const rolls: number[] = [];
@@ -20,47 +20,28 @@ export const rollDice = (roll: DiceRoll): RollResult => {
   };
 };
 
-export const rollAbilityCheck = (modifier: number, proficiencyBonus?: number, options?: { advantage?: boolean; disadvantage?: boolean }): RollResult => {
-  const roll: DiceRoll = {
-    type: 'd20',
-    count: 1,
-    modifier: modifier + (proficiencyBonus || 0)
-  };
-  return rollDice(roll);
+export const createDiceRoll = (type: DiceType, count: number = 1, modifier: number = 0): DiceRoll => ({
+  type,
+  count,
+  modifier
+});
+
+export const rollAbilityCheck = (modifier: number = 0): RollResult => {
+  return rollDice(createDiceRoll('d20', 1, modifier));
 };
 
-export const rollSavingThrow = (modifier: number, options?: { advantage?: boolean; disadvantage?: boolean }): RollResult => {
-  const roll: DiceRoll = {
-    type: 'd20',
-    count: 1,
-    modifier
-  };
-  return rollDice(roll);
+export const rollSavingThrow = (modifier: number = 0): RollResult => {
+  return rollDice(createDiceRoll('d20', 1, modifier));
 };
 
-export const rollAttack = (modifier: number, options?: { advantage?: boolean; disadvantage?: boolean }): RollResult => {
-  const roll: DiceRoll = {
-    type: 'd20',
-    count: 1,
-    modifier
-  };
-  return rollDice(roll);
+export const rollAttack = (modifier: number = 0): RollResult => {
+  return rollDice(createDiceRoll('d20', 1, modifier));
 };
 
-export const rollDamage = (diceCount: number, diceType: DiceType, modifier: number, isCritical?: boolean): RollResult => {
-  const roll: DiceRoll = {
-    type: diceType,
-    count: diceCount * (isCritical ? 2 : 1),
-    modifier
-  };
-  return rollDice(roll);
+export const rollDamage = (diceType: DiceType, count: number = 1, modifier: number = 0): RollResult => {
+  return rollDice(createDiceRoll(diceType, count, modifier));
 };
 
-export const rollInitiative = (modifier: number, options?: { advantage?: boolean; disadvantage?: boolean }): RollResult => {
-  const roll: DiceRoll = {
-    type: 'd20',
-    count: 1,
-    modifier
-  };
-  return rollDice(roll);
+export const rollInitiative = (modifier: number = 0): RollResult => {
+  return rollDice(createDiceRoll('d20', 1, modifier));
 };
