@@ -1,7 +1,9 @@
 import { GameState } from "./gameState";
 import { Character, DiceRoll, GamePhase } from "@/types/game";
+import { Scene, StoryEvent } from "@/types/content";
 import { calculateLevelUp } from "./levelingUtils";
 import { rollDice } from "./diceUtils";
+import { generateScene } from "@/utils/contentGeneration";
 
 export type GameAction =
   | { type: "START_COMBAT" }
@@ -12,6 +14,10 @@ export type GameAction =
   | { type: "CREATE_CHARACTER"; character: Character }
   | { type: "GAIN_XP"; characterId: string; amount: number }
   | { type: "SET_PHASE"; phase: GamePhase }
+  | { type: "GENERATE_SCENE"; sceneType: Scene['type'] }
+  | { type: "ADD_EVENT"; event: StoryEvent }
+  | { type: "COMPLETE_EVENT"; eventId: string }
+  | { type: "UPDATE_WORLD_STATE"; key: string; value: any }
   | { type: "ROLL_DICE"; roll: DiceRoll };
 
 export const gameReducer = (state: GameState, action: GameAction): GameState => {
@@ -146,6 +152,57 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
         ]
       };
     }
+    
+    case "GENERATE_SCENE": {
+      const playerCharacter = state.characters.find(char => !char.isAI);
+      if (!playerCharacter) return state;
+      
+      const newScene = generateScene(
+        action.sceneType,
+        playerCharacter.level,
+        state.worldState
+      );
+      
+      return {
+        ...state,
+        currentScene: newScene,
+        gameLog: [
+          ...state.gameLog,
+          `Entering ${newScene.name}...`,
+          newScene.description
+        ]
+      };
+    }
+    
+    case "ADD_EVENT":
+      return {
+        ...state,
+        activeEvents: [...state.activeEvents, action.event],
+        gameLog: [
+          ...state.gameLog,
+          `New event: ${action.event.title}`
+        ]
+      };
+      
+    case "COMPLETE_EVENT":
+      return {
+        ...state,
+        activeEvents: state.activeEvents.filter(event => event.id !== action.eventId),
+        gameLog: [
+          ...state.gameLog,
+          `Event completed!`
+        ]
+      };
+      
+    case "UPDATE_WORLD_STATE":
+      return {
+        ...state,
+        worldState: {
+          ...state.worldState,
+          [action.key]: action.value
+        }
+      };
+      
     default:
       return state;
   }

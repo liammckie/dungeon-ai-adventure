@@ -1,4 +1,5 @@
 import type { Character, GamePhase, Quest, DiceRoll } from "@/types/game";
+import type { Scene, StoryEvent } from "@/types/content";
 
 export interface GameState {
   characters: Character[];
@@ -7,6 +8,9 @@ export interface GameState {
   combatActive: boolean;
   activeQuests: Quest[];
   currentPhase: GamePhase;
+  currentScene?: Scene;
+  activeEvents: StoryEvent[];
+  worldState: Record<string, any>;
   lastRoll?: {
     total: number;
     rolls: number[];
@@ -21,4 +25,6 @@ export const initialGameState: GameState = {
   combatActive: false,
   activeQuests: [],
   currentPhase: 'exploration',
+  activeEvents: [],
+  worldState: {},
 };
