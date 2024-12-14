@@ -11,10 +11,10 @@ const queryClient = new QueryClient();
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <GameProvider>
-          <BrowserRouter>
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <GameProvider>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/game" element={<Game />} />
@@ -22,10 +22,10 @@ const App = () => {
               {/* Redirect /create-character to /character-creation for compatibility */}
               <Route path="/create-character" element={<Navigate to="/character-creation" replace />} />
             </Routes>
-          </BrowserRouter>
-        </GameProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+          </GameProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
   );
 };
 
