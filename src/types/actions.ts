@@ -3,7 +3,7 @@ import { Scene, StoryEvent } from "./content";
 import { WorldState, WorldStateValue } from "./worldState";
 
 export type CombatAction = 
-  | { type: "START_COMBAT" }
+  | { type: "START_COMBAT"; initiativeOrder?: string[] }
   | { type: "END_COMBAT" }
   | { type: "NEXT_TURN" };
 
