@@ -8,7 +8,14 @@ import Game from "./pages/Game";
 import CharacterCreation from "./pages/CharacterCreation";
 import { GameProvider } from "./context/GameContext";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

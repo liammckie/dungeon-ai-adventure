@@ -8,8 +8,8 @@ const CharacterCreation = () => {
   const { state } = useGame();
 
   React.useEffect(() => {
-    // Only redirect to game if we have characters AND we came from the start screen
-    if (state.characters.length > 0 && document.referrer.includes('/')) {
+    // If we already have characters, redirect to game
+    if (state.characters.length > 0) {
       navigate("/game");
     }
   }, [state.characters, navigate]);
@@ -27,12 +27,7 @@ const CharacterCreation = () => {
     >
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div className="relative z-10">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-6xl font-bold text-white mb-8 text-center drop-shadow-lg">
-            Create Your Hero
-          </h1>
-          <CharacterCreationForm onCharacterCreated={handleCharacterCreated} />
-        </div>
+        <CharacterCreationForm onCharacterCreated={handleCharacterCreated} />
       </div>
     </div>
   );

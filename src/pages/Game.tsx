@@ -1,7 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { GameBoard } from "@/components/GameBoard";
 import { useGame } from "@/context/GameContext";
-import { useNavigate } from "react-router-dom";
 
 const Game = () => {
   const { state } = useGame();

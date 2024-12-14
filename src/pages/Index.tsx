@@ -1,79 +1,61 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Dice6, Swords, Scroll } from "lucide-react";
-import { useGame } from "@/context/GameContext";
 import { useToast } from "@/components/ui/use-toast";
+import { useGame } from "@/context/GameContext";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { state } = useGame();
   const { toast } = useToast();
-  
+  const { state } = useGame();
+
   const handleStartGame = () => {
-    document.body.classList.add('animate-fade-out');
-    setTimeout(() => {
-      navigate("/create-character");
-    }, 300);
+    navigate("/create-character");
   };
 
   const handleLoadGame = () => {
     if (state.characters.length > 0) {
-      document.body.classList.add('animate-fade-out');
-      setTimeout(() => {
-        navigate("/game");
-      }, 300);
+      navigate("/game");
     } else {
       toast({
         title: "No saved game found",
-        description: "Start a new game to begin your adventure!",
+        description: "Please start a new game instead.",
         variant: "destructive",
       });
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1F2C] bg-opacity-95 flex items-center justify-center p-6 relative overflow-hidden animate-fade-in">
-      <div className="absolute inset-0 bg-[url('/lovable-uploads/28950689-1e3c-4d6c-846e-f8506162e596.png')] bg-cover bg-center opacity-20" />
-      
-      <div className="relative z-10 max-w-2xl w-full">
-        <div className="bg-black/60 p-8 rounded-lg border-2 border-red-900/50 backdrop-blur-sm">
-          <div className="text-center space-y-6">
-            <h1 className="text-6xl font-bold text-red-600 mb-4">
-              Dungeon & Dragons
-            </h1>
-            <p className="text-gray-300 text-xl mb-8">
-              Embark on an epic journey into darkness
-            </p>
-            
-            <div className="grid gap-4">
-              <Button 
-                onClick={handleStartGame}
-                className="w-full bg-red-900 hover:bg-red-800 text-white py-6 text-lg group transition-all duration-300"
-              >
-                <Dice6 className="mr-2 h-6 w-6 group-hover:rotate-180 transition-transform duration-300" />
-                Begin Your Adventure
-              </Button>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <Button 
-                  variant="outline"
-                  onClick={handleLoadGame}
-                  className="bg-transparent border-red-900/50 text-red-500 hover:bg-red-900/20"
-                >
-                  <Scroll className="mr-2 h-5 w-5" />
-                  Load Game
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="bg-transparent border-red-900/50 text-red-500 hover:bg-red-900/20"
-                >
-                  <Swords className="mr-2 h-5 w-5" />
-                  Tutorial
-                </Button>
-              </div>
-            </div>
-          </div>
+    <div 
+      className="min-h-screen bg-cover bg-center bg-fixed flex items-center justify-center p-6"
+      style={{ 
+        backgroundImage: "url('/lovable-uploads/dc838ce3-0194-4835-bc02-1fa34cb0eabd.png')",
+      }}
+    >
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="relative z-10 max-w-md w-full">
+        <div className="text-center mb-8">
+          <h1 className="text-6xl font-bold text-white mb-4">
+            Dungeon Adventure
+          </h1>
+          <p className="text-xl text-gray-300">
+            Begin your epic journey
+          </p>
+        </div>
+        
+        <div className="space-y-4">
+          <Button 
+            onClick={handleStartGame}
+            className="w-full bg-fantasy-primary hover:bg-fantasy-primary/90 text-white py-6 text-xl"
+          >
+            Start New Game
+          </Button>
+          <Button 
+            onClick={handleLoadGame}
+            className="w-full bg-fantasy-secondary hover:bg-fantasy-secondary/90 text-white py-6 text-xl"
+          >
+            Load Game
+          </Button>
         </div>
       </div>
     </div>
