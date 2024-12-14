@@ -65,16 +65,16 @@ export const GameBoard = () => {
             </div>
           </div>
 
-          {/* Game Log - Moved here */}
+          {/* Game Log */}
           <div className="bg-character-frame bg-cover bg-center p-4 rounded-lg border-2 border-fantasy-frame-border">
             <GameLog />
           </div>
         </div>
 
         {/* Center Column - Main Game Area */}
-        <div className="col-span-9 space-y-4">
+        <div className="col-span-6 space-y-4">
           {/* Story Scene */}
-          <div className="bg-character-frame bg-cover bg-center p-6 rounded-lg border-2 border-fantasy-frame-border min-h-[600px] relative overflow-hidden">
+          <div className="bg-character-frame bg-cover bg-center p-6 rounded-lg border-2 border-fantasy-frame-border min-h-[800px] relative overflow-hidden">
             <div className="bg-black/70 backdrop-blur-sm p-8 rounded-lg h-full flex flex-col">
               <div className="prose prose-invert prose-lg max-w-none space-y-6 animate-fade-in">
                 {state.currentScene && (
@@ -84,7 +84,7 @@ export const GameBoard = () => {
                     </h2>
                     
                     {/* Scene Image Container */}
-                    <div className="relative w-full h-[300px] mb-6 rounded-lg overflow-hidden border-2 border-fantasy-frame-border">
+                    <div className="relative w-full h-[400px] mb-6 rounded-lg overflow-hidden border-2 border-fantasy-frame-border">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
                       <img 
                         src="/placeholder.svg" 
@@ -116,32 +116,36 @@ export const GameBoard = () => {
             </div>
           </div>
 
-          {/* Combat Controls */}
-          {!state.combatActive && enemies.length > 0 && (
+          {state.combatActive && <CombatControls />}
+        </div>
+
+        {/* Right Column - Enemies */}
+        <div className="col-span-3 space-y-4">
+          {enemies.length > 0 && (
             <div className="bg-parchment-texture bg-cover rounded-lg border-2 border-fantasy-frame-border p-4">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-bold text-fantasy-primary flex items-center gap-2">
                   <Users className="h-5 w-5" />
                   Enemies Present
                 </h3>
-                <Button
-                  onClick={handleStartCombat}
-                  variant="destructive"
-                  className="flex items-center gap-2"
-                >
-                  <Sword className="h-4 w-4" />
-                  Initiate Combat
-                </Button>
+                {!state.combatActive && (
+                  <Button
+                    onClick={handleStartCombat}
+                    variant="destructive"
+                    className="flex items-center gap-2"
+                  >
+                    <Sword className="h-4 w-4" />
+                    Initiate Combat
+                  </Button>
+                )}
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
                 {enemies.map((enemy) => (
                   <CharacterCard key={enemy.id} character={enemy} />
                 ))}
               </div>
             </div>
           )}
-
-          {state.combatActive && <CombatControls />}
         </div>
       </div>
     </div>
