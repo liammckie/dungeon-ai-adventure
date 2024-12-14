@@ -12,7 +12,7 @@ import {
 import { MessageSquare, Beer } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { rollDice } from "@/context/diceUtils";
-import { BLACK_HOLLOW_NPCS } from "@/data/stories/blackHollow";
+import { BLACK_HOLLOW_NPCS } from "@/data/stories/npcs/blackHollowNPCs";
 
 const npcs = BLACK_HOLLOW_NPCS;
 
