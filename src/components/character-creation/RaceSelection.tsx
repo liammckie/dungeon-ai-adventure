@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { races } from "@/data/races";
 import { CharacterFormData } from "./characterSchema";
-import type { CharacterStats } from "@/types/game";
+import type { CharacterRace, CharacterStats } from "@/types/game";
 
 export const RaceSelection = ({ 
   form 
@@ -24,22 +24,26 @@ export const RaceSelection = ({
   form: UseFormReturn<CharacterFormData> 
 }) => {
   const handleRaceChange = (value: string) => {
-    form.setValue("race", value);
+    // Ensure the value is a valid CharacterRace before setting it
+    const raceValue = value as CharacterRace;
+    form.setValue("race", raceValue);
     // Reset subrace when race changes
     form.setValue("subrace", undefined);
     
     // Apply racial ability score bonuses
     const selectedRace = races.find(r => r.name === value);
     if (selectedRace?.abilityScoreIncrease) {
+      const currentStats = form.getValues("stats");
+      const newStats = { ...currentStats };
+
       Object.entries(selectedRace.abilityScoreIncrease).forEach(([ability, bonus]) => {
-        const currentValue = form.getValues(`stats.${ability as keyof CharacterStats}`);
-        if (currentValue !== undefined && bonus !== undefined) {
-          form.setValue(
-            `stats.${ability as keyof CharacterStats}`, 
-            currentValue + bonus
-          );
+        if (ability in newStats && typeof bonus === 'number') {
+          newStats[ability as keyof CharacterStats] = 
+            (currentStats[ability as keyof CharacterStats] || 10) + bonus;
         }
       });
+
+      form.setValue("stats", newStats);
     }
   };
 

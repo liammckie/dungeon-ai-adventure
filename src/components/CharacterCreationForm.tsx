@@ -32,9 +32,9 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
     const newCharacter: Character = {
       id: "player1",
       name: data.name,
-      race: data.race as CharacterRace,
+      race: data.race,
       subrace: data.subrace,
-      class: data.class as CharacterClass,
+      class: data.class,
       stats: data.stats,
       hp: hitDice,
       maxHp: hitDice,
