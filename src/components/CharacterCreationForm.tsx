@@ -9,7 +9,7 @@ import { CharacterStats } from "./CharacterStats";
 import { CharacterBasicInfo } from "./character-creation/CharacterBasicInfo";
 import { characterSchema, type CharacterFormData } from "./character-creation/characterSchema";
 import { getStartingItems, rollStats } from "./character-creation/characterUtils";
-import type { Character } from "@/types/game";
+import type { Character, CharacterStats as CharacterStatsType } from "@/types/game";
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
@@ -26,15 +26,15 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
         intelligence: 10,
         wisdom: 10,
         charisma: 10,
-      },
+      } as CharacterStatsType,
     },
   });
 
   const handleRandomize = () => {
     const stats = rollStats();
-    const statKeys = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"] as const;
-    statKeys.forEach((stat) => {
-      form.setValue(`stats.${stat}`, stats[stat], { shouldValidate: true });
+    const statEntries = Object.entries(stats) as [keyof CharacterStatsType, number][];
+    statEntries.forEach(([stat, value]) => {
+      form.setValue(`stats.${stat}`, value, { shouldValidate: true });
     });
   };
 
