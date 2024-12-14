@@ -1,4 +1,4 @@
-import { DiceRoll, RollType, RollResult } from "@/types/game";
+import { DiceRoll, RollType, RollResult, DiceType } from "@/types/game";
 
 export const rollD20 = (options: {
   advantage?: boolean;
@@ -23,10 +23,43 @@ export const rollD20 = (options: {
     rolls: options.advantage || options.disadvantage ? [roll1, roll2] : [roll1],
     total,
     modifier: options.modifier || 0,
-    type: 'd20',
+    type: "d20",
     isNatural20: finalRoll === 20,
     isNatural1: finalRoll === 1
   };
+};
+
+const getDiceValue = (diceType: DiceType): number => {
+  const values: Record<DiceType, number> = {
+    'd4': 4,
+    'd6': 6,
+    'd8': 8,
+    'd10': 10,
+    'd12': 12,
+    'd20': 20,
+    'd100': 100
+  };
+  return values[diceType];
+};
+
+export const rollDice = (dice: DiceRoll): RollResult => {
+  if (typeof dice.type === 'string' && dice.type.startsWith('d')) {
+    const diceType = dice.type as DiceType;
+    const roll = Math.floor(Math.random() * getDiceValue(diceType)) + 1;
+    return {
+      rolls: [roll],
+      total: roll + (dice.modifier || 0),
+      type: dice.type,
+      modifier: dice.modifier
+    };
+  }
+  
+  // For non-dice roll types, default to d20
+  return rollD20({
+    advantage: dice.advantage,
+    disadvantage: dice.disadvantage,
+    modifier: dice.modifier
+  });
 };
 
 export const rollAbilityCheck = (

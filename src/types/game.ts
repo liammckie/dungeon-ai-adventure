@@ -67,25 +67,15 @@ export type Quest = {
   title: string;
   description: string;
   status: "active" | "completed" | "failed";
-  difficulty?: string;
+  difficulty: string;
 };
 
 export type DiceType = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
 
-export type RollType = 
-  | "attack" 
-  | "damage" 
-  | "save" 
-  | "check" 
-  | "heal" 
-  | "ability"
-  | "saving"
-  | "initiative"
-  | DiceType;
+export type RollType = "attack" | "damage" | "save" | "check" | "heal" | "ability" | "saving" | "initiative";
 
 export type DiceRoll = {
-  type: RollType;
-  diceType: DiceType;
+  type: RollType | DiceType;
   modifier?: number;
   advantage?: boolean;
   disadvantage?: boolean;
@@ -95,16 +85,11 @@ export type RollResult = {
   total: number;
   rolls: number[];
   modifier?: number;
-  type?: RollType;
+  type: RollType | DiceType;
   success?: boolean;
   isNatural20?: boolean;
   isNatural1?: boolean;
   isCritical?: boolean;
-};
-
-export type Trait = {
-  name: string;
-  description: string;
 };
 
 export interface Character {
