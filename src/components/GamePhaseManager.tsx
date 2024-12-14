@@ -4,7 +4,7 @@ import { GameBoard } from "./GameBoard";
 import { TavernScene } from "./TavernScene";
 import { Button } from "@/components/ui/button";
 import { Sword, Map, MessageSquare, Heart } from "lucide-react";
-import { GamePhase } from "@/types/game";
+import { GamePhase, CharacterRace } from "@/types/game";
 import { useToast } from "@/hooks/use-toast";
 import { FOREST_SCENES } from "@/data/stories/scenes/forestScenes";
 
@@ -120,13 +120,7 @@ export const GamePhaseManager = () => {
         const newEnemy = {
           id: `enemy_${Date.now()}`,
           name: "Forest Bandit",
-          race: {
-            name: "Human",
-            abilityScoreIncrease: {},
-            traits: ["Versatile"],
-            languages: ["Common"],
-            speed: 30
-          },
+          race: "Human" as CharacterRace,
           class: "Rogue",
           background: "Criminal",
           level: 1,
