@@ -9,6 +9,7 @@ import { CharacterStats } from "./CharacterStats";
 import { CharacterBasicInfo } from "./character-creation/CharacterBasicInfo";
 import { characterSchema, type CharacterFormData } from "./character-creation/characterSchema";
 import { getStartingItems, rollStats } from "./character-creation/characterUtils";
+import { getDefaultStats, getHitDice } from "@/types/game";
 import type { Character, CharacterStats as CharacterStatsType } from "@/types/game";
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
@@ -18,15 +19,8 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
     defaultValues: {
       name: "",
       race: "Human",
-      class: "Warrior",
-      stats: {
-        strength: 10,
-        dexterity: 10,
-        constitution: 10,
-        intelligence: 10,
-        wisdom: 10,
-        charisma: 10,
-      } as CharacterStatsType,
+      class: "Fighter",
+      stats: getDefaultStats("Fighter"),
     },
   });
 
@@ -40,14 +34,15 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
 
   const onSubmit = (data: CharacterFormData) => {
     const startingItems = getStartingItems(data.class);
+    const hitDice = getHitDice(data.class);
     const newCharacter: Character = {
       id: "player1",
       name: data.name,
       race: data.race,
       class: data.class,
       stats: data.stats,
-      hp: data.class === "Warrior" ? 12 : 8,
-      maxHp: data.class === "Warrior" ? 12 : 8,
+      hp: hitDice,
+      maxHp: hitDice,
       level: 1,
       xp: 0,
       inventory: startingItems,
@@ -57,6 +52,19 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
     dispatch({ type: "CREATE_CHARACTER", character: newCharacter });
     onCharacterCreated();
   };
+
+  // Watch for class changes to update default stats
+  React.useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "class" && value.class) {
+        const defaultStats = getDefaultStats(value.class);
+        Object.entries(defaultStats).forEach(([stat, value]) => {
+          form.setValue(`stats.${stat}`, value, { shouldValidate: true });
+        });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   return (
     <Form {...form}>
