@@ -16,6 +16,10 @@ export type CharacterSubrace =
 
 export type GamePhase = 'exploration' | 'interaction' | 'combat' | 'rest';
 
+export type RollType = 'attack' | 'ability' | 'saving' | 'initiative' | 'damage' | DiceType;
+
+export type DiceType = 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
+
 export interface CharacterStats {
   strength: number;
   dexterity: number;
@@ -24,8 +28,6 @@ export interface CharacterStats {
   wisdom: number;
   charisma: number;
 }
-
-export type DiceType = 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
 
 export interface DiceRoll {
   type: DiceType;
@@ -75,15 +77,6 @@ export interface Character {
   reputation?: number;
 }
 
-export interface Item {
-  id: string;
-  name: string;
-  description: string;
-  type: ItemType;
-  damage?: string;
-  armorClass?: number;
-}
-
 export interface Quest {
   id: string;
   title: string;
@@ -94,6 +87,15 @@ export interface Quest {
     items?: Item[];
     gold?: number;
   };
+}
+
+export interface Item {
+  id: string;
+  name: string;
+  description: string;
+  type: ItemType;
+  damage?: string;
+  armorClass?: number;
 }
 
 export type ItemType = 'weapon' | 'armor' | 'potion' | 'scroll' | 'misc' | 'focus' | 'tool';

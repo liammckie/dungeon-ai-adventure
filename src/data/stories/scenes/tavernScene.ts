@@ -5,13 +5,14 @@ export const TAVERN_SCENE: Scene = {
   id: "broken_blade_tavern",
   type: "tavern",
   name: "The Broken Blade Tavern",
-  description: "The heavy oak doors of the Broken Blade Tavern creak open as you step inside. A gust of cold, damp air follows, sending a shiver through the dimly lit room. Shadows twist along the walls, cast by the weak, sputtering flames of a wrought-iron chandelier. The room smells of stale ale, damp wood, and faintly of iron — blood, long dried but never quite washed away. A hearth on the far side struggles against the oppressive chill, its meager flames flickering as though battling against an unseen force.",
+  description: "The heavy oak doors of the Broken Blade Tavern creak open as you step inside.",
   imageUrl: "/lovable-uploads/43403fdc-1e2f-44a9-aff8-6ef506fbad37.png",
   possibleEvents: [],
   availableNPCs: tavernNPCs,
   dialogueOptions: [
     {
       text: "Approach Barkeep Alaric",
+      response: "You approach the weathered barkeep who nods in acknowledgment.",
       nextId: "talk_to_alaric",
       consequence: {
         type: "state",
@@ -21,6 +22,7 @@ export const TAVERN_SCENE: Scene = {
     },
     {
       text: "Speak with Mira the Barmaid",
+      response: "Mira notices your approach and gives a friendly smile.",
       nextId: "talk_to_mira",
       consequence: {
         type: "state",
@@ -30,6 +32,7 @@ export const TAVERN_SCENE: Scene = {
     },
     {
       text: "Listen to Old Man Loras",
+      response: "The elderly patron seems eager to share his tales.",
       nextId: "talk_to_loras",
       consequence: {
         type: "state",
@@ -39,6 +42,7 @@ export const TAVERN_SCENE: Scene = {
     },
     {
       text: "Investigate the Cellar",
+      response: "You make your way towards the cellar door.",
       nextId: "investigate_cellar",
       consequence: {
         type: "state",

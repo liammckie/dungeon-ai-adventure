@@ -13,14 +13,17 @@ export const FOREST_SCENES: Scene[] = [
     dialogueOptions: [
       {
         text: "Approach the barkeep",
+        response: "You walk towards the bar where Alaric is cleaning mugs.",
         nextId: "talk_to_barkeep"
       },
       {
         text: "Listen to the local gossip",
+        response: "You lean in to catch snippets of nearby conversations.",
         nextId: "tavern_gossip"
       },
       {
         text: "Order a drink",
+        response: "You signal to the barkeep that you'd like to order.",
         nextId: "order_drink"
       }
     ],
@@ -40,14 +43,17 @@ export const FOREST_SCENES: Scene[] = [
     dialogueOptions: [
       {
         text: "Investigate the dancing skeletons",
+        response: "You cautiously approach the skeletons, trying to discern their movements.",
         nextId: "skeleton_encounter"
       },
       {
         text: "Search for clues among the graves",
+        response: "You kneel down to examine the inscriptions on the tombstones.",
         nextId: "search_graves"
       },
       {
         text: "Follow the eerie whispers",
+        response: "The whispers seem to beckon you deeper into the graveyard.",
         nextId: "follow_whispers"
       }
     ],
@@ -67,14 +73,17 @@ export const FOREST_SCENES: Scene[] = [
     dialogueOptions: [
       {
         text: "Confront the cultists",
+        response: "You step forward, demanding to know what they are doing.",
         nextId: "confront_cultists"
       },
       {
         text: "Observe the ritual from hiding",
+        response: "You find a shadowy corner to watch the cultists without being seen.",
         nextId: "observe_ritual"
       },
       {
         text: "Search for the ritual dagger",
+        response: "You look around for any signs of the dagger used in the ritual.",
         nextId: "search_altar"
       }
     ],
@@ -94,14 +103,17 @@ export const FOREST_SCENES: Scene[] = [
     dialogueOptions: [
       {
         text: "Defend the villagers",
+        response: "You rush forward, ready to protect those in danger.",
         nextId: "protect_villagers"
       },
       {
         text: "Chase the attackers",
+        response: "You sprint after the fleeing figures, determined to catch them.",
         nextId: "pursue_raiders"
       },
       {
         text: "Rally the guards",
+        response: "You shout for the guards to come and assist in the defense.",
         nextId: "call_reinforcements"
       }
     ],

@@ -52,10 +52,6 @@ export interface NPC extends Character {
   age?: number;
   dialogue: {
     greeting: string;
-    options: {
-      text: string;
-      response: string;
-      action?: () => void;
-    }[];
+    options: DialogueOption[];
   };
 }
