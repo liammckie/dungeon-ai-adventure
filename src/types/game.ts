@@ -7,7 +7,7 @@ export type Item = {
   armorClass?: number;
 };
 
-export type ItemType = "weapon" | "armor" | "misc" | "focus";
+export type ItemType = "weapon" | "armor" | "misc" | "focus" | "tool";
 
 export type CharacterStats = {
   strength: number;
@@ -59,7 +59,7 @@ export type CharacterSubrace =
 export type GamePhase = 
   | "exploration"
   | "combat"
-  | "dialogue"
+  | "interaction"
   | "rest";
 
 export type Quest = {
@@ -67,11 +67,21 @@ export type Quest = {
   title: string;
   description: string;
   status: "active" | "completed" | "failed";
+  difficulty?: string;
 };
 
 export type DiceType = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
 
-export type RollType = "attack" | "damage" | "save" | "check" | "heal";
+export type RollType = 
+  | "attack" 
+  | "damage" 
+  | "save" 
+  | "check" 
+  | "heal" 
+  | "ability"
+  | "saving"
+  | "initiative"
+  | DiceType;
 
 export type DiceRoll = {
   type: RollType;
@@ -85,7 +95,11 @@ export type RollResult = {
   total: number;
   rolls: number[];
   modifier?: number;
+  type?: RollType;
   success?: boolean;
+  isNatural20?: boolean;
+  isNatural1?: boolean;
+  isCritical?: boolean;
 };
 
 export type Trait = {

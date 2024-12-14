@@ -8,23 +8,23 @@ export const statsSchema = z.object({
   intelligence: z.number().min(3).max(18),
   wisdom: z.number().min(3).max(18),
   charisma: z.number().min(3).max(18),
-}) satisfies z.ZodType<CharacterStats>;
+}).required();
 
 const characterClassEnum = z.enum([
   "Fighter", "Wizard", "Cleric", "Rogue", "Barbarian", 
   "Paladin", "Ranger", "Druid", "Warlock", "Sorcerer", "Monk", "Bard"
-]) satisfies z.ZodType<CharacterClass>;
+]) as z.ZodType<CharacterClass>;
 
 const characterRaceEnum = z.enum([
   "Human", "Elf", "Dwarf", "Halfling", "Dragonborn", 
   "Gnome", "Half-Elf", "Tiefling"
-]) satisfies z.ZodType<CharacterRace>;
+]) as z.ZodType<CharacterRace>;
 
 const characterSubraceEnum = z.enum([
   "High Elf", "Wood Elf", "Dark Elf", "Hill Dwarf", "Mountain Dwarf",
   "Lightfoot", "Stout", "Standard Human", "Variant Human",
   "Forest Gnome", "Rock Gnome", "Deep Gnome"
-]) satisfies z.ZodType<CharacterSubrace>;
+]) as z.ZodType<CharacterSubrace>;
 
 export const characterSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
