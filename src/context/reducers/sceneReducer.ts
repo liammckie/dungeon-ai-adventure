@@ -1,6 +1,6 @@
 import { GameState } from "../gameState";
 import { Scene, StoryEvent } from "@/types/content";
-import { generateScene } from "@/utils/contentGeneration";
+import { generateForestScene, generateTavernScene } from "@/utils/sceneGeneration";
 
 export const handleGenerateScene = (
   state: GameState,
@@ -9,11 +9,18 @@ export const handleGenerateScene = (
   const playerCharacter = state.characters.find(char => !char.isAI);
   if (!playerCharacter) return state;
   
-  const newScene = generateScene(
-    sceneType,
-    playerCharacter.level,
-    state.worldState
-  );
+  let newScene: Scene;
+  
+  switch (sceneType) {
+    case 'forest':
+      newScene = generateForestScene(playerCharacter.level, state.worldState);
+      break;
+    case 'tavern':
+      newScene = generateTavernScene(playerCharacter.level, state.worldState);
+      break;
+    default:
+      newScene = generateForestScene(playerCharacter.level, state.worldState);
+  }
   
   return {
     ...state,

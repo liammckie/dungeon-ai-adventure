@@ -5,23 +5,37 @@ import { TavernScene } from "./TavernScene";
 import { Button } from "@/components/ui/button";
 import { Sword, Map, MessageSquare, Heart } from "lucide-react";
 import { GamePhase } from "@/types/game";
+import { useToast } from "@/hooks/use-toast";
 
 export const GamePhaseManager = () => {
   const { state, dispatch } = useGame();
   const [showTavern, setShowTavern] = React.useState(true);
+  const { toast } = useToast();
 
   const handlePhaseChange = (phase: GamePhase) => {
     dispatch({ type: "SET_PHASE", phase });
   };
 
   const handleLeaveTavern = () => {
+    dispatch({ type: "SET_PHASE", phase: "exploration" });
     dispatch({ type: "GENERATE_SCENE", sceneType: "forest" });
     setShowTavern(false);
+    
+    toast({
+      title: "Leaving Black Hollow",
+      description: "You step out of the tavern and make your way towards the forest path.",
+    });
   };
 
   const handleReturnToTavern = () => {
+    dispatch({ type: "SET_PHASE", phase: "interaction" });
     dispatch({ type: "GENERATE_SCENE", sceneType: "tavern" });
     setShowTavern(true);
+    
+    toast({
+      title: "Returning to the Tavern",
+      description: "You make your way back to the Broken Blade Tavern.",
+    });
   };
 
   return (
