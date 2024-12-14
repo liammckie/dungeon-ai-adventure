@@ -9,7 +9,7 @@ import { RaceSelection } from "./character-creation/RaceSelection";
 import { AbilityScoreGeneration } from "./character-creation/AbilityScoreGeneration";
 import { characterSchema, type CharacterFormData } from "./character-creation/characterSchema";
 import { getStartingItems } from "./character-creation/characterUtils";
-import { Character, CharacterStats } from "@/types/game";
+import type { Character, CharacterStats } from "@/types/game";
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();

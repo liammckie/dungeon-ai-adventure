@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { CharacterClass, CharacterRace, CharacterSubrace } from "@/types/game";
+import type { CharacterClass, CharacterRace, CharacterSubrace } from "@/types/game";
 
 export const statsSchema = z.object({
   strength: z.number().min(3).max(18),
