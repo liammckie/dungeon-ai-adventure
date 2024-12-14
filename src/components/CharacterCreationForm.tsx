@@ -33,7 +33,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
   const handleRandomize = () => {
     const stats = rollStats();
     Object.entries(stats).forEach(([stat, value]) => {
-      form.setValue(`stats.${stat as keyof CharacterFormData["stats"]}`, value);
+      form.setValue(`stats.${stat}`, value, { shouldValidate: true });
     });
   };
 
