@@ -24,10 +24,15 @@ export const TavernScene = () => {
 
   const handleNPCInteraction = (npc: typeof npcs[0]) => {
     setSelectedNPC(npc);
-    setCurrentDialogue(npc.dialogue[0].id);
+    // Set the initial dialogue ID from the NPC's first dialogue entry
+    const initialDialogue = npc.dialogue[0];
+    if (initialDialogue) {
+      setCurrentDialogue(initialDialogue.id);
+    }
   };
 
   const handleDialogueOption = (option: any) => {
+    // Handle skill check if present
     if (option.condition?.type === "quest" && option.condition.requirement === "skill_check") {
       const roll = rollDice({ type: "d20" });
       const success = roll >= option.condition.value.dc;
@@ -37,28 +42,38 @@ export const TavernScene = () => {
         message: `Skill Check (DC ${option.condition.value.dc}): Rolled ${roll} - ${success ? "Success!" : "Failure"}`
       });
 
-      if (success) {
-        toast({
-          title: "Skill Check Successful!",
-          description: `You rolled a ${roll}, meeting the DC of ${option.condition.value.dc}`,
-        });
-      } else {
-        toast({
-          title: "Skill Check Failed",
-          description: `You rolled a ${roll}, failing to meet the DC of ${option.condition.value.dc}`,
-        });
-      }
+      toast({
+        title: success ? "Skill Check Successful!" : "Skill Check Failed",
+        description: `You rolled a ${roll}, ${success ? "meeting" : "failing to meet"} the DC of ${option.condition.value.dc}`,
+      });
+
+      // If failed, don't proceed with dialogue
+      if (!success) return;
     }
 
+    // Add any available quests to the game log
     if (selectedNPC?.quests) {
       selectedNPC.quests.forEach(quest => {
         dispatch({
           type: "ADD_LOG",
           message: `New Quest Available: ${quest.title}`
         });
+        
+        toast({
+          title: "New Quest Available",
+          description: quest.title,
+        });
       });
     }
 
+    // If there's no next dialogue ID, close the dialog
+    if (!option.nextId) {
+      setSelectedNPC(null);
+      setCurrentDialogue(null);
+      return;
+    }
+
+    // Update to the next dialogue
     setCurrentDialogue(option.nextId);
   };
 
@@ -66,6 +81,8 @@ export const TavernScene = () => {
     if (!selectedNPC || !currentDialogue) return null;
     return selectedNPC.dialogue.find(d => d.id === currentDialogue);
   };
+
+  const dialogueNode = getCurrentDialogueNode();
 
   return (
     <div className="min-h-screen bg-[url('/lovable-uploads/ada54cb6-accb-4576-b63b-03d16eee4365.png')] bg-cover bg-center p-6">
@@ -100,17 +117,22 @@ export const TavernScene = () => {
         </Card>
       </div>
 
-      <Dialog open={!!selectedNPC} onOpenChange={() => setSelectedNPC(null)}>
+      <Dialog open={!!selectedNPC} onOpenChange={(open) => {
+        if (!open) {
+          setSelectedNPC(null);
+          setCurrentDialogue(null);
+        }
+      }}>
         <DialogContent className="bg-amber-900/95 text-amber-200 border-amber-600">
           <DialogHeader>
             <DialogTitle className="text-amber-400">{selectedNPC?.name}</DialogTitle>
             <DialogDescription className="text-amber-200">
-              {getCurrentDialogueNode()?.text}
+              {dialogueNode?.text}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
-            {getCurrentDialogueNode()?.options.map((option, index) => (
+            {dialogueNode?.options.map((option, index) => (
               <Button
                 key={index}
                 onClick={() => handleDialogueOption(option)}

@@ -31,7 +31,83 @@ export const BLACK_HOLLOW_NPCS: NPC[] = [
           },
           {
             text: "Never mind, I'll be going.",
-            nextId: "alaric_leave"
+            nextId: null
+          }
+        ]
+      },
+      {
+        id: "alaric_intimidate",
+        text: "Alright, alright! People have been disappearing at night. We don't know who's behind it, but the old chapel on the hill might have something to do with it.",
+        options: [
+          {
+            text: "Tell me more about these disappearances.",
+            nextId: "alaric_disappearances"
+          },
+          {
+            text: "What's special about the chapel?",
+            nextId: "alaric_chapel"
+          },
+          {
+            text: "I'll look into it.",
+            nextId: null
+          }
+        ]
+      },
+      {
+        id: "alaric_persuade",
+        text: "Well... since you're offering to help... People have been vanishing in the night. The guards are useless, and we're all scared.",
+        options: [
+          {
+            text: "When did this start?",
+            nextId: "alaric_timeline"
+          },
+          {
+            text: "Any patterns to the disappearances?",
+            nextId: "alaric_patterns"
+          },
+          {
+            text: "I'll help investigate.",
+            nextId: null
+          }
+        ]
+      },
+      {
+        id: "alaric_disappearances",
+        text: "It started about a month ago. First it was just travelers, but now even locals are vanishing. No traces, no bodies found.",
+        options: [
+          {
+            text: "I'll investigate this matter.",
+            nextId: null
+          }
+        ]
+      },
+      {
+        id: "alaric_chapel",
+        text: "That old place has been abandoned for years, but lately there's been strange lights and sounds coming from it at night.",
+        options: [
+          {
+            text: "I'll check it out.",
+            nextId: null
+          }
+        ]
+      },
+      {
+        id: "alaric_timeline",
+        text: "Started about a month back. First it was just travelers, but now even locals are vanishing.",
+        options: [
+          {
+            text: "I'll look into this.",
+            nextId: null
+          }
+        ]
+      },
+      {
+        id: "alaric_patterns",
+        text: "Always at night, always without a trace. Some say they've heard screams coming from the direction of the old chapel.",
+        options: [
+          {
+            text: "I'll investigate the chapel.",
+            nextId: null
           }
         ]
       }
@@ -62,6 +138,34 @@ export const BLACK_HOLLOW_NPCS: NPC[] = [
           {
             text: "What do you mean by that?",
             nextId: "mira_explain"
+          },
+          {
+            text: "I'll be discrete.",
+            nextId: null
+          }
+        ]
+      },
+      {
+        id: "mira_explain",
+        text: "There are... things happening in Black Hollow. Dark things. My brother... he disappeared last week.",
+        options: [
+          {
+            text: "I'm sorry to hear that. Tell me more.",
+            nextId: "mira_brother"
+          },
+          {
+            text: "I'll help find him.",
+            nextId: null
+          }
+        ]
+      },
+      {
+        id: "mira_brother",
+        text: "He was investigating the old chapel. Said he saw lights there at night. That was the last time anyone saw him.",
+        options: [
+          {
+            text: "I'll investigate the chapel and find your brother.",
+            nextId: null
           }
         ]
       }
