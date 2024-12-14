@@ -55,6 +55,9 @@ export const getStartingItems = (characterClass: CharacterClass): Item[] => {
       { id: "leather", name: "Leather Armor", description: "Light armor", type: "armor", armorClass: 11 },
       { id: "rapier", name: "Rapier", description: "Martial weapon", type: "weapon", damage: "1d8" },
     ],
+    NPC: [
+      { id: "dagger", name: "Dagger", description: "Simple weapon", type: "weapon", damage: "1d4" },
+    ],
   };
 
   return [...commonItems, ...classItems[characterClass]];

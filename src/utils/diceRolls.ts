@@ -43,23 +43,17 @@ const getDiceValue = (diceType: DiceType): number => {
 };
 
 export const rollDice = (dice: DiceRoll): RollResult => {
-  if (typeof dice.type === 'string' && dice.type.startsWith('d')) {
-    const diceType = dice.type as DiceType;
-    const roll = Math.floor(Math.random() * getDiceValue(diceType)) + 1;
-    return {
-      rolls: [roll],
-      total: roll + (dice.modifier || 0),
-      type: dice.type,
-      modifier: dice.modifier
-    };
+  const rolls: number[] = [];
+  for (let i = 0; i < dice.count; i++) {
+    rolls.push(Math.floor(Math.random() * getDiceValue(dice.type)) + 1);
   }
   
-  // For non-dice roll types, default to d20
-  return rollD20({
-    advantage: dice.advantage,
-    disadvantage: dice.disadvantage,
+  return {
+    rolls,
+    total: rolls.reduce((sum, roll) => sum + roll, 0) + (dice.modifier || 0),
+    type: dice.type,
     modifier: dice.modifier
-  });
+  };
 };
 
 export const rollAbilityCheck = (
@@ -99,20 +93,13 @@ export const rollDamage = (
   modifier: number = 0,
   isCritical: boolean = false
 ): RollResult => {
-  const rolls: number[] = [];
   const numDice = isCritical ? diceCount * 2 : diceCount;
   
-  for (let i = 0; i < numDice; i++) {
-    rolls.push(Math.floor(Math.random() * getDiceValue(diceType)) + 1);
-  }
-
-  return {
-    rolls,
-    total: rolls.reduce((sum, roll) => sum + roll, 0) + modifier,
-    modifier,
+  return rollDice({
     type: diceType,
-    isCritical
-  };
+    count: numDice,
+    modifier
+  });
 };
 
 export const rollInitiative = (

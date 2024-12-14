@@ -111,7 +111,7 @@ export interface DiceRoll {
   disadvantage?: boolean;
 }
 
-export type RollType = 'attack' | 'damage' | 'skill' | 'save' | 'check' | 'ability' | 'saving' | 'initiative';
+export type RollType = DiceType | 'attack' | 'damage' | 'skill' | 'save' | 'check' | 'ability' | 'saving' | 'initiative';
 
 export interface RollResult {
   rolls: number[];

@@ -13,6 +13,40 @@ export const GameBoard = () => {
   const playerCharacter = state.characters.find(char => !char.isAI);
   const npcsPresent = state.currentScene?.availableNPCs || [];
 
+  const createNPCCharacter = (npc: any): Character => ({
+    id: npc.id,
+    name: npc.name,
+    race: "Human",
+    class: "NPC",
+    background: "Commoner",
+    level: 1,
+    xp: 0,
+    hp: 10,
+    maxHp: 10,
+    stats: {
+      strength: 10,
+      dexterity: 10,
+      constitution: 10,
+      intelligence: 10,
+      wisdom: 10,
+      charisma: 10
+    },
+    inventory: [],
+    traits: [],
+    proficiencies: {
+      armor: [],
+      weapons: [],
+      tools: [],
+      skills: [],
+      languages: ["Common"],
+      saves: []
+    },
+    isAI: true,
+    isHostile: false,
+    description: npc.description,
+    imageUrl: npc.imageUrl
+  });
+
   return (
     <div className="min-h-screen bg-[#1a1e2e] p-4">
       <div className="max-w-[1800px] mx-auto grid grid-cols-12 gap-4">

@@ -14,7 +14,6 @@ import { getHitDice, type Character, type CharacterStats } from "@/types/game";
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
   
-  // Initialize with required stats
   const defaultStats: CharacterStats = {
     strength: 10,
     dexterity: 10,
