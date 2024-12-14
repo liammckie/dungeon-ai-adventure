@@ -3,31 +3,37 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Dice6, Swords, Scroll } from "lucide-react";
 import { useGame } from "@/context/GameContext";
+import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const navigate = useNavigate();
   const { state } = useGame();
+  const { toast } = useToast();
   
-  React.useEffect(() => {
-    // Only redirect if game is in progress (has characters)
-    if (state.characters.length > 0) {
-      navigate("/game", { replace: true });
-    }
-  }, [state.characters, navigate]);
-
   const handleStartGame = () => {
-    // Add fade-out animation to current screen
     document.body.classList.add('animate-fade-out');
-    
-    // Navigate after animation completes
     setTimeout(() => {
       navigate("/create-character");
-    }, 300); // Match this with animation duration
+    }, 300);
+  };
+
+  const handleLoadGame = () => {
+    if (state.characters.length > 0) {
+      document.body.classList.add('animate-fade-out');
+      setTimeout(() => {
+        navigate("/game");
+      }, 300);
+    } else {
+      toast({
+        title: "No saved game found",
+        description: "Start a new game to begin your adventure!",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#1A1F2C] bg-opacity-95 flex items-center justify-center p-6 relative overflow-hidden animate-fade-in">
-      {/* Animated background effect */}
       <div className="absolute inset-0 bg-[url('/lovable-uploads/28950689-1e3c-4d6c-846e-f8506162e596.png')] bg-cover bg-center opacity-20" />
       
       <div className="relative z-10 max-w-2xl w-full">
@@ -52,6 +58,7 @@ const Index = () => {
               <div className="grid grid-cols-2 gap-4">
                 <Button 
                   variant="outline"
+                  onClick={handleLoadGame}
                   className="bg-transparent border-red-900/50 text-red-500 hover:bg-red-900/20"
                 >
                   <Scroll className="mr-2 h-5 w-5" />
