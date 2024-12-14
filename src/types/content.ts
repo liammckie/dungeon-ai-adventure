@@ -1,8 +1,10 @@
 import { Character } from "./game";
 
+export type SceneType = 'tavern' | 'forest' | 'dungeon' | 'town' | 'combat' | 'graveyard' | 'chapel';
+
 export interface Scene {
   id: string;
-  type: 'tavern' | 'forest' | 'dungeon' | 'town' | 'combat';
+  type: SceneType;
   name: string;
   description: string;
   imageUrl?: string;
@@ -13,6 +15,7 @@ export interface Scene {
     time: 'day' | 'night';
     weather: 'clear' | 'rain' | 'fog' | 'storm';
   };
+  possibleEvents?: StoryEvent[];
 }
 
 export interface DialogueOption {

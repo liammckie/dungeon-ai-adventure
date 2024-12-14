@@ -35,6 +35,16 @@ export interface DiceRoll {
   disadvantage?: boolean;
 }
 
+export interface RollResult {
+  rolls: number[];
+  total: number;
+  type: DiceType;
+  modifier?: number;
+  isNatural20?: boolean;
+  isNatural1?: boolean;
+  isCritical?: boolean;
+}
+
 export interface Character {
   id: string;
   name: string;
