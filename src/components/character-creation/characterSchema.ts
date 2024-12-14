@@ -1,14 +1,14 @@
 import * as z from "zod";
 import type { CharacterClass, CharacterRace, CharacterStats, CharacterSubrace } from "@/types/game";
 
-const statsSchema = z.object({
+export const statsSchema = z.object({
   strength: z.number().min(3).max(18),
   dexterity: z.number().min(3).max(18),
   constitution: z.number().min(3).max(18),
   intelligence: z.number().min(3).max(18),
   wisdom: z.number().min(3).max(18),
   charisma: z.number().min(3).max(18),
-}) satisfies z.ZodType<CharacterStats>;
+}) as z.ZodType<CharacterStats>;
 
 export const characterSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
