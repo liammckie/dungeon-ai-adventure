@@ -10,75 +10,70 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { MessageSquare, Beer } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { rollDice } from "@/context/diceUtils";
+import { BLACK_HOLLOW_NPCS } from "@/data/stories/blackHollow";
 
-interface NPC {
-  id: string;
-  name: string;
-  description: string;
-  dialogue: string;
-  quest?: {
-    title: string;
-    description: string;
-    difficulty: number;
-  };
-}
-
-const npcs: NPC[] = [
-  {
-    id: "bartender",
-    name: "Old Barkeep Thorin",
-    description: "A sturdy dwarf with a braided beard and keen eyes.",
-    dialogue: "Welcome to the Rusty Dragon Tavern! What brings you here, adventurer?",
-    quest: {
-      title: "The Missing Shipment",
-      description: "My latest shipment of rare dwarven ale has been stolen. I suspect the local bandits are responsible. Could you help recover it?",
-      difficulty: 15,
-    },
-  },
-  {
-    id: "mysterious-figure",
-    name: "Hooded Figure",
-    description: "A cloaked figure sits in the corner, nursing a drink.",
-    dialogue: "Psst... I hear you're someone who can get things done...",
-    quest: {
-      title: "Dark Secrets",
-      description: "There's something lurking in the old crypt outside town. The guards won't listen, but I know better.",
-      difficulty: 18,
-    },
-  },
-];
+const npcs = BLACK_HOLLOW_NPCS;
 
 export const TavernScene = () => {
   const { state, dispatch } = useGame();
   const { toast } = useToast();
-  const [selectedNPC, setSelectedNPC] = useState<NPC | null>(null);
+  const [selectedNPC, setSelectedNPC] = useState<typeof npcs[0] | null>(null);
+  const [currentDialogue, setCurrentDialogue] = useState<string | null>(null);
 
-  const handleNPCInteraction = (npc: NPC) => {
+  const handleNPCInteraction = (npc: typeof npcs[0]) => {
     setSelectedNPC(npc);
+    setCurrentDialogue(npc.dialogue[0].id);
   };
 
-  const handleAcceptQuest = (quest: NonNullable<NPC["quest"]>) => {
-    toast({
-      title: "Quest Accepted!",
-      description: `You have accepted the quest "${quest.title}". Good luck on your adventure!`,
-    });
-    
-    dispatch({
-      type: "ADD_LOG",
-      message: `Accepted quest: ${quest.title}`,
-    });
-    
-    setSelectedNPC(null);
+  const handleDialogueOption = (option: any) => {
+    if (option.condition?.type === "quest" && option.condition.requirement === "skill_check") {
+      const roll = rollDice({ type: "d20" });
+      const success = roll >= option.condition.value.dc;
+      
+      dispatch({
+        type: "ADD_LOG",
+        message: `Skill Check (DC ${option.condition.value.dc}): Rolled ${roll} - ${success ? "Success!" : "Failure"}`
+      });
+
+      if (success) {
+        toast({
+          title: "Skill Check Successful!",
+          description: `You rolled a ${roll}, meeting the DC of ${option.condition.value.dc}`,
+        });
+      } else {
+        toast({
+          title: "Skill Check Failed",
+          description: `You rolled a ${roll}, failing to meet the DC of ${option.condition.value.dc}`,
+        });
+      }
+    }
+
+    if (selectedNPC?.quests) {
+      selectedNPC.quests.forEach(quest => {
+        dispatch({
+          type: "ADD_LOG",
+          message: `New Quest Available: ${quest.title}`
+        });
+      });
+    }
+
+    setCurrentDialogue(option.nextId);
+  };
+
+  const getCurrentDialogueNode = () => {
+    if (!selectedNPC || !currentDialogue) return null;
+    return selectedNPC.dialogue.find(d => d.id === currentDialogue);
   };
 
   return (
     <div className="min-h-screen bg-[url('/lovable-uploads/ada54cb6-accb-4576-b63b-03d16eee4365.png')] bg-cover bg-center p-6">
       <div className="max-w-4xl mx-auto">
         <Card className="bg-black/70 p-6 backdrop-blur-sm">
-          <h2 className="text-2xl font-bold text-amber-400 mb-4">The Rusty Dragon Tavern</h2>
+          <h2 className="text-2xl font-bold text-amber-400 mb-4">The Broken Blade Tavern</h2>
           <p className="text-amber-200 mb-6">
-            The tavern is warm and inviting, filled with the murmur of conversation and the soft glow of candlelight.
+            The tavern is dimly lit, with creaking floorboards and suspicious patrons. The air is thick with tension and the smell of stale ale.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -89,7 +84,7 @@ export const TavernScene = () => {
                 onClick={() => handleNPCInteraction(npc)}
               >
                 <div className="flex items-center gap-3">
-                  {npc.id === "bartender" ? (
+                  {npc.id === "alaric" ? (
                     <Beer className="h-6 w-6 text-amber-400" />
                   ) : (
                     <MessageSquare className="h-6 w-6 text-amber-400" />
@@ -110,25 +105,21 @@ export const TavernScene = () => {
           <DialogHeader>
             <DialogTitle className="text-amber-400">{selectedNPC?.name}</DialogTitle>
             <DialogDescription className="text-amber-200">
-              {selectedNPC?.dialogue}
+              {getCurrentDialogueNode()?.text}
             </DialogDescription>
           </DialogHeader>
 
-          {selectedNPC?.quest && (
-            <div className="space-y-4">
-              <div className="bg-amber-950/50 p-4 rounded-lg">
-                <h4 className="font-bold text-amber-400 mb-2">{selectedNPC.quest.title}</h4>
-                <p className="text-amber-200">{selectedNPC.quest.description}</p>
-              </div>
-
+          <div className="space-y-4">
+            {getCurrentDialogueNode()?.options.map((option, index) => (
               <Button
-                onClick={() => handleAcceptQuest(selectedNPC.quest!)}
-                className="bg-amber-600 hover:bg-amber-700"
+                key={index}
+                onClick={() => handleDialogueOption(option)}
+                className="w-full bg-amber-800 hover:bg-amber-700 justify-start text-left"
               >
-                Accept Quest
+                {option.text}
               </Button>
-            </div>
-          )}
+            ))}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
