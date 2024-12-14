@@ -21,13 +21,13 @@ const CharacterCreation = () => {
     <div 
       className="min-h-screen bg-cover bg-center bg-fixed p-6 relative"
       style={{ 
-        backgroundImage: "url('https://images.unsplash.com/photo-1511882150382-421056c89033?q=80&w=2071&auto=format&fit=crop')",
+        backgroundImage: "url('/lovable-uploads/dc838ce3-0194-4835-bc02-1fa34cb0eabd.png')",
       }}
     >
-      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div className="relative z-10">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl font-bold text-white mb-8 text-center drop-shadow-lg">
+          <h1 className="text-6xl font-bold text-white mb-8 text-center drop-shadow-lg">
             Create Your Hero
           </h1>
           <CharacterCreationForm onCharacterCreated={handleCharacterCreated} />

@@ -2,23 +2,23 @@ export type CharacterClass = "Warrior" | "Mage" | "Rogue" | "Cleric";
 export type CharacterRace = "Human" | "Elf" | "Dwarf" | "Halfling";
 export type ItemType = "weapon" | "armor" | "potion" | "misc";
 
-export type CharacterStats = {
+export interface CharacterStats {
   strength: number;
   dexterity: number;
   constitution: number;
   intelligence: number;
   wisdom: number;
   charisma: number;
-};
+}
 
-export type Item = {
+export interface Item {
   id: string;
   name: string;
   description: string;
   type: ItemType;
-};
+}
 
-export type Character = {
+export interface Character {
   id: string;
   name: string;
   class: CharacterClass;
@@ -30,11 +30,11 @@ export type Character = {
   xp: number;
   inventory: Item[];
   isAI: boolean;
-};
+}
 
-export type GameState = {
+export interface GameState {
   characters: Character[];
   currentTurn: number;
   gameLog: string[];
   combatActive: boolean;
-};
+}
