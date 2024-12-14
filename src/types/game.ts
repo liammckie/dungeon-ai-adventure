@@ -72,6 +72,12 @@ export interface GameState {
   gameLog: string[];
   combatActive: boolean;
   activeQuests: Quest[];
+  currentPhase: GamePhase;
+  lastRoll?: {
+    total: number;
+    rolls: number[];
+    type: DiceRoll['type'];
+  };
 }
 
 export interface Quest {
@@ -81,37 +87,38 @@ export interface Quest {
   completed: boolean;
 }
 
-export const getDefaultStats = (): CharacterStats => ({
-  strength: 10,
-  dexterity: 10,
-  constitution: 10,
-  intelligence: 10,
-  wisdom: 10,
-  charisma: 10,
-});
+export type GamePhase = 'exploration' | 'interaction' | 'combat' | 'rest';
 
-export const getHitDice = (characterClass: CharacterClass): number => {
-  const hitDice: Record<CharacterClass, number> = {
-    Barbarian: 12,
-    Fighter: 10,
-    Paladin: 10,
-    Ranger: 10,
-    Bard: 8,
-    Cleric: 8,
-    Druid: 8,
-    Monk: 8,
-    Rogue: 8,
-    Warlock: 8,
-    Sorcerer: 6,
-    Wizard: 6
+export interface DiceRoll {
+  type: 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
+  modifier?: number;
+  advantage?: boolean;
+  disadvantage?: boolean;
+}
+
+export const rollDice = (dice: DiceRoll): number => {
+  const getDiceValue = (type: DiceRoll['type']): number => {
+    const values: Record<DiceRoll['type'], number> = {
+      'd4': 4,
+      'd6': 6,
+      'd8': 8,
+      'd10': 10,
+      'd12': 12,
+      'd20': 20,
+      'd100': 100
+    };
+    return values[type];
   };
-  return hitDice[characterClass];
-};
 
-export const calculateModifier = (score: number): number => {
-  return Math.floor((score - 10) / 2);
-};
-
-export const calculateProficiencyBonus = (level: number): number => {
-  return Math.floor((level - 1) / 4) + 2;
+  const roll = () => Math.floor(Math.random() * getDiceValue(dice.type)) + 1;
+  
+  let rolls: number[] = [];
+  if (dice.advantage || dice.disadvantage) {
+    rolls = [roll(), roll()];
+    const result = dice.advantage ? Math.max(...rolls) : Math.min(...rolls);
+    return result + (dice.modifier || 0);
+  }
+  
+  const result = roll();
+  return result + (dice.modifier || 0);
 };

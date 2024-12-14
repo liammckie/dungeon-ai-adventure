@@ -1,20 +1,27 @@
 import React, { createContext, useContext, useReducer } from "react";
 import type { Character, GameState, CharacterClass, CharacterRace } from "@/types/game";
 
-type GameAction =
-  | { type: "START_COMBAT" }
-  | { type: "END_COMBAT" }
-  | { type: "NEXT_TURN" }
-  | { type: "ADD_LOG"; message: string }
-  | { type: "UPDATE_CHARACTER"; character: Character }
-  | { type: "CREATE_CHARACTER"; character: Character }
-  | { type: "GAIN_XP"; characterId: string; amount: number };
+export type GamePhase = 'exploration' | 'interaction' | 'combat' | 'rest';
 
-export interface Quest {
-  id: string;
-  title: string;
-  description: string;
-  completed: boolean;
+export interface DiceRoll {
+  type: 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
+  modifier?: number;
+  advantage?: boolean;
+  disadvantage?: boolean;
+}
+
+export interface GameState {
+  characters: Character[];
+  currentTurn: number;
+  gameLog: string[];
+  combatActive: boolean;
+  activeQuests: Quest[];
+  currentPhase: GamePhase;
+  lastRoll?: {
+    total: number;
+    rolls: number[];
+    type: DiceRoll['type'];
+  };
 }
 
 const initialState: GameState = {
@@ -23,6 +30,7 @@ const initialState: GameState = {
   gameLog: ["Welcome to the dungeon! Create your character to begin..."],
   combatActive: false,
   activeQuests: [],
+  currentPhase: 'exploration',
 };
 
 const calculateLevelUp = (character: Character): Character => {
@@ -45,6 +53,44 @@ const calculateLevelUp = (character: Character): Character => {
   }
   return character;
 };
+
+const rollDice = (dice: DiceRoll): number => {
+  const getDiceValue = (type: DiceRoll['type']): number => {
+    const values: Record<DiceRoll['type'], number> = {
+      'd4': 4,
+      'd6': 6,
+      'd8': 8,
+      'd10': 10,
+      'd12': 12,
+      'd20': 20,
+      'd100': 100
+    };
+    return values[type];
+  };
+
+  const roll = () => Math.floor(Math.random() * getDiceValue(dice.type)) + 1;
+  
+  let rolls: number[] = [];
+  if (dice.advantage || dice.disadvantage) {
+    rolls = [roll(), roll()];
+    const result = dice.advantage ? Math.max(...rolls) : Math.min(...rolls);
+    return result + (dice.modifier || 0);
+  }
+  
+  const result = roll();
+  return result + (dice.modifier || 0);
+};
+
+type GameAction =
+  | { type: "START_COMBAT" }
+  | { type: "END_COMBAT" }
+  | { type: "NEXT_TURN" }
+  | { type: "ADD_LOG"; message: string }
+  | { type: "UPDATE_CHARACTER"; character: Character }
+  | { type: "CREATE_CHARACTER"; character: Character }
+  | { type: "GAIN_XP"; characterId: string; amount: number }
+  | { type: "SET_PHASE"; phase: GamePhase }
+  | { type: "ROLL_DICE"; roll: DiceRoll };
 
 const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
@@ -149,6 +195,36 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           return char;
         }),
       };
+    case "SET_PHASE":
+      return {
+        ...state,
+        currentPhase: action.phase,
+        gameLog: [
+          ...state.gameLog,
+          `Entering ${action.phase} phase...`
+        ]
+      };
+      
+    case "ROLL_DICE": {
+      const result = rollDice(action.roll);
+      const modifier = action.roll.modifier ? ` + ${action.roll.modifier}` : '';
+      const advantage = action.roll.advantage ? ' with advantage' : '';
+      const disadvantage = action.roll.disadvantage ? ' with disadvantage' : '';
+      
+      return {
+        ...state,
+        lastRoll: {
+          total: result,
+          rolls: [result],
+          type: action.roll.type
+        },
+        gameLog: [
+          ...state.gameLog,
+          `Rolling ${action.roll.type}${modifier}${advantage}${disadvantage}: ${result}`
+        ]
+      };
+    }
+    
     default:
       return state;
   }
