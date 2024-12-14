@@ -1,6 +1,20 @@
 import { GameState } from "../gameState";
-import { DiceRoll, RollType } from "@/types/game";
+import { DiceRoll, RollType, DiceType } from "@/types/game";
 import { rollDice, rollWithAdvantage, rollWithDisadvantage } from "@/utils/diceRolls";
+
+const getRollType = (rollType: RollType): DiceType => {
+  switch (rollType) {
+    case 'attack':
+    case 'ability':
+    case 'saving':
+    case 'initiative':
+      return 'd20';
+    case 'damage':
+      return 'd6';
+    default:
+      return rollType as DiceType;
+  }
+};
 
 export const handleRollDice = (
   state: GameState,
@@ -11,8 +25,10 @@ export const handleRollDice = (
     modifier?: number;
   }
 ): GameState => {
+  const diceType = getRollType(rollType);
+  
   const roll: DiceRoll = {
-    type: rollType as any,
+    type: diceType,
     count: 1,
     modifier: options?.modifier || 0,
     advantage: options?.advantage,
@@ -33,7 +49,7 @@ export const handleRollDice = (
     lastRoll: {
       total: result.total,
       rolls: result.rolls,
-      type: rollType,
+      type: diceType,
     },
     gameLog: [
       ...state.gameLog,

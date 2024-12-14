@@ -68,7 +68,7 @@ export type ItemType = 'weapon' | 'armor' | 'potion' | 'scroll' | 'misc' | 'focu
 export type GamePhase = 'exploration' | 'interaction' | 'combat' | 'rest';
 
 export type DiceType = 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20' | 'd100';
-export type RollType = 'attack' | 'ability' | 'saving' | 'initiative' | 'damage' | DiceType;
+export type RollType = DiceType | 'attack' | 'ability' | 'saving' | 'initiative' | 'damage';
 
 export interface DiceRoll {
   type: DiceType;

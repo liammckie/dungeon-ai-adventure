@@ -1,4 +1,4 @@
-import type { Character, GamePhase, Quest, DiceRoll } from "@/types/game";
+import type { Character, GamePhase, DiceRoll } from "@/types/game";
 import type { Scene, StoryEvent } from "@/types/content";
 import type { Story } from "@/types/story";
 import { StoryManager } from "@/utils/storyManager";
@@ -8,7 +8,6 @@ export interface GameState {
   currentTurn: number;
   gameLog: string[];
   combatActive: boolean;
-  activeQuests: Quest[];
   currentPhase: GamePhase;
   currentScene?: Scene;
   activeEvents: StoryEvent[];
@@ -29,7 +28,6 @@ export const initialGameState: GameState = {
   currentTurn: 0,
   gameLog: ["Welcome to the dungeon! Create your character to begin..."],
   combatActive: false,
-  activeQuests: [],
   currentPhase: 'exploration',
   activeEvents: [],
   worldState: {},
