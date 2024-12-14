@@ -12,6 +12,15 @@ import { getStartingItems, rollStats } from "./character-creation/characterUtils
 import { getDefaultStats, getHitDice } from "@/types/game";
 import type { Character, CharacterStats as CharacterStatsType } from "@/types/game";
 
+const defaultStats: CharacterStatsType = {
+  strength: 10,
+  dexterity: 10,
+  constitution: 10,
+  intelligence: 10,
+  wisdom: 10,
+  charisma: 10,
+};
+
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
   const form = useForm<CharacterFormData>({
@@ -20,14 +29,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       name: "",
       race: "Human",
       class: "Fighter",
-      stats: {
-        strength: 10,
-        dexterity: 10,
-        constitution: 10,
-        intelligence: 10,
-        wisdom: 10,
-        charisma: 10,
-      } satisfies CharacterStatsType,
+      stats: defaultStats,
     },
   });
 
