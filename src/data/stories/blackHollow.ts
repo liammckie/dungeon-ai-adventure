@@ -41,6 +41,7 @@ export const BLACK_HOLLOW_NPCS: NPC[] = [
         title: "The Vanishing Villagers",
         description: "Discover why villagers are disappearing at night from Black Hollow.",
         difficulty: 15,
+        completed: false,
         rewards: [
           { type: "xp", amount: 500 },
           { type: "gold", amount: 100 }

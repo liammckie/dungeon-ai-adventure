@@ -70,8 +70,13 @@ export interface Quest {
   id: string;
   title: string;
   description: string;
-  completed: boolean;
+  completed?: boolean;
   difficulty: number;
+  rewards?: {
+    type: 'gold' | 'item' | 'xp' | 'reputation';
+    amount: number;
+    itemId?: string;
+  }[];
 }
 
 export type GamePhase = 'exploration' | 'interaction' | 'combat' | 'rest';
