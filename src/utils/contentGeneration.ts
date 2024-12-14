@@ -1,13 +1,16 @@
-import { Scene, StoryEvent, NPC, TimeOfDay, Weather } from "@/types/content";
+import { Scene, StoryEvent, NPC, TimeOfDay, Weather, SceneType } from "@/types/content";
 import { rollDice } from "@/context/diceUtils";
 
-const STORY_LOCATIONS = {
-  eldermoor: {
-    name: "Village of Eldermoor",
+const STORY_LOCATIONS: Record<SceneType, {
+  name: string;
+  descriptions: string[];
+}> = {
+  tavern: {
+    name: "The Gilded Flagon",
     descriptions: [
-      "Rain-soaked streets lined with flickering lanterns cast dancing shadows on cobblestone paths.",
-      "The village square stands eerily empty, abandoned market stalls telling tales of recent panic.",
-      "Mist curls around the village well, where ancient symbols hint at forgotten rituals."
+      "Warm light spills from the windows of this well-worn establishment.",
+      "The scent of hearth smoke and ale fills this refuge from the gathering storm.",
+      "A haven of warmth and light amid the growing darkness of Eldermoor."
     ]
   },
   forest: {
@@ -18,12 +21,20 @@ const STORY_LOCATIONS = {
       "The forest grows darker and more forbidding with each step forward."
     ]
   },
-  tavern: {
-    name: "The Gilded Flagon",
+  dungeon: {
+    name: "The Shattered Spire",
     descriptions: [
-      "Warm light spills from the windows of this well-worn establishment.",
-      "The scent of hearth smoke and ale fills this refuge from the gathering storm.",
-      "A haven of warmth and light amid the growing darkness of Eldermoor."
+      "Ancient stone walls bear the scars of forgotten battles.",
+      "The air is thick with the dust of centuries and the whispers of the dead.",
+      "Shadows dance in the flickering torchlight, hiding ancient secrets."
+    ]
+  },
+  village: {
+    name: "Village of Eldermoor",
+    descriptions: [
+      "Rain-soaked streets lined with flickering lanterns cast dancing shadows on cobblestone paths.",
+      "The village square stands eerily empty, abandoned market stalls telling tales of recent panic.",
+      "Mist curls around the village well, where ancient symbols hint at forgotten rituals."
     ]
   }
 };
@@ -61,7 +72,7 @@ const getTimeDescription = (time: TimeOfDay): string => {
 };
 
 export const generateScene = (
-  sceneType: Scene['type'],
+  sceneType: SceneType,
   playerLevel: number,
   worldState: Record<string, any>
 ): Scene => {
@@ -69,7 +80,7 @@ export const generateScene = (
   const timeOfDay = generateTimeOfDay();
   const weather = generateWeather();
   
-  const location = STORY_LOCATIONS[sceneType as keyof typeof STORY_LOCATIONS] || STORY_LOCATIONS.eldermoor;
+  const location = STORY_LOCATIONS[sceneType];
   const baseDescription = location.descriptions[Math.floor(Math.random() * location.descriptions.length)];
   
   const scene: Scene = {
@@ -77,9 +88,9 @@ export const generateScene = (
     type: sceneType,
     name: location.name,
     description: `${baseDescription} ${getTimeDescription(timeOfDay)} ${getWeatherDescription(weather)}`,
-    possibleEvents: generatePossibleEvents(sceneType, playerLevel),
+    possibleEvents: [],
     requiredLevel: Math.max(1, playerLevel - 2),
-    availableNPCs: generateNPCs(sceneType),
+    availableNPCs: [],
     environmentEffects: {
       time: timeOfDay,
       weather: weather,
@@ -87,65 +98,4 @@ export const generateScene = (
   };
 
   return scene;
-};
-
-const generatePossibleEvents = (type: Scene['type'], playerLevel: number): StoryEvent[] => {
-  const events: StoryEvent[] = [
-    {
-      id: `event_${Date.now()}`,
-      type: 'combat',
-      title: "Shadows in the Night",
-      description: "Dark figures emerge from the mist, their intentions clearly hostile.",
-      difficulty: Math.max(10, playerLevel * 2),
-      rewards: [
-        { type: 'gold', amount: playerLevel * 10 },
-        { type: 'xp', amount: playerLevel * 100 }
-      ],
-      conditions: [],
-      consequences: []
-    }
-  ];
-
-  if (type === 'forest') {
-    events.push({
-      id: `event_${Date.now()}_forest`,
-      type: 'discovery',
-      title: "Ancient Warding Stones",
-      description: "Hidden among the twisted roots, you spot strange stones marked with glowing runes.",
-      difficulty: 15,
-      rewards: [
-        { type: 'item', amount: 1, itemId: 'runestone_of_echoes' }
-      ],
-      conditions: [],
-      consequences: []
-    });
-  }
-
-  return events;
-};
-
-const generateNPCs = (type: Scene['type']): NPC[] => {
-  const npcs: NPC[] = [];
-  
-  if (type === 'eldermoor') {
-    npcs.push({
-      id: "elder_rowan",
-      name: "Elder Rowan",
-      description: "A weathered man with knowing eyes and a cautious demeanor.",
-      dialogue: [
-        {
-          id: "greeting",
-          text: "These are dark times, stranger. What brings you to our troubled village?",
-          options: [
-            {
-              text: "I've heard about the disappearances.",
-              nextId: "quest_offer"
-            }
-          ]
-        }
-      ]
-    });
-  }
-
-  return npcs;
 };
