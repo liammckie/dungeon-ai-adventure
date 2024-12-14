@@ -1,5 +1,5 @@
 import { GameState } from "./gameState";
-import { Character, GamePhase, RollType } from "@/types/game";
+import { Character, GamePhase, RollType, DiceType } from "@/types/game";
 import { Scene, StoryEvent } from "@/types/content";
 import { 
   handleStartCombat,
@@ -40,7 +40,7 @@ export type GameAction =
         advantage?: boolean;
         disadvantage?: boolean;
         diceCount?: number;
-        diceType?: string;
+        diceType?: DiceType;
         isCritical?: boolean;
       };
     };
