@@ -27,6 +27,7 @@ export const generateForestScene = (playerLevel: number, worldState: Record<stri
     type: 'forest',
     name: selectedScene.name,
     description: selectedScene.description,
+    imageUrl: "/lovable-uploads/5b015d5d-009f-4b23-a2d2-632e87b46691.png", // Default forest image
     possibleEvents: [],
     availableNPCs: [],
     environmentEffects: {
@@ -42,6 +43,7 @@ export const generateTavernScene = (playerLevel: number, worldState: Record<stri
     type: "tavern",
     name: "The Broken Blade Tavern",
     description: "The tavern is dimly lit, with creaking floorboards and suspicious patrons. The air is thick with tension and the smell of stale ale.",
+    imageUrl: "/lovable-uploads/43403fdc-1e2f-44a9-aff8-6ef506fbad37.png",
     possibleEvents: [],
     availableNPCs: [],
     environmentEffects: {

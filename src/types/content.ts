@@ -33,7 +33,7 @@ export interface StoryEvent {
   type: EventType;
   title: string;
   description: string;
-  difficulty: number;
+  difficulty: string;
   rewards: Reward[];
   conditions: EventCondition[];
   consequences: EventConsequence[];
@@ -61,6 +61,10 @@ export interface NPC {
   id: string;
   name: string;
   description: string;
+  age: number;
+  race: string;
+  traits: string[];
+  inventory: Item[];
   dialogue: DialogueNode[];
   quests?: Quest[];
   reputation?: number;
@@ -72,9 +76,11 @@ export interface DialogueNode {
   options: DialogueOption[];
 }
 
-export interface DialogueOption {
-  text: string;
-  nextId?: string;
-  condition?: EventCondition;
-  consequence?: EventConsequence;
+export interface Item {
+  id: string;
+  name: string;
+  description: string;
+  type: string;
+  damage?: string;
+  armorClass?: number;
 }

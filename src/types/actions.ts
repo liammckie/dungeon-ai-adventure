@@ -1,5 +1,5 @@
-import { Character, GamePhase, Scene, Quest, DiceRoll, RollResult } from "./game";
-import { StoryEvent } from "./content";
+import { Character, GamePhase } from "./game";
+import { Scene, StoryEvent } from "./content";
 
 export type GameAction =
   | { type: "START_COMBAT" }
@@ -9,7 +9,7 @@ export type GameAction =
   | { type: "CREATE_CHARACTER"; character: Character }
   | { type: "GAIN_XP"; characterId: string; amount: number }
   | { type: "SET_PHASE"; phase: GamePhase }
-  | { type: "ROLL_DICE"; rollType: DiceRoll["type"]; options?: Partial<DiceRoll> }
+  | { type: "ROLL_DICE"; rollType: string; options?: any }
   | { type: "GENERATE_SCENE"; sceneType: Scene["type"] }
   | { type: "SET_SCENE"; scene: Scene }
   | { type: "ADD_EVENT"; event: StoryEvent }
