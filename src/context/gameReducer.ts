@@ -1,6 +1,5 @@
 import { GameState } from "./gameState";
-import { Character, GamePhase, RollType, DiceType } from "@/types/game";
-import { Scene, StoryEvent } from "@/types/content";
+import { GameAction } from "@/types/actions";
 import { 
   handleStartCombat,
   handleEndCombat,
@@ -20,33 +19,6 @@ import {
 import { handleUpdateWorldState } from "./reducers/worldReducer";
 import { handleAddLog } from "./reducers/logReducer";
 import { handleSetPhase } from "./reducers/phaseReducer";
-
-export type GameAction =
-  | { type: "START_COMBAT" }
-  | { type: "END_COMBAT" }
-  | { type: "NEXT_TURN" }
-  | { type: "ADD_LOG"; message: string }
-  | { type: "UPDATE_CHARACTER"; character: Character }
-  | { type: "CREATE_CHARACTER"; character: Character }
-  | { type: "GAIN_XP"; characterId: string; amount: number }
-  | { type: "SET_PHASE"; phase: GamePhase }
-  | { type: "GENERATE_SCENE"; sceneType: Scene['type'] }
-  | { type: "ADD_EVENT"; event: StoryEvent }
-  | { type: "COMPLETE_EVENT"; eventId: string }
-  | { type: "UPDATE_WORLD_STATE"; key: string; value: any }
-  | { 
-      type: "ROLL_DICE"; 
-      rollType: RollType;
-      options: {
-        abilityModifier?: number;
-        proficiencyBonus?: number;
-        advantage?: boolean;
-        disadvantage?: boolean;
-        diceCount?: number;
-        diceType?: DiceType;
-        isCritical?: boolean;
-      };
-    };
 
 export const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
