@@ -1,5 +1,6 @@
 export type CharacterClass = "Warrior" | "Mage" | "Rogue" | "Cleric";
 export type CharacterRace = "Human" | "Elf" | "Dwarf" | "Halfling";
+export type ItemType = "weapon" | "armor" | "potion" | "misc";
 
 export type CharacterStats = {
   strength: number;
@@ -14,7 +15,7 @@ export type Item = {
   id: string;
   name: string;
   description: string;
-  type: "weapon" | "armor" | "potion" | "misc";
+  type: ItemType;
 };
 
 export type Character = {

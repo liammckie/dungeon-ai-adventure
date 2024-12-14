@@ -32,18 +32,25 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
   const handleRandomize = () => {
     const stats = rollStats();
     Object.entries(stats).forEach(([stat, value]) => {
-      form.setValue(`stats.${stat as keyof typeof stats}`, value);
+      form.setValue(`stats.${stat as keyof CharacterStats}`, value);
     });
   };
 
   const onSubmit = (data: CharacterFormData) => {
     const startingItems = getStartingItems(data.class);
-    const newCharacter = {
+    const newCharacter: Character = {
       id: "player1",
       name: data.name,
       race: data.race,
       class: data.class,
-      stats: data.stats,
+      stats: {
+        strength: data.stats.strength,
+        dexterity: data.stats.dexterity,
+        constitution: data.stats.constitution,
+        intelligence: data.stats.intelligence,
+        wisdom: data.stats.wisdom,
+        charisma: data.stats.charisma,
+      },
       hp: data.class === "Warrior" ? 12 : 8,
       maxHp: data.class === "Warrior" ? 12 : 8,
       level: 1,

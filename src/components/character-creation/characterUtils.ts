@@ -1,27 +1,27 @@
-import { Item } from "@/types/game";
+import { CharacterClass, Item, ItemType } from "@/types/game";
 
-export const getStartingItems = (characterClass: string): Item[] => {
-  const commonItems = [
-    { id: "backpack", name: "Backpack", description: "A sturdy leather backpack", type: "misc" },
-    { id: "rations", name: "Rations (5 days)", description: "Dried food and water", type: "misc" },
+export const getStartingItems = (characterClass: CharacterClass): Item[] => {
+  const commonItems: Item[] = [
+    { id: "backpack", name: "Backpack", description: "A sturdy leather backpack", type: "misc" as ItemType },
+    { id: "rations", name: "Rations (5 days)", description: "Dried food and water", type: "misc" as ItemType },
   ];
 
-  const classItems: Record<string, Item[]> = {
+  const classItems: Record<CharacterClass, Item[]> = {
     Warrior: [
-      { id: "longsword", name: "Longsword", description: "A well-balanced sword", type: "weapon" },
-      { id: "chainmail", name: "Chainmail", description: "Standard chainmail armor", type: "armor" },
+      { id: "longsword", name: "Longsword", description: "A well-balanced sword", type: "weapon" as ItemType },
+      { id: "chainmail", name: "Chainmail", description: "Standard chainmail armor", type: "armor" as ItemType },
     ],
     Mage: [
-      { id: "staff", name: "Staff", description: "A wooden staff for casting", type: "weapon" },
-      { id: "spellbook", name: "Spellbook", description: "Contains basic spells", type: "misc" },
+      { id: "staff", name: "Staff", description: "A wooden staff for casting", type: "weapon" as ItemType },
+      { id: "spellbook", name: "Spellbook", description: "Contains basic spells", type: "misc" as ItemType },
     ],
     Rogue: [
-      { id: "dagger", name: "Dagger", description: "A sharp dagger", type: "weapon" },
-      { id: "leather", name: "Leather Armor", description: "Light leather armor", type: "armor" },
+      { id: "dagger", name: "Dagger", description: "A sharp dagger", type: "weapon" as ItemType },
+      { id: "leather", name: "Leather Armor", description: "Light leather armor", type: "armor" as ItemType },
     ],
     Cleric: [
-      { id: "mace", name: "Mace", description: "A holy mace", type: "weapon" },
-      { id: "shield", name: "Shield", description: "A sturdy shield", type: "armor" },
+      { id: "mace", name: "Mace", description: "A holy mace", type: "weapon" as ItemType },
+      { id: "shield", name: "Shield", description: "A sturdy shield", type: "armor" as ItemType },
     ],
   };
 
