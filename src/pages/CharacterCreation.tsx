@@ -1,18 +1,19 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { CharacterCreationForm } from "@/components/CharacterCreationForm";
 import { useGame } from "@/context/GameContext";
 
 const CharacterCreation = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { state } = useGame();
 
   React.useEffect(() => {
-    // If we already have characters, redirect to game
-    if (state.characters.length > 0) {
-      navigate("/game");
+    // Only allow access if coming from the start screen
+    if (!location.state?.from || location.state.from !== 'startScreen') {
+      navigate('/', { replace: true });
     }
-  }, [state.characters, navigate]);
+  }, [navigate, location.state]);
 
   const handleCharacterCreated = () => {
     navigate("/game");

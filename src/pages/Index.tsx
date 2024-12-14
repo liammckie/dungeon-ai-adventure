@@ -10,7 +10,9 @@ const Index = () => {
   const { state } = useGame();
 
   const handleStartGame = () => {
-    navigate("/create-character");
+    navigate("/create-character", { 
+      state: { from: 'startScreen' } 
+    });
   };
 
   const handleLoadGame = () => {
