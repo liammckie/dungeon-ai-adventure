@@ -11,7 +11,7 @@ import { CombatTurnIndicator } from "./CombatTurnIndicator";
 import { calculateDamage, calculateHit } from "./CombatUtils";
 import { TurnManager } from "./TurnManager";
 import { HealthManager } from "./HealthManager";
-import { handleCombatAction } from "./ActionHandler";
+import { handleAction } from "./ActionHandler";
 
 interface CharacterTurnState {
   id: string;
@@ -53,7 +53,7 @@ export const CombatManager = () => {
       return;
     }
 
-    handleCombatAction(
+    handleAction(
       action,
       currentCharacter,
       dispatch,

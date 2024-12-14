@@ -1,14 +1,14 @@
 import { Character } from "@/types/game";
 import { GameAction } from "@/types/actions";
 import { Dispatch } from "react";
-import { Toast } from "@/components/ui/use-toast";
+import { ToastProps } from "@/components/ui/toast";
 
 export const handleAction = (
   action: string,
   currentCharacter: Character,
   dispatch: Dispatch<GameAction>,
   onNextTurn: () => void,
-  showToast: (props: Toast) => void
+  showToast: (props: ToastProps) => void
 ) => {
   switch (action) {
     case "defend":

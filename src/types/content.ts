@@ -10,6 +10,7 @@ export interface Scene {
   type: SceneType;
   name: string;
   description: string;
+  imageUrl?: string;
   possibleEvents: StoryEvent[];
   requiredLevel?: number;
   availableNPCs: NPC[];

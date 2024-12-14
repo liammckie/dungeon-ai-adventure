@@ -1,44 +1,122 @@
-export type CharacterRace = 
-  | "Human" | "Elf" | "Dwarf" | "Halfling" 
-  | "Dragonborn" | "Gnome" | "Half-Elf" | "Tiefling";
+import { type Item } from "./game";
 
-export type CharacterSubrace = 
-  | "High Elf" | "Wood Elf" | "Dark Elf"
-  | "Hill Dwarf" | "Mountain Dwarf"
-  | "Lightfoot" | "Stout"
-  | "Standard Human" | "Variant Human"
-  | "Forest Gnome" | "Rock Gnome" | "Deep Gnome";
-
-export type CharacterClass = 
-  | "Fighter" | "Wizard" | "Cleric" | "Rogue"
-  | "Barbarian" | "Paladin" | "Ranger"
-  | "Druid" | "Warlock" | "Sorcerer" | "Monk" | "Bard";
-
-export interface CharacterStats {
+export type AbilityScores = {
   strength: number;
   dexterity: number;
   constitution: number;
   intelligence: number;
   wisdom: number;
   charisma: number;
-}
+};
 
-export type ItemType = "weapon" | "armor" | "tool" | "focus" | "misc";
+export type Skill = {
+  name: string;
+  ability: keyof AbilityScores;
+  isProficient: boolean;
+};
 
-export interface Item {
+export type CharacterRace = {
+  name: string;
+  subrace?: string;
+  abilityScoreIncrease: Partial<AbilityScores>;
+  traits: string[];
+  languages: string[];
+  speed: number;
+  darkvision?: number;
+};
+
+export type CharacterClass = {
+  name: string;
+  subclass?: string;
+  hitDie: number;
+  primaryAbility: (keyof AbilityScores)[];
+  savingThrows: (keyof AbilityScores)[];
+  proficiencies: {
+    armor: string[];
+    weapons: string[];
+    tools: string[];
+    skills: number; // Number of skills to choose
+  };
+  features: string[];
+  spellcasting?: {
+    ability: keyof AbilityScores;
+    cantripsKnown: number;
+    spellsKnown: number;
+    spellSlots: number[];
+  };
+};
+
+export type Background = {
+  name: string;
+  skillProficiencies: string[];
+  toolProficiencies: string[];
+  languages: number;
+  equipment: Item[];
+  feature: {
+    name: string;
+    description: string;
+  };
+  characteristics: {
+    personality: string[];
+    ideal: string[];
+    bond: string[];
+    flaw: string[];
+  };
+};
+
+export type Spell = {
   id: string;
   name: string;
+  level: number;
+  school: string;
+  castingTime: string;
+  range: string;
+  components: string[];
+  duration: string;
   description: string;
-  type: ItemType;
-  damage?: string;
-  armorClass?: number;
-}
+  classes: string[];
+};
 
-export interface Trait {
+export type Feat = {
   name: string;
+  prerequisites?: Partial<{
+    abilityScores: Partial<AbilityScores>;
+    level: number;
+    race: string[];
+    class: string[];
+  }>;
   description: string;
-  level?: number;
-}
+  benefits: string[];
+};
+
+export type CharacterData = {
+  id: string;
+  name: string;
+  race: CharacterRace;
+  class: CharacterClass;
+  background: Background;
+  abilityScores: AbilityScores;
+  skills: Skill[];
+  feats: Feat[];
+  spells: Spell[];
+  equipment: Item[];
+  level: number;
+  experience: number;
+  hitPoints: {
+    current: number;
+    maximum: number;
+    temporary: number;
+  };
+  proficiencyBonus: number;
+  initiative: number;
+  armorClass: number;
+  speed: number;
+  inspiration: boolean;
+  personalityTraits: string[];
+  ideals: string[];
+  bonds: string[];
+  flaws: string[];
+};
 
 export interface Character {
   id: string;
@@ -64,100 +142,5 @@ export interface Character {
     saves: (keyof CharacterStats)[];
   };
   isAI: boolean;
+  isHostile?: boolean;
 }
-
-export interface Quest {
-  id: string;
-  title: string;
-  description: string;
-  completed?: boolean;
-  difficulty: number;
-  rewards?: {
-    type: 'gold' | 'item' | 'xp' | 'reputation';
-    amount: number;
-    itemId?: string;
-  }[];
-}
-
-export type GamePhase = 'exploration' | 'interaction' | 'combat' | 'rest';
-
-export type DiceType = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
-
-export interface DiceRoll {
-  type: DiceType;
-  modifier?: number;
-  advantage?: boolean;
-  disadvantage?: boolean;
-}
-
-export interface RollResult {
-  rolls: number[];
-  total: number;
-  modifier: number;
-  type: DiceRoll['type'];
-  isNatural20?: boolean;
-  isNatural1?: boolean;
-  isCritical?: boolean;
-}
-
-export type RollType = 
-  | 'ability'
-  | 'saving'
-  | 'attack'
-  | 'damage'
-  | 'initiative'
-  | 'contest';
-
-export const getDefaultStats = (): CharacterStats => ({
-  strength: 10,
-  dexterity: 10,
-  constitution: 10,
-  intelligence: 10,
-  wisdom: 10,
-  charisma: 10
-});
-
-export const getHitDice = (characterClass: CharacterClass): number => {
-  const hitDice: Record<CharacterClass, number> = {
-    Fighter: 10,
-    Barbarian: 12,
-    Paladin: 10,
-    Ranger: 10,
-    Monk: 8,
-    Rogue: 8,
-    Cleric: 8,
-    Druid: 8,
-    Bard: 8,
-    Warlock: 8,
-    Wizard: 6,
-    Sorcerer: 6
-  };
-  return hitDice[characterClass];
-};
-
-export const rollDice = (dice: DiceRoll): number => {
-  const getDiceValue = (type: DiceRoll['type']): number => {
-    const values: Record<DiceRoll['type'], number> = {
-      'd4': 4,
-      'd6': 6,
-      'd8': 8,
-      'd10': 10,
-      'd12': 12,
-      'd20': 20,
-      'd100': 100
-    };
-    return values[type];
-  };
-
-  const roll = () => Math.floor(Math.random() * getDiceValue(dice.type)) + 1;
-  
-  let rolls: number[] = [];
-  if (dice.advantage || dice.disadvantage) {
-    rolls = [roll(), roll()];
-    const result = dice.advantage ? Math.max(...rolls) : Math.min(...rolls);
-    return result + (dice.modifier || 0);
-  }
-  
-  const result = roll();
-  return result + (dice.modifier || 0);
-};
