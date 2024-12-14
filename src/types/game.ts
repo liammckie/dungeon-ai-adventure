@@ -11,7 +11,8 @@ export type CharacterClass =
   | "Warlock" 
   | "Sorcerer" 
   | "Monk" 
-  | "Bard";
+  | "Bard"
+  | "NPC";
 
 export type CharacterRace = 
   | "Human" 
@@ -37,7 +38,7 @@ export type CharacterSubrace =
   | "Rock Gnome" 
   | "Deep Gnome";
 
-export type GamePhase = 'exploration' | 'combat' | 'dialogue' | 'rest';
+export type GamePhase = 'exploration' | 'combat' | 'dialogue' | 'interaction' | 'rest';
 
 export interface CharacterStats {
   strength: number;
@@ -48,6 +49,8 @@ export interface CharacterStats {
   charisma: number;
 }
 
+export type ItemType = 'weapon' | 'armor' | 'potion' | 'scroll' | 'misc' | 'focus' | 'tool';
+
 export interface Item {
   id: string;
   name: string;
@@ -57,14 +60,13 @@ export interface Item {
   armorClass?: number;
 }
 
-export type ItemType = 'weapon' | 'armor' | 'potion' | 'scroll' | 'misc' | 'focus';
-
 export interface Character {
   id: string;
   name: string;
   race: CharacterRace;
   subrace?: CharacterSubrace;
   class: CharacterClass;
+  background: string;
   level: number;
   xp: number;
   hp: number;
@@ -82,6 +84,8 @@ export interface Character {
     saves: string[];
   };
   isAI: boolean;
+  isHostile?: boolean;
+  description?: string;
   imageUrl?: string;
 }
 
@@ -103,14 +107,20 @@ export interface DiceRoll {
   type: DiceType;
   count: number;
   modifier?: number;
+  advantage?: boolean;
+  disadvantage?: boolean;
 }
 
-export type RollType = 'attack' | 'damage' | 'skill' | 'save' | 'check';
+export type RollType = 'attack' | 'damage' | 'skill' | 'save' | 'check' | 'ability' | 'saving' | 'initiative';
 
 export interface RollResult {
   rolls: number[];
   total: number;
   type: RollType;
+  modifier?: number;
+  isNatural20?: boolean;
+  isNatural1?: boolean;
+  isCritical?: boolean;
 }
 
 export const getHitDice = (characterClass: CharacterClass): number => {
@@ -126,7 +136,8 @@ export const getHitDice = (characterClass: CharacterClass): number => {
     Bard: 8,
     Warlock: 8,
     Wizard: 6,
-    Sorcerer: 6
+    Sorcerer: 6,
+    NPC: 8
   };
   return hitDice[characterClass];
 };
