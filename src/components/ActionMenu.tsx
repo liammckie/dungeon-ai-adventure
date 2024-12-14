@@ -1,7 +1,7 @@
 import React from "react";
 import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
-import { Sword, Shield, Running, Eye, Backpack, Heart } from "lucide-react";
+import { Sword, Shield, MoveRight, Eye, Backpack, Heart } from "lucide-react";
 
 export const ActionMenu = () => {
   const { state, dispatch } = useGame();
@@ -40,7 +40,7 @@ export const ActionMenu = () => {
           onClick={() => handleAction("Move")}
           className="flex items-center gap-2 bg-fantasy-rogue hover:bg-fantasy-rogue/90"
         >
-          <Running className="h-4 w-4" />
+          <MoveRight className="h-4 w-4" />
           Move
         </Button>
         <Button
