@@ -21,7 +21,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       race: "Human",
       class: "Fighter",
       background: "Soldier",
-      stats: getDefaultStats(),
+      stats: getDefaultStats(), // This now returns a complete CharacterStats object
       skills: [],
     },
   });
