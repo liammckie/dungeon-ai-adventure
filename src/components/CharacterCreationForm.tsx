@@ -9,6 +9,7 @@ import { CharacterStats } from "./CharacterStats";
 import { CharacterBasicInfo } from "./character-creation/CharacterBasicInfo";
 import { characterSchema, type CharacterFormData } from "./character-creation/characterSchema";
 import { getStartingItems, rollStats } from "./character-creation/characterUtils";
+import type { Character } from "@/types/game";
 
 export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreated: () => void }) => {
   const { dispatch } = useGame();
@@ -32,7 +33,7 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
   const handleRandomize = () => {
     const stats = rollStats();
     Object.entries(stats).forEach(([stat, value]) => {
-      form.setValue(`stats.${stat as keyof CharacterStats}`, value);
+      form.setValue(`stats.${stat}` as keyof CharacterFormData, value);
     });
   };
 
