@@ -13,58 +13,54 @@ export const ActionMenu = () => {
       type: "ADD_LOG",
       message: `${currentCharacter?.name} performs ${action}`,
     });
-    // Add more specific action handling here
   };
 
   if (!isPlayerTurn) return null;
 
   return (
-    <div className="bg-parchment rounded-lg border-2 border-fantasy-frame-border p-4 animate-frame-glow">
-      <h3 className="text-lg font-bold text-fantasy-primary mb-4">Actions</h3>
-      <div className="grid grid-cols-2 gap-3">
-        <Button
-          onClick={() => handleAction("Attack")}
-          className="flex items-center gap-2 bg-fantasy-warrior hover:bg-fantasy-warrior/90"
-        >
-          <Sword className="h-4 w-4" />
-          Attack
-        </Button>
-        <Button
-          onClick={() => handleAction("Defend")}
-          className="flex items-center gap-2 bg-fantasy-cleric hover:bg-fantasy-cleric/90"
-        >
-          <Shield className="h-4 w-4" />
-          Defend
-        </Button>
-        <Button
-          onClick={() => handleAction("Move")}
-          className="flex items-center gap-2 bg-fantasy-rogue hover:bg-fantasy-rogue/90"
-        >
-          <MoveRight className="h-4 w-4" />
-          Move
-        </Button>
-        <Button
-          onClick={() => handleAction("Search")}
-          className="flex items-center gap-2 bg-fantasy-mage hover:bg-fantasy-mage/90"
-        >
-          <Eye className="h-4 w-4" />
-          Search
-        </Button>
-        <Button
-          onClick={() => handleAction("Use Item")}
-          className="flex items-center gap-2 bg-fantasy-secondary hover:bg-fantasy-secondary/90"
-        >
-          <Backpack className="h-4 w-4" />
-          Use Item
-        </Button>
-        <Button
-          onClick={() => handleAction("Rest")}
-          className="flex items-center gap-2 bg-fantasy-primary hover:bg-fantasy-primary/90"
-        >
-          <Heart className="h-4 w-4" />
-          Rest
-        </Button>
-      </div>
+    <div className="grid grid-cols-2 gap-3">
+      <Button
+        onClick={() => handleAction("Attack")}
+        className="flex items-center gap-2 bg-gradient-to-br from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 border border-fantasy-frame-border"
+      >
+        <Sword className="h-4 w-4" />
+        Attack
+      </Button>
+      <Button
+        onClick={() => handleAction("Defend")}
+        className="flex items-center gap-2 bg-gradient-to-br from-blue-700 to-blue-900 hover:from-blue-600 hover:to-blue-800 border border-fantasy-frame-border"
+      >
+        <Shield className="h-4 w-4" />
+        Defend
+      </Button>
+      <Button
+        onClick={() => handleAction("Move")}
+        className="flex items-center gap-2 bg-gradient-to-br from-purple-700 to-purple-900 hover:from-purple-600 hover:to-purple-800 border border-fantasy-frame-border"
+      >
+        <MoveRight className="h-4 w-4" />
+        Move
+      </Button>
+      <Button
+        onClick={() => handleAction("Search")}
+        className="flex items-center gap-2 bg-gradient-to-br from-yellow-700 to-yellow-900 hover:from-yellow-600 hover:to-yellow-800 border border-fantasy-frame-border"
+      >
+        <Eye className="h-4 w-4" />
+        Search
+      </Button>
+      <Button
+        onClick={() => handleAction("Use Item")}
+        className="flex items-center gap-2 bg-gradient-to-br from-green-700 to-green-900 hover:from-green-600 hover:to-green-800 border border-fantasy-frame-border"
+      >
+        <Backpack className="h-4 w-4" />
+        Use Item
+      </Button>
+      <Button
+        onClick={() => handleAction("Rest")}
+        className="flex items-center gap-2 bg-gradient-to-br from-pink-700 to-pink-900 hover:from-pink-600 hover:to-pink-800 border border-fantasy-frame-border"
+      >
+        <Heart className="h-4 w-4" />
+        Rest
+      </Button>
     </div>
   );
 };
