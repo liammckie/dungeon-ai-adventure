@@ -10,6 +10,7 @@ import {
   Heart, 
   Backpack 
 } from "lucide-react";
+import { rollDice } from "@/context/diceUtils";
 
 export const CombatControls = () => {
   const { state, dispatch } = useGame();
@@ -17,7 +18,6 @@ export const CombatControls = () => {
   const currentCharacter = state.characters[state.currentTurn];
 
   const handleStartCombat = () => {
-    // Roll initiative for all characters
     const initiativeOrder = state.characters.map(char => ({
       id: char.id,
       initiative: Math.floor(Math.random() * 20) + 1 + Math.floor((char.stats.dexterity - 10) / 2)
@@ -43,15 +43,89 @@ export const CombatControls = () => {
     });
   };
 
+  const calculateDamage = (attacker: any, isWeaponAttack: boolean = true) => {
+    // Base weapon damage (d8 for most basic weapons)
+    const weaponDamage = rollDice({ type: "d8" });
+    
+    // Add strength modifier for melee attacks
+    const strengthMod = Math.floor((attacker.stats.strength - 10) / 2);
+    
+    // Calculate total damage
+    return weaponDamage + strengthMod;
+  };
+
+  const handleAttack = (target: any) => {
+    if (!currentCharacter || !target) return;
+
+    // Roll to hit (d20 + strength modifier + proficiency bonus)
+    const strengthMod = Math.floor((currentCharacter.stats.strength - 10) / 2);
+    const proficiencyBonus = 2; // Basic proficiency bonus
+    const toHitRoll = rollDice({ type: "d20" }) + strengthMod + proficiencyBonus;
+
+    // Basic AC for testing (should come from target's actual AC)
+    const targetAC = 12;
+
+    if (toHitRoll >= targetAC) {
+      // Hit! Calculate and apply damage
+      const damage = calculateDamage(currentCharacter);
+      const newHP = Math.max(0, target.hp - damage);
+      
+      dispatch({
+        type: "UPDATE_CHARACTER",
+        character: {
+          ...target,
+          hp: newHP
+        }
+      });
+
+      dispatch({
+        type: "ADD_LOG",
+        message: `${currentCharacter.name} hits ${target.name} for ${damage} damage!`
+      });
+
+      toast({
+        title: "Hit!",
+        description: `Dealt ${damage} damage to ${target.name}`,
+      });
+
+      // Check if target is defeated
+      if (newHP <= 0) {
+        dispatch({
+          type: "ADD_LOG",
+          message: `${target.name} has been defeated!`
+        });
+      }
+    } else {
+      dispatch({
+        type: "ADD_LOG",
+        message: `${currentCharacter.name}'s attack missed ${target.name}!`
+      });
+
+      toast({
+        title: "Miss!",
+        description: `The attack missed ${target.name}`,
+      });
+    }
+  };
+
   const handleAction = (actionType: string) => {
     if (!currentCharacter) return;
 
+    // Find a target (for this example, first enemy encountered)
+    const target = state.characters.find(char => 
+      char.isAI !== currentCharacter.isAI
+    );
+
     switch (actionType) {
       case "attack":
-        dispatch({
-          type: "ADD_LOG",
-          message: `${currentCharacter.name} attacks!`
-        });
+        if (target) {
+          handleAttack(target);
+        } else {
+          toast({
+            title: "No Target",
+            description: "There are no enemies to attack!",
+          });
+        }
         break;
       case "defend":
         dispatch({
@@ -101,6 +175,17 @@ export const CombatControls = () => {
         title: `${nextCharacter.name}'s Turn`,
         description: "Choose your action wisely...",
       });
+
+      // If it's an AI's turn, automatically perform their action
+      if (nextCharacter.isAI) {
+        setTimeout(() => {
+          const playerCharacter = state.characters.find(char => !char.isAI);
+          if (playerCharacter) {
+            handleAttack(playerCharacter);
+          }
+          handleNextTurn();
+        }, 1500);
+      }
     }
   };
 
