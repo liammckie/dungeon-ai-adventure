@@ -62,6 +62,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           name: "Eldrin the Wise",
           class: "Wizard",
           race: "Elf",
+          background: "Sage",
           stats: {
             strength: 8,
             dexterity: 14,
@@ -75,6 +76,15 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           level: 1,
           xp: 0,
           inventory: [],
+          traits: [],
+          proficiencies: {
+            armor: [],
+            weapons: ["Dagger", "Dart", "Sling", "Quarterstaff", "Light Crossbow"],
+            tools: [],
+            skills: ["Arcana", "History"],
+            languages: ["Common", "Elvish"],
+            saves: ["intelligence", "wisdom"],
+          },
           isAI: true,
         },
         {
@@ -82,6 +92,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           name: "Thorgar Ironbeard",
           class: "Fighter",
           race: "Dwarf",
+          background: "Soldier",
           stats: {
             strength: 17,
             dexterity: 12,
@@ -95,6 +106,15 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
           level: 1,
           xp: 0,
           inventory: [],
+          traits: [],
+          proficiencies: {
+            armor: ["Light", "Medium", "Heavy", "Shields"],
+            weapons: ["Simple", "Martial"],
+            tools: [],
+            skills: ["Athletics", "Intimidation"],
+            languages: ["Common", "Dwarvish"],
+            saves: ["strength", "constitution"],
+          },
           isAI: true,
         },
       ];

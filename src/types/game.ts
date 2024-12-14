@@ -14,12 +14,6 @@ export type CharacterClass =
   | "Barbarian" | "Paladin" | "Ranger"
   | "Druid" | "Warlock" | "Sorcerer" | "Monk" | "Bard";
 
-export type CharacterSubclass = 
-  | "Champion" | "Battle Master" | "Eldritch Knight" // Fighter
-  | "School of Evocation" | "School of Abjuration" // Wizard
-  | "Life Domain" | "War Domain" // Cleric
-  | "Thief" | "Assassin"; // Rogue
-
 export interface CharacterStats {
   strength: number;
   dexterity: number;
@@ -46,25 +40,12 @@ export interface Trait {
   level?: number;
 }
 
-export interface SpellSlots {
-  level1: number;
-  level2?: number;
-  level3?: number;
-  level4?: number;
-  level5?: number;
-  level6?: number;
-  level7?: number;
-  level8?: number;
-  level9?: number;
-}
-
 export interface Character {
   id: string;
   name: string;
   race: CharacterRace;
   subrace?: CharacterSubrace;
   class: CharacterClass;
-  subclass?: CharacterSubclass;
   background: string;
   level: number;
   xp: number;
@@ -82,13 +63,14 @@ export interface Character {
     languages: string[];
     saves: (keyof CharacterStats)[];
   };
-  spellcasting?: {
-    ability: keyof CharacterStats;
-    spellSlots: SpellSlots;
-    spellsKnown: string[];
-    spellsPrepped?: string[];
-  };
   isAI: boolean;
+}
+
+export interface GameState {
+  characters: Character[];
+  currentTurn: number;
+  gameLog: string[];
+  combatActive: boolean;
 }
 
 // Utility functions
