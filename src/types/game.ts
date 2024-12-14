@@ -83,6 +83,24 @@ export interface DiceRoll {
   disadvantage?: boolean;
 }
 
+export interface RollResult {
+  rolls: number[];
+  total: number;
+  modifier: number;
+  type: DiceRoll['type'];
+  isNatural20?: boolean;
+  isNatural1?: boolean;
+  isCritical?: boolean;
+}
+
+export type RollType = 
+  | 'ability'
+  | 'saving'
+  | 'attack'
+  | 'damage'
+  | 'initiative'
+  | 'contest';
+
 export const getDefaultStats = (): CharacterStats => ({
   strength: 10,
   dexterity: 10,

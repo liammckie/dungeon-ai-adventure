@@ -4,6 +4,13 @@ import { Scene, StoryEvent } from "@/types/content";
 import { calculateLevelUp } from "./levelingUtils";
 import { rollDice } from "./diceUtils";
 import { generateScene } from "@/utils/contentGeneration";
+import {
+  rollAbilityCheck,
+  rollSavingThrow,
+  rollAttack,
+  rollDamage,
+  rollInitiative
+} from "@/utils/diceRolls";
 
 export type GameAction =
   | { type: "START_COMBAT" }
@@ -18,7 +25,19 @@ export type GameAction =
   | { type: "ADD_EVENT"; event: StoryEvent }
   | { type: "COMPLETE_EVENT"; eventId: string }
   | { type: "UPDATE_WORLD_STATE"; key: string; value: any }
-  | { type: "ROLL_DICE"; roll: DiceRoll };
+  | { 
+      type: "ROLL_DICE"; 
+      rollType: RollType;
+      options: {
+        abilityModifier?: number;
+        proficiencyBonus?: number;
+        advantage?: boolean;
+        disadvantage?: boolean;
+        diceCount?: number;
+        diceType?: DiceRoll['type'];
+        isCritical?: boolean;
+      };
+    };
 
 export const gameReducer = (state: GameState, action: GameAction): GameState => {
   switch (action.type) {
@@ -134,25 +153,64 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
         ]
       };
     case "ROLL_DICE": {
-      const result = rollDice(action.roll);
-      const modifier = action.roll.modifier ? ` + ${action.roll.modifier}` : '';
-      const advantage = action.roll.advantage ? ' with advantage' : '';
-      const disadvantage = action.roll.disadvantage ? ' with disadvantage' : '';
-      
+      let result: RollResult;
+      const { options } = action;
+
+      switch (action.rollType) {
+        case "ability":
+          result = rollAbilityCheck(
+            options.abilityModifier || 0,
+            options.proficiencyBonus,
+            { advantage: options.advantage, disadvantage: options.disadvantage }
+          );
+          break;
+        case "saving":
+          result = rollSavingThrow(
+            options.abilityModifier || 0,
+            { advantage: options.advantage, disadvantage: options.disadvantage }
+          );
+          break;
+        case "attack":
+          result = rollAttack(
+            options.abilityModifier || 0,
+            { advantage: options.advantage, disadvantage: options.disadvantage }
+          );
+          break;
+        case "damage":
+          result = rollDamage(
+            options.diceCount || 1,
+            options.diceType || 'd6',
+            options.abilityModifier || 0,
+            options.isCritical
+          );
+          break;
+        case "initiative":
+          result = rollInitiative(
+            options.abilityModifier || 0,
+            { advantage: options.advantage, disadvantage: options.disadvantage }
+          );
+          break;
+        default:
+          result = rollAbilityCheck(
+            options.abilityModifier || 0,
+            options.proficiencyBonus,
+            { advantage: options.advantage, disadvantage: options.disadvantage }
+          );
+      }
+
       return {
         ...state,
-        lastRoll: {
-          total: result,
-          rolls: [result],
-          type: action.roll.type
-        },
+        lastRoll: result,
         gameLog: [
           ...state.gameLog,
-          `Rolling ${action.roll.type}${modifier}${advantage}${disadvantage}: ${result}`
+          `Roll Result (${action.rollType}): ${result.total} [${result.rolls.join(', ')}]${
+            result.modifier ? ` + ${result.modifier}` : ''
+          }${result.isNatural20 ? ' (Natural 20!)' : ''}${
+            result.isNatural1 ? ' (Natural 1!)' : ''
+          }${result.isCritical ? ' (Critical!)' : ''}`
         ]
       };
     }
-    
     case "GENERATE_SCENE": {
       const playerCharacter = state.characters.find(char => !char.isAI);
       if (!playerCharacter) return state;
