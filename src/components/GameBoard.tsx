@@ -41,7 +41,7 @@ export const GameBoard = () => {
           {/* Inventory Section */}
           <Inventory />
 
-          {/* Story Controls - Now below inventory */}
+          {/* Story Controls */}
           <div className="bg-parchment-texture bg-cover rounded-lg border-2 border-fantasy-frame-border p-4">
             <h3 className="text-lg font-bold text-fantasy-primary flex items-center gap-2 mb-4">
               <Map className="h-5 w-5" />
@@ -64,10 +64,15 @@ export const GameBoard = () => {
               </Button>
             </div>
           </div>
+
+          {/* Game Log - Moved here */}
+          <div className="bg-character-frame bg-cover bg-center p-4 rounded-lg border-2 border-fantasy-frame-border">
+            <GameLog />
+          </div>
         </div>
 
         {/* Center Column - Main Game Area */}
-        <div className="col-span-7 space-y-4">
+        <div className="col-span-9 space-y-4">
           {/* Story Scene */}
           <div className="bg-character-frame bg-cover bg-center p-6 rounded-lg border-2 border-fantasy-frame-border min-h-[600px] relative overflow-hidden">
             <div className="bg-black/70 backdrop-blur-sm p-8 rounded-lg h-full flex flex-col">
@@ -137,13 +142,6 @@ export const GameBoard = () => {
           )}
 
           {state.combatActive && <CombatControls />}
-        </div>
-
-        {/* Right Column - Game Log */}
-        <div className="col-span-2">
-          <div className="bg-character-frame bg-cover bg-center p-4 rounded-lg border-2 border-fantasy-frame-border sticky top-4 max-h-[600px] overflow-y-auto">
-            <GameLog />
-          </div>
         </div>
       </div>
     </div>
