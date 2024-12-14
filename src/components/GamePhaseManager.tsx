@@ -120,7 +120,13 @@ export const GamePhaseManager = () => {
         const newEnemy = {
           id: `enemy_${Date.now()}`,
           name: "Forest Bandit",
-          race: "Human",
+          race: {
+            name: "Human",
+            abilityScoreIncrease: {},
+            traits: ["Versatile"],
+            languages: ["Common"],
+            speed: 30
+          },
           class: "Rogue",
           background: "Criminal",
           level: 1,
