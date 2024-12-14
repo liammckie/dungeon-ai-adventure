@@ -10,18 +10,13 @@ import { generateEnemy } from "@/utils/enemyGenerator";
 export const GamePhaseManager = () => {
   const { state, dispatch } = useGame();
   const { toast } = useToast();
-  const [currentForestSceneIndex, setCurrentForestSceneIndex] = React.useState(0);
+  const [currentSceneIndex, setCurrentSceneIndex] = React.useState(0);
 
   const clearEnemies = () => {
-    // Get only non-AI characters (players)
     const playerCharacters = state.characters.filter(char => !char.isAI);
-    
-    // Update state to only include player characters
     playerCharacters.forEach(char => {
       dispatch({ type: "UPDATE_CHARACTER", character: char });
     });
-    
-    // Ensure combat is ended if active
     if (state.combatActive) {
       dispatch({ type: "END_COMBAT" });
     }
@@ -35,14 +30,22 @@ export const GamePhaseManager = () => {
     
     switch (phase) {
       case "exploration":
-        dispatch({ type: "GENERATE_SCENE", sceneType: "forest" });
+        const explorationScene = FOREST_SCENES[currentSceneIndex];
+        dispatch({ 
+          type: "SET_SCENE", 
+          scene: explorationScene 
+        });
         toast({
           title: "Exploration Phase",
           description: "You carefully explore the surrounding area...",
         });
         break;
       case "interaction":
-        dispatch({ type: "GENERATE_SCENE", sceneType: "forest" });
+        const interactionScene = FOREST_SCENES[0]; // Tavern scene
+        dispatch({ 
+          type: "SET_SCENE", 
+          scene: interactionScene 
+        });
         toast({
           title: "Interaction Phase",
           description: "You look around for anyone to interact with...",

@@ -10,11 +10,13 @@ export const SceneDisplay = () => {
 
   const handleOptionSelect = (optionIndex: number) => {
     setSelectedOption(optionIndex);
-    // Handle the dialogue choice
-    dispatch({ 
-      type: "ADD_LOG", 
-      message: `Selected: ${state.currentScene?.dialogueOptions?.[optionIndex]?.text || 'Continue'}`
-    });
+    if (state.currentScene?.dialogueOptions?.[optionIndex]) {
+      const option = state.currentScene.dialogueOptions[optionIndex];
+      dispatch({ 
+        type: "ADD_LOG", 
+        message: `Selected: ${option.text}`
+      });
+    }
   };
 
   return (
@@ -30,7 +32,7 @@ export const SceneDisplay = () => {
             <div className="relative w-full h-[400px] mb-6 rounded-lg overflow-hidden border-2 border-fantasy-frame-border">
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
               <img 
-                src={state.currentScene.imageUrl || "/placeholder.svg"}
+                src={state.currentScene.imageUrl}
                 alt={state.currentScene.name}
                 className="w-full h-full object-cover"
               />

@@ -1,6 +1,6 @@
 import { Quest } from './game';
 
-export type SceneType = 'tavern' | 'forest' | 'dungeon' | 'village';
+export type SceneType = 'tavern' | 'forest' | 'dungeon' | 'village' | 'graveyard' | 'chapel';
 export type EventType = 'combat' | 'dialogue' | 'puzzle' | 'discovery';
 export type TimeOfDay = 'dawn' | 'day' | 'dusk' | 'night';
 export type Weather = 'clear' | 'rain' | 'storm' | 'fog';
@@ -17,7 +17,7 @@ export interface Scene {
   type: SceneType;
   name: string;
   description: string;
-  imageUrl?: string;
+  imageUrl: string;
   possibleEvents: StoryEvent[];
   requiredLevel?: number;
   availableNPCs: NPC[];
