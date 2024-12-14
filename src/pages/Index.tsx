@@ -9,21 +9,31 @@ const Index = () => {
   const { state } = useGame();
   
   React.useEffect(() => {
-    // If player has a character, show game board instead of start screen
+    // Only redirect if game is in progress (has characters)
     if (state.characters.length > 0) {
-      navigate("/game");
+      navigate("/game", { replace: true });
     }
   }, [state.characters, navigate]);
 
+  const handleStartGame = () => {
+    // Add fade-out animation to current screen
+    document.body.classList.add('animate-fade-out');
+    
+    // Navigate after animation completes
+    setTimeout(() => {
+      navigate("/create-character");
+    }, 300); // Match this with animation duration
+  };
+
   return (
-    <div className="min-h-screen bg-[#1A1F2C] bg-opacity-95 flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-[#1A1F2C] bg-opacity-95 flex items-center justify-center p-6 relative overflow-hidden animate-fade-in">
       {/* Animated background effect */}
       <div className="absolute inset-0 bg-[url('/lovable-uploads/28950689-1e3c-4d6c-846e-f8506162e596.png')] bg-cover bg-center opacity-20" />
       
       <div className="relative z-10 max-w-2xl w-full">
         <div className="bg-black/60 p-8 rounded-lg border-2 border-red-900/50 backdrop-blur-sm">
           <div className="text-center space-y-6">
-            <h1 className="text-6xl font-bold text-red-600 mb-4 animate-fade-in">
+            <h1 className="text-6xl font-bold text-red-600 mb-4">
               Dungeon & Dragons
             </h1>
             <p className="text-gray-300 text-xl mb-8">
@@ -32,7 +42,7 @@ const Index = () => {
             
             <div className="grid gap-4">
               <Button 
-                onClick={() => navigate("/create-character")}
+                onClick={handleStartGame}
                 className="w-full bg-red-900 hover:bg-red-800 text-white py-6 text-lg group transition-all duration-300"
               >
                 <Dice6 className="mr-2 h-6 w-6 group-hover:rotate-180 transition-transform duration-300" />

@@ -99,3 +99,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Add transition animations */
+.animate-fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Existing styles */
+@layer base {
+  @apply border-border;
+}
