@@ -32,13 +32,13 @@ export const ActionMenu = () => {
         }
         break;
       case "Defend":
-        // Add temporary AC bonus
+        // Add temporary defense bonus
         if (currentCharacter) {
           dispatch({
             type: "UPDATE_CHARACTER",
             character: {
               ...currentCharacter,
-              temporaryAC: (currentCharacter.temporaryAC || 0) + 2,
+              temporaryHp: (currentCharacter.temporaryHp || 0) + 2,
             },
           });
         }

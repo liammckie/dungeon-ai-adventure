@@ -26,12 +26,32 @@ export const GameBoard = () => {
               <CharacterCard character={playerCharacter} />
             )}
           </div>
-          <div className="bg-parchment-texture bg-cover rounded-lg border-2 border-fantasy-frame-border p-4">
-            <h3 className="text-lg font-bold text-fantasy-primary flex items-center gap-2 mb-4">
+          <div className="bg-parchment-texture bg-cover rounded-lg border-2 border-fantasy-frame-border p-4 space-y-4">
+            <h3 className="text-lg font-bold text-fantasy-primary flex items-center gap-2">
               <Sword className="h-5 w-5" />
               Actions
             </h3>
             <ActionMenu />
+            {!state.showTavern && (
+              <div className="pt-4 border-t border-fantasy-frame-border">
+                <h4 className="text-sm font-semibold text-fantasy-primary mb-2">Story Controls</h4>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => dispatch({ type: "PROGRESS_STORY" })}
+                    className="w-full px-4 py-2 bg-gradient-to-br from-amber-700 to-amber-900 hover:from-amber-600 hover:to-amber-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors border border-fantasy-frame-border"
+                  >
+                    <Map className="h-4 w-4" />
+                    Progress Story
+                  </button>
+                  <button
+                    onClick={() => dispatch({ type: "RETURN_TO_TAVERN" })}
+                    className="w-full px-4 py-2 bg-gradient-to-br from-purple-700 to-purple-900 hover:from-purple-600 hover:to-purple-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors border border-fantasy-frame-border"
+                  >
+                    Return to Tavern
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           <Inventory />
         </div>
@@ -110,7 +130,7 @@ export const GameBoard = () => {
 
         {/* Right Column - Game Log */}
         <div className="col-span-2">
-          <div className="bg-character-frame bg-cover bg-center p-4 rounded-lg border-2 border-fantasy-frame-border sticky top-4">
+          <div className="bg-character-frame bg-cover bg-center p-4 rounded-lg border-2 border-fantasy-frame-border sticky top-4 max-h-[600px] overflow-y-auto">
             <GameLog />
           </div>
         </div>
