@@ -8,7 +8,6 @@ const CharacterCreation = () => {
   const { state } = useGame();
 
   React.useEffect(() => {
-    // If character already exists, redirect to game
     if (state.characters.length > 0) {
       navigate("/game");
     }
@@ -19,10 +18,20 @@ const CharacterCreation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-parchment-texture bg-cover bg-center p-6">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-fantasy-primary mb-8 text-center">Create Your Hero</h1>
-        <CharacterCreationForm onCharacterCreated={handleCharacterCreated} />
+    <div 
+      className="min-h-screen bg-cover bg-center bg-fixed p-6 relative"
+      style={{ 
+        backgroundImage: "url('https://images.unsplash.com/photo-1511882150382-421056c89033?q=80&w=2071&auto=format&fit=crop')",
+      }}
+    >
+      <div className="absolute inset-0 bg-black/50" />
+      <div className="relative z-10">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-5xl font-bold text-white mb-8 text-center drop-shadow-lg">
+            Create Your Hero
+          </h1>
+          <CharacterCreationForm onCharacterCreated={handleCharacterCreated} />
+        </div>
       </div>
     </div>
   );
