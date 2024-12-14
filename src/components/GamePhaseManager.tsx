@@ -4,6 +4,7 @@ import { GameBoard } from "./GameBoard";
 import { TavernScene } from "./TavernScene";
 import { Button } from "@/components/ui/button";
 import { Sword, Map, MessageSquare, Heart } from "lucide-react";
+import { GamePhase } from "@/types/game";
 
 export const GamePhaseManager = () => {
   const { state, dispatch } = useGame();
