@@ -76,7 +76,7 @@ export const GameBoard = () => {
           {/* Story Scene */}
           <div className="bg-character-frame bg-cover bg-center p-6 rounded-lg border-2 border-fantasy-frame-border min-h-[800px] relative overflow-hidden">
             <div className="bg-black/70 backdrop-blur-sm p-8 rounded-lg h-full flex flex-col">
-              <div className="prose prose-invert prose-lg max-w-none space-y-6 animate-fade-in">
+              <div className="prose prose-invert prose-lg max-w-none space-y-6">
                 {state.currentScene && (
                   <>
                     <h2 className="text-3xl font-bold text-amber-400 mb-6 font-serif tracking-wide">
@@ -93,9 +93,14 @@ export const GameBoard = () => {
                       />
                     </div>
                     
-                    <p className="text-xl leading-relaxed text-amber-200 font-serif">
-                      {state.currentScene.description}
-                    </p>
+                    {/* Story Text Section */}
+                    <div className="bg-black/40 p-6 rounded-lg border border-fantasy-frame-border">
+                      <p className="text-xl leading-relaxed text-amber-200 font-serif">
+                        {state.currentScene.description}
+                      </p>
+                    </div>
+
+                    {/* Recent Game Logs */}
                     <div className="mt-8 space-y-4">
                       {state.gameLog.slice(-3).map((log, index) => (
                         <p 
