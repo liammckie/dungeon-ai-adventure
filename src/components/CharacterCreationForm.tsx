@@ -35,9 +35,11 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
 
   const handleRandomize = () => {
     const stats = rollStats();
-    Object.entries(stats).forEach(([key, value]) => {
-      form.setValue(`stats.${key as keyof CharacterStatsType}`, value);
-    });
+    if (stats) {
+      Object.entries(stats).forEach(([key, value]) => {
+        form.setValue(`stats.${key as keyof CharacterStatsType}`, value);
+      });
+    }
   };
 
   const onSubmit = (data: CharacterFormData) => {
@@ -65,9 +67,11 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
     const subscription = form.watch((value, { name }) => {
       if (name === "class" && value.class) {
         const defaultStats = getDefaultStats(value.class);
-        Object.entries(defaultStats).forEach(([key, value]) => {
-          form.setValue(`stats.${key as keyof CharacterStatsType}`, value);
-        });
+        if (defaultStats) {
+          Object.entries(defaultStats).forEach(([key, value]) => {
+            form.setValue(`stats.${key as keyof CharacterStatsType}`, value);
+          });
+        }
       }
     });
     return () => subscription.unsubscribe();
