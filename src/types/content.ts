@@ -5,6 +5,13 @@ export type EventType = 'combat' | 'dialogue' | 'puzzle' | 'discovery';
 export type TimeOfDay = 'dawn' | 'day' | 'dusk' | 'night';
 export type Weather = 'clear' | 'rain' | 'storm' | 'fog';
 
+export interface DialogueOption {
+  text: string;
+  nextId?: string;
+  condition?: EventCondition;
+  consequence?: EventConsequence;
+}
+
 export interface Scene {
   id: string;
   type: SceneType;
@@ -14,6 +21,7 @@ export interface Scene {
   possibleEvents: StoryEvent[];
   requiredLevel?: number;
   availableNPCs: NPC[];
+  dialogueOptions?: DialogueOption[];
   environmentEffects?: {
     time: TimeOfDay;
     weather: Weather;
