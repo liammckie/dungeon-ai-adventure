@@ -1,21 +1,26 @@
 import React from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Shield, Sword } from "lucide-react";
+import { Shield, Sword, Heart } from "lucide-react";
+
+export type CombatMessageType = "attack" | "defend" | "miss" | "heal";
 
 interface CombatMessageProps {
-  type: "attack" | "defend" | "miss";
-  attacker: string;
+  type: CombatMessageType;
+  attacker?: string;
   target: string;
   damage?: number;
+  healing?: number;
 }
 
-export const CombatMessage = ({ type, attacker, target, damage }: CombatMessageProps) => {
+export const CombatMessage = ({ type, attacker, target, damage, healing }: CombatMessageProps) => {
   const getIcon = () => {
     switch (type) {
       case "attack":
         return <Sword className="h-4 w-4" />;
       case "defend":
         return <Shield className="h-4 w-4" />;
+      case "heal":
+        return <Heart className="h-4 w-4" />;
       default:
         return null;
     }
@@ -38,6 +43,11 @@ export const CombatMessage = ({ type, attacker, target, damage }: CombatMessageP
           title: "Defense!",
           description: `${attacker} takes a defensive stance.`
         };
+      case "heal":
+        return {
+          title: "Healing!",
+          description: `${target} recovers ${healing} HP!`
+        };
     }
   };
 
@@ -46,8 +56,8 @@ export const CombatMessage = ({ type, attacker, target, damage }: CombatMessageP
   return (
     <Alert className="mb-4">
       {getIcon()}
-      <AlertTitle>{message.title}</AlertTitle>
-      <AlertDescription>{message.description}</AlertDescription>
+      <AlertTitle>{message?.title}</AlertTitle>
+      <AlertDescription>{message?.description}</AlertDescription>
     </Alert>
   );
 };

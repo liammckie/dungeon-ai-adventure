@@ -11,6 +11,7 @@ import { CombatTurnIndicator } from "./CombatTurnIndicator";
 import { calculateDamage, calculateHit } from "./CombatUtils";
 import { TurnManager } from "./TurnManager";
 import { HealthManager } from "./HealthManager";
+import { handleCombatAction } from "./ActionHandler";
 
 interface CharacterTurnState {
   id: string;
@@ -26,7 +27,7 @@ export const CombatManager = () => {
   const [isProcessingTurn, setIsProcessingTurn] = useState(false);
   const [isAITurnInProgress, setIsAITurnInProgress] = useState(false);
   const currentCharacter = state.characters[state.currentTurn];
-  
+
   useEffect(() => {
     if (state.combatActive) {
       setTurnStates(state.characters.map(char => ({
@@ -45,57 +46,26 @@ export const CombatManager = () => {
 
   const handleAction = (action: string) => {
     if (!currentCharacter || isProcessingTurn) return;
-    
     setSelectedAction(action);
     
-    switch (action) {
-      case "attack":
-        // Attack action will be handled when target is selected
-        break;
-      case "defend":
-        dispatch({
-          type: "UPDATE_CHARACTER",
-          character: {
-            ...currentCharacter,
-            temporaryHp: (currentCharacter.temporaryHp || 0) + 2,
-          },
-        });
-        handleNextTurn();
-        break;
-      case "move":
-        // Implement move logic here
-        handleNextTurn();
-        break;
-      case "useItem":
-        // Implement item usage logic here
-        handleNextTurn();
-        break;
-      case "rest":
-        const healAmount = Math.floor(currentCharacter.maxHp * 0.25);
-        dispatch({
-          type: "UPDATE_CHARACTER",
-          character: {
-            ...currentCharacter,
-            hp: Math.min(currentCharacter.maxHp, currentCharacter.hp + healAmount),
-          },
-        });
-        toast({
-          description: <CombatMessage 
-            type="heal"
-            target={currentCharacter.name}
-            healing={healAmount}
-          />,
-        });
-        handleNextTurn();
-        break;
+    if (action === "attack") {
+      // Attack action will be handled when target is selected
+      return;
     }
+
+    handleCombatAction(
+      action,
+      currentCharacter,
+      dispatch,
+      handleNextTurn,
+      toast
+    );
   };
 
   const handleAITurn = async () => {
     if (!currentCharacter?.isAI) return;
-    
     setIsAITurnInProgress(true);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Delay for visibility
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
     const playerCharacter = state.characters.find(char => !char.isAI);
     if (playerCharacter) {
@@ -115,7 +85,6 @@ export const CombatManager = () => {
       const damage = calculateDamage(currentCharacter);
       const newHP = Math.max(0, target.hp - damage);
       
-      // Update character health
       dispatch({
         type: "UPDATE_CHARACTER",
         character: {
@@ -124,20 +93,18 @@ export const CombatManager = () => {
         }
       });
 
-      // Log the attack
       dispatch({
         type: "ADD_LOG",
         message: `${currentCharacter.name} hits ${target.name} for ${damage} damage!`
       });
 
-      // Show combat message
       toast({
         description: <CombatMessage 
           type="attack"
           attacker={currentCharacter.name}
           target={target.name}
           damage={damage}
-        />,
+        />
       });
 
       if (newHP <= 0) {
@@ -157,11 +124,10 @@ export const CombatManager = () => {
           type="miss"
           attacker={currentCharacter.name}
           target={target.name}
-        />,
+        />
       });
     }
     
-    // Add a delay before ending the turn
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsProcessingTurn(false);
     handleNextTurn();
@@ -174,17 +140,6 @@ export const CombatManager = () => {
     ));
     
     dispatch({ type: "NEXT_TURN" });
-    
-    const nextCharacter = state.characters[(state.currentTurn + 1) % state.characters.length];
-    
-    if (nextCharacter) {
-      toast({
-        description: <CombatTurnIndicator 
-          currentCharacter={nextCharacter}
-          isPlayerTurn={!nextCharacter.isAI}
-        />,
-      });
-    }
   };
 
   const getPossibleTargets = () => {
