@@ -8,7 +8,7 @@ const statsSchema = z.object({
   intelligence: z.number().min(3).max(18),
   wisdom: z.number().min(3).max(18),
   charisma: z.number().min(3).max(18),
-}) satisfies z.ZodType<CharacterStats>;
+});
 
 export const characterSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -19,6 +19,11 @@ export const characterSchema = z.object({
     "Bard", "Paladin", "Ranger", "Artificer"
   ] as const),
   stats: statsSchema,
-});
+}) satisfies z.ZodType<{
+  name: string;
+  race: CharacterRace;
+  class: CharacterClass;
+  stats: CharacterStats;
+}>;
 
 export type CharacterFormData = z.infer<typeof characterSchema>;

@@ -20,15 +20,14 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
       name: "",
       race: "Human",
       class: "Fighter",
-      stats: getDefaultStats("Fighter"),
+      stats: getDefaultStats("Fighter") as CharacterStatsType,
     },
   });
 
   const handleRandomize = () => {
     const stats = rollStats();
-    const statEntries = Object.entries(stats) as [keyof CharacterStatsType, number][];
-    statEntries.forEach(([stat, value]) => {
-      form.setValue(`stats.${stat}`, value, { shouldValidate: true });
+    Object.entries(stats).forEach(([key, value]) => {
+      form.setValue(`stats.${key as keyof CharacterStatsType}`, value, { shouldValidate: true });
     });
   };
 
@@ -53,13 +52,12 @@ export const CharacterCreationForm = ({ onCharacterCreated }: { onCharacterCreat
     onCharacterCreated();
   };
 
-  // Watch for class changes to update default stats
   React.useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (name === "class" && value.class) {
         const defaultStats = getDefaultStats(value.class);
-        Object.entries(defaultStats).forEach(([stat, value]) => {
-          form.setValue(`stats.${stat}`, value, { shouldValidate: true });
+        Object.entries(defaultStats).forEach(([key, value]) => {
+          form.setValue(`stats.${key as keyof CharacterStatsType}`, value, { shouldValidate: true });
         });
       }
     });

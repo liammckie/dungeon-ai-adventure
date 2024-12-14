@@ -21,7 +21,7 @@ const calculateLevelUp = (character: Character): Character => {
   const xpThreshold = character.level * 1000;
   if (character.xp >= xpThreshold) {
     const newLevel = character.level + 1;
-    const hpIncrease = character.class === "Warrior" ? 10 : 6;
+    const hpIncrease = character.class === "Fighter" ? 10 : 6;
     
     return {
       ...character,
@@ -60,7 +60,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         {
           id: "ai1",
           name: "Eldrin the Wise",
-          class: "Mage",
+          class: "Wizard",
           race: "Elf",
           stats: {
             strength: 8,
@@ -80,7 +80,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         {
           id: "ai2",
           name: "Thorgar Ironbeard",
-          class: "Warrior",
+          class: "Fighter",
           race: "Dwarf",
           stats: {
             strength: 17,
