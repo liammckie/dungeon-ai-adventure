@@ -66,25 +66,12 @@ export interface Character {
   isAI: boolean;
 }
 
-export interface GameState {
-  characters: Character[];
-  currentTurn: number;
-  gameLog: string[];
-  combatActive: boolean;
-  activeQuests: Quest[];
-  currentPhase: GamePhase;
-  lastRoll?: {
-    total: number;
-    rolls: number[];
-    type: DiceRoll['type'];
-  };
-}
-
 export interface Quest {
   id: string;
   title: string;
   description: string;
   completed: boolean;
+  difficulty: number;
 }
 
 export type GamePhase = 'exploration' | 'interaction' | 'combat' | 'rest';
@@ -95,6 +82,33 @@ export interface DiceRoll {
   advantage?: boolean;
   disadvantage?: boolean;
 }
+
+export const getDefaultStats = (): CharacterStats => ({
+  strength: 10,
+  dexterity: 10,
+  constitution: 10,
+  intelligence: 10,
+  wisdom: 10,
+  charisma: 10
+});
+
+export const getHitDice = (characterClass: CharacterClass): number => {
+  const hitDice: Record<CharacterClass, number> = {
+    Fighter: 10,
+    Barbarian: 12,
+    Paladin: 10,
+    Ranger: 10,
+    Monk: 8,
+    Rogue: 8,
+    Cleric: 8,
+    Druid: 8,
+    Bard: 8,
+    Warlock: 8,
+    Wizard: 6,
+    Sorcerer: 6
+  };
+  return hitDice[characterClass];
+};
 
 export const rollDice = (dice: DiceRoll): number => {
   const getDiceValue = (type: DiceRoll['type']): number => {
