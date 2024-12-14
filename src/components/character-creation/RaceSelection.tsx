@@ -24,22 +24,25 @@ export const RaceSelection = ({
   form: UseFormReturn<CharacterFormData> 
 }) => {
   const handleRaceChange = (value: string) => {
-    // Ensure the value is a valid CharacterRace before setting it
     const raceValue = value as CharacterRace;
     form.setValue("race", raceValue);
-    // Reset subrace when race changes
     form.setValue("subrace", undefined);
     
-    // Apply racial ability score bonuses
     const selectedRace = races.find(r => r.name === value);
     if (selectedRace?.abilityScoreIncrease) {
-      const currentStats = form.getValues("stats");
-      const newStats = { ...currentStats };
+      const currentStats = form.getValues("stats") as CharacterStats;
+      const newStats: CharacterStats = {
+        strength: currentStats.strength || 10,
+        dexterity: currentStats.dexterity || 10,
+        constitution: currentStats.constitution || 10,
+        intelligence: currentStats.intelligence || 10,
+        wisdom: currentStats.wisdom || 10,
+        charisma: currentStats.charisma || 10,
+      };
 
       Object.entries(selectedRace.abilityScoreIncrease).forEach(([ability, bonus]) => {
         if (ability in newStats && typeof bonus === 'number') {
-          newStats[ability as keyof CharacterStats] = 
-            (currentStats[ability as keyof CharacterStats] || 10) + bonus;
+          newStats[ability as keyof CharacterStats] += bonus;
         }
       });
 
