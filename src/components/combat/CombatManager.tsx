@@ -38,11 +38,58 @@ export const CombatManager = () => {
   }, [state.combatActive]);
 
   useEffect(() => {
-    // Only process AI turns when it's their turn and no other processing is happening
     if (currentCharacter?.isAI && !isProcessingTurn && !isAITurnInProgress) {
       handleAITurn();
     }
   }, [currentCharacter, isProcessingTurn]);
+
+  const handleAction = (action: string) => {
+    if (!currentCharacter || isProcessingTurn) return;
+    
+    setSelectedAction(action);
+    
+    switch (action) {
+      case "attack":
+        // Attack action will be handled when target is selected
+        break;
+      case "defend":
+        dispatch({
+          type: "UPDATE_CHARACTER",
+          character: {
+            ...currentCharacter,
+            temporaryHp: (currentCharacter.temporaryHp || 0) + 2,
+          },
+        });
+        handleNextTurn();
+        break;
+      case "move":
+        // Implement move logic here
+        handleNextTurn();
+        break;
+      case "useItem":
+        // Implement item usage logic here
+        handleNextTurn();
+        break;
+      case "rest":
+        const healAmount = Math.floor(currentCharacter.maxHp * 0.25);
+        dispatch({
+          type: "UPDATE_CHARACTER",
+          character: {
+            ...currentCharacter,
+            hp: Math.min(currentCharacter.maxHp, currentCharacter.hp + healAmount),
+          },
+        });
+        toast({
+          description: <CombatMessage 
+            type="heal"
+            target={currentCharacter.name}
+            healing={healAmount}
+          />,
+        });
+        handleNextTurn();
+        break;
+    }
+  };
 
   const handleAITurn = async () => {
     if (!currentCharacter?.isAI) return;
@@ -145,9 +192,6 @@ export const CombatManager = () => {
       char.isAI !== currentCharacter?.isAI && char.hp > 0
     );
   };
-
-  const isPlayerTurn = currentCharacter && !currentCharacter.isAI;
-  const readyCharacters = turnStates.filter(ts => ts.isReady);
 
   return (
     <div className="space-y-4 animate-fade-in">
