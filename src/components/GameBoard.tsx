@@ -5,7 +5,7 @@ import { GameLog } from "./GameLog";
 import { CombatControls } from "./CombatControls";
 import { Inventory } from "./Inventory";
 import { ActionMenu } from "./ActionMenu";
-import { Sword, Map, Users } from "lucide-react";
+import { Sword, Map, Users, ScrollText } from "lucide-react";
 
 export const GameBoard = () => {
   const { state } = useGame();
