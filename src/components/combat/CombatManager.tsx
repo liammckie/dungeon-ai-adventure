@@ -8,7 +8,9 @@ import { CombatActions } from "./CombatActions";
 import { TargetSelector } from "./TargetSelector";
 import { CombatMessage } from "./CombatMessage";
 import { CombatTurnIndicator } from "./CombatTurnIndicator";
-import { calculateDamage, calculateHit, calculateHealAmount } from "./CombatUtils";
+import { calculateDamage, calculateHit } from "./CombatUtils";
+import { TurnManager } from "./TurnManager";
+import { HealthManager } from "./HealthManager";
 
 interface CharacterTurnState {
   id: string;
@@ -22,9 +24,9 @@ export const CombatManager = () => {
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [turnStates, setTurnStates] = useState<CharacterTurnState[]>([]);
   const [isProcessingTurn, setIsProcessingTurn] = useState(false);
+  const [isAITurnInProgress, setIsAITurnInProgress] = useState(false);
   const currentCharacter = state.characters[state.currentTurn];
-  const TURN_SPEED = 100;
-
+  
   useEffect(() => {
     if (state.combatActive) {
       setTurnStates(state.characters.map(char => ({
@@ -36,29 +38,28 @@ export const CombatManager = () => {
   }, [state.combatActive]);
 
   useEffect(() => {
-    if (state.combatActive && !isProcessingTurn) {
-      const interval = setInterval(() => {
-        setTurnStates(prev => prev.map(turnState => {
-          if (turnState.actionBar >= 100) return turnState;
-          
-          const speed = state.characters.find(c => c.id === turnState.id)?.stats.dexterity || 10;
-          const increment = (speed / TURN_SPEED) * 2;
-          const newValue = Math.min(100, turnState.actionBar + increment);
-          
-          return {
-            ...turnState,
-            actionBar: newValue,
-            isReady: newValue >= 100
-          };
-        }));
-      }, 100);
-
-      return () => clearInterval(interval);
+    // Only process AI turns when it's their turn and no other processing is happening
+    if (currentCharacter?.isAI && !isProcessingTurn && !isAITurnInProgress) {
+      handleAITurn();
     }
-  }, [state.combatActive, isProcessingTurn]);
+  }, [currentCharacter, isProcessingTurn]);
+
+  const handleAITurn = async () => {
+    if (!currentCharacter?.isAI) return;
+    
+    setIsAITurnInProgress(true);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Delay for visibility
+    
+    const playerCharacter = state.characters.find(char => !char.isAI);
+    if (playerCharacter) {
+      await handleAttack(playerCharacter);
+    }
+    
+    setIsAITurnInProgress(false);
+  };
 
   const handleAttack = async (target: Character) => {
-    if (!currentCharacter) return;
+    if (!currentCharacter || isProcessingTurn) return;
     setIsProcessingTurn(true);
 
     const hits = calculateHit(currentCharacter);
@@ -67,6 +68,7 @@ export const CombatManager = () => {
       const damage = calculateDamage(currentCharacter);
       const newHP = Math.max(0, target.hp - damage);
       
+      // Update character health
       dispatch({
         type: "UPDATE_CHARACTER",
         character: {
@@ -75,6 +77,7 @@ export const CombatManager = () => {
         }
       });
 
+      // Log the attack
       dispatch({
         type: "ADD_LOG",
         message: `${currentCharacter.name} hits ${target.name} for ${damage} damage!`
@@ -82,7 +85,6 @@ export const CombatManager = () => {
 
       // Show combat message
       toast({
-        title: "Hit!",
         description: <CombatMessage 
           type="attack"
           attacker={currentCharacter.name}
@@ -104,7 +106,6 @@ export const CombatManager = () => {
       });
 
       toast({
-        title: "Miss!",
         description: <CombatMessage 
           type="miss"
           attacker={currentCharacter.name}
@@ -117,61 +118,6 @@ export const CombatManager = () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsProcessingTurn(false);
     handleNextTurn();
-  };
-
-  const handleAction = async (actionType: string) => {
-    if (!currentCharacter) return;
-    setSelectedAction(actionType);
-    setIsProcessingTurn(true);
-
-    if (actionType !== "attack") {
-      switch (actionType) {
-        case "defend":
-          dispatch({
-            type: "ADD_LOG",
-            message: `${currentCharacter.name} takes a defensive stance.`
-          });
-          toast({
-            description: <CombatMessage 
-              type="defend"
-              attacker={currentCharacter.name}
-              target=""
-            />,
-          });
-          break;
-        case "rest":
-          const healAmount = calculateHealAmount(currentCharacter);
-          dispatch({
-            type: "UPDATE_CHARACTER",
-            character: {
-              ...currentCharacter,
-              hp: Math.min(currentCharacter.maxHp, currentCharacter.hp + healAmount)
-            }
-          });
-          dispatch({
-            type: "ADD_LOG",
-            message: `${currentCharacter.name} recovers ${healAmount} HP.`
-          });
-          break;
-        case "move":
-          dispatch({
-            type: "ADD_LOG",
-            message: `${currentCharacter.name} moves to a new position.`
-          });
-          break;
-        case "useItem":
-          dispatch({
-            type: "ADD_LOG",
-            message: `${currentCharacter.name} uses an item.`
-          });
-          break;
-      }
-      
-      // Add a delay before ending the turn
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setIsProcessingTurn(false);
-      handleNextTurn();
-    }
   };
 
   const handleNextTurn = () => {
@@ -191,15 +137,6 @@ export const CombatManager = () => {
           isPlayerTurn={!nextCharacter.isAI}
         />,
       });
-
-      if (nextCharacter.isAI) {
-        setTimeout(async () => {
-          const playerCharacter = state.characters.find(char => !char.isAI);
-          if (playerCharacter) {
-            await handleAttack(playerCharacter);
-          }
-        }, 2000);
-      }
     }
   };
 
@@ -215,58 +152,48 @@ export const CombatManager = () => {
   return (
     <div className="space-y-4 animate-fade-in">
       {currentCharacter && (
-        <CombatTurnIndicator 
-          currentCharacter={currentCharacter}
-          isPlayerTurn={isPlayerTurn}
-        />
+        <>
+          <CombatTurnIndicator 
+            currentCharacter={currentCharacter}
+            isPlayerTurn={!currentCharacter.isAI}
+          />
+          
+          <TurnManager 
+            characters={state.characters}
+            currentTurn={state.currentTurn}
+            onNextTurn={handleNextTurn}
+          />
+          
+          <div className="space-y-4">
+            {state.characters.map(char => (
+              <HealthManager
+                key={char.id}
+                character={char}
+                onHealthChange={(newHealth) => {
+                  dispatch({
+                    type: "UPDATE_CHARACTER",
+                    character: { ...char, hp: newHealth }
+                  });
+                }}
+              />
+            ))}
+          </div>
+        </>
       )}
 
-      <div className="space-y-2">
-        {turnStates.map((ts) => {
-          const char = state.characters.find(c => c.id === ts.id);
-          if (!char) return null;
-          
-          return (
-            <div key={ts.id} className="flex items-center gap-2">
-              <span className="w-24 text-sm font-medium text-fantasy-primary truncate">
-                {char.name}
-              </span>
-              <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
-                <div 
-                  className={`h-full transition-all duration-100 rounded-full ${
-                    ts.isReady ? 'bg-yellow-400' : 'bg-blue-500'
-                  }`}
-                  style={{ width: `${ts.actionBar}%` }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {isPlayerTurn && readyCharacters.some(ts => ts.id === currentCharacter.id) && !selectedAction && !isProcessingTurn && (
+      {!currentCharacter?.isAI && !isProcessingTurn && !selectedAction && (
         <CombatActions 
           onAction={handleAction}
           character={currentCharacter}
         />
       )}
 
-      {isPlayerTurn && selectedAction === "attack" && !isProcessingTurn && (
+      {!currentCharacter?.isAI && selectedAction === "attack" && !isProcessingTurn && (
         <TargetSelector
           targets={getPossibleTargets()}
           onTargetSelect={handleAttack}
           onCancel={() => setSelectedAction(null)}
         />
-      )}
-
-      {!isPlayerTurn && !isProcessingTurn && (
-        <Button
-          onClick={handleNextTurn}
-          className="w-full bg-fantasy-secondary hover:bg-fantasy-secondary/90"
-        >
-          <FastForward className="mr-2 h-4 w-4" />
-          Next Turn
-        </Button>
       )}
     </div>
   );
